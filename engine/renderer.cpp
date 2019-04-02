@@ -41,6 +41,12 @@ int Renderer::Initialize(int width, int height, const char* title) {
 	//Create default shader
 	defaultShader = new Shader("shaders/default.vs","shaders/default.fs");
 
+	//Use default shader program, to set some uniforms
+	glUseProgram(defaultShader->GetShaderProgram());
+
+	glm::mat4 projection = glm::ortho(0.0f, screenResolution.x, screenResolution.y, 0.0f, -1.0f, 1.0f);
+	defaultShader->SetMat4("projection", projection);
+
 	//Setup quad VBO and VAO
 	float vertices[] = {
 		1.0f,  1.0f, 0.0f, 1.0f, 1.0f,
@@ -70,13 +76,19 @@ int Renderer::Initialize(int width, int height, const char* title) {
 	return 0;
 }
 
-void Renderer::DrawSprite(Texture* texture, Vec2 position) {
+void Renderer::DrawSprite(Texture* texture, Vec2 position, Vec2 size, float rotation) {
 	//Use default shader program
 	glUseProgram(defaultShader->GetShaderProgram());
 
-	//Transform coordinates to OpenGL Coordinate system
+	glm::mat4 model(1.0);
+	model = glm::translate(model, glm::vec3(position.ToGLM(), 0.0f));  // First translate (transformations are: scale happens first, then rotation and then finall translation happens; reversed order)
 
+	model = glm::translate(model, glm::vec3(0.5f * size.x, 0.5f * size.y, 0.0f)); // Move origin of rotation to center of quad
+	model = glm::rotate(model, rotation, glm::vec3(0.0f, 0.0f, 1.0f)); // Then rotate
+	model = glm::translate(model, glm::vec3(-0.5f * size.x, -0.5f * size.y, 0.0f)); // Move origin back
 
+	model = glm::scale(model, glm::vec3(size.ToGLM(), 1.0f)); // Last scale
+	defaultShader->SetMat4("model", model);
 
 	//Bind texture
 	glActiveTexture(GL_TEXTURE0);

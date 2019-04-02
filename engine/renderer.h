@@ -38,7 +38,7 @@ public:
 	* Renders a sprite
 	* @return void
 	*/
-	void DrawSprite(Texture* texture, Vec2 position);
+	void DrawSprite(Texture* texture, Vec2 position, Vec2 scale, float rotation);
 
 	/**
 	* Polls all GLFW events

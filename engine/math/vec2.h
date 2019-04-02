@@ -1,6 +1,6 @@
 // Header file for vec2 class.
 //
-// Version: 28/3/2019
+// Version: 2/4/2019
 //
 // Copyright (C) Jens Heukers - All Rights Reserved
 // Unauthorized copying of this file, via any medium is strictly prohibited
@@ -54,6 +54,13 @@ public:
 	Vec2(glm::vec2 other) {
 		this->x = other.x;
 		this->y = other.y;
+	}
+
+	/**
+	* Transforms a Vec2 to a glm::vec2
+	*/
+	glm::vec2 ToGLM() {
+		return glm::vec2(this->x, this->y);
 	}
 #endif // GLM_SETUP_INCLUDED
 
