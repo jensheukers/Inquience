@@ -38,11 +38,9 @@ void Core::Initialize(int argc, char* argv[]) {
 
 void Core::Update() {
 
-	static Texture* texture = TextureLoader::LoadTarga(Core::GetExecutableDirectoryPath().append("res/test.tga").c_str());
-	static Sprite* test = new Sprite();
-	test->SetTexture(texture);
+	static Texture* texture = TextureLoader::LoadTarga("res/test.tga");
 
-	instance->renderer->DrawSprite(test, Vec2(50,50));
+	instance->renderer->DrawSprite(texture, Vec2(0, 0));
 
 	//If window should not close, we poll events, swap buffers and clear, else we set active to false
 	if (!glfwWindowShouldClose(instance->renderer->GetWindow())) {

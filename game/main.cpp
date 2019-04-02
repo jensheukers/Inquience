@@ -7,13 +7,9 @@
 // Proprietary and confidential
 // Written by Jens Heukers, March 2019
 #include "../engine/core.h"
-#include "../engine/entity.h"
-#include "../engine/texture.h"
 
 int main(int argc, char * argv[]) {
 	Core::Initialize(argc, argv);
-
-	Texture* test = TextureLoader::LoadTarga(Core::GetExecutableDirectoryPath().append("res/test.tga").c_str());
 
 	while (Core::IsActive()) {
 		Core::Update(); // Handle updates

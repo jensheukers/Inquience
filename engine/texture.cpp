@@ -1,108 +1,126 @@
-// Source file for Texture struct and TextureLoader class.
+// Source file Texture class.
 //
-// Version: 1/4/2019
+// Version: 2/4/2019
 //
 // Copyright (C) Jens Heukers - All Rights Reserved
 // Unauthorized copying of this file, via any medium is strictly prohibited
 // Proprietary and confidential
 // Written by Jens Heukers, April 2019
-#include "texture.h"
 #include <iostream>
+#include <string>
+#include "texture.h"
 #include "debug.h"
 
-void TextureLoader::BGR2RGB(Texture* texture) {
-	for (unsigned i = 0; i < texture->imageSize; i += texture->bytesPerPixel) {
-		int b = texture->imageData[i];
-		int g = texture->imageData[i + 1];
-		int r = texture->imageData[i + 2];
+//Include Core.h for static GetApplicationBuildDirectory method
+#include "core.h"
 
-		texture->imageData[i] = r;
-		texture->imageData[i + 1] = g;
-		texture->imageData[i + 2] = b;
+void TextureLoader::BGR2RGB(Texture* texture) {
+	int bufferSize = (texture->textureData->width * texture->textureData->height) * texture->textureData->bytesPerPixel;
+
+	for (int i = 0; i < bufferSize; i += texture->textureData->bytesPerPixel) {
+		int b = texture->textureData->imageData[i];
+		int g = texture->textureData->imageData[i + 1];
+		int r = texture->textureData->imageData[i + 2];
+
+		texture->textureData->imageData[i] = r;
+		texture->textureData->imageData[i + 1] = g;
+		texture->textureData->imageData[i + 2] = b;
 	}
 }
 
 void TextureLoader::UploadToGPU(Texture* texture) {
-	if (texture->textureID) { // If uploaded before, delete from gpu
-		glDeleteTextures(1, &texture->textureID);
+	if (texture->_glTexture) {
+		glDeleteTextures(1, &texture->_glTexture); // Delete the texture if already uploaded before
 	}
 
-	glGenTextures(1, &texture->textureID);
+	glGenTextures(1, &texture->_glTexture); // Generate OpenGL Ready Textures
 
-	if (texture->type == GL_RGB) {
-		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, texture->width, texture->height, 0, GL_RGB, GL_UNSIGNED_BYTE, texture->imageData);
+										 // Map the surface to the texture in video memory
+	glBindTexture(GL_TEXTURE_2D, texture->_glTexture);
+
+	if (texture->textureData->type == GL_RGB) {
+		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, texture->textureData->width, texture->textureData->height, 0, GL_RGB, GL_UNSIGNED_BYTE, texture->textureData->imageData);
 	}
 	else {
-		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, texture->width, texture->height, 0, GL_RGBA, GL_UNSIGNED_BYTE, texture->imageData);
+		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, texture->textureData->width, texture->textureData->height, 0, GL_RGBA, GL_UNSIGNED_BYTE, texture->textureData->imageData);
 	}
 
 	glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 	glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 }
 
-Texture* TextureLoader::LoadTarga(const char* filePath) {
-	//Read file
-	FILE* file;
-	fopen_s(&file, filePath, "rb");
+Texture* TextureLoader::LoadTarga(char* filepath) {
+	FILE* fTGA; //Declare file pointer
+	fopen_s(&fTGA, Core::GetExecutableDirectoryPath().append(filepath).c_str(), "rb"); //Open file for reading
 
-	if (file == nullptr) {
-		Debug::Log("Error reading targa file header: " + std::string(filePath)); // Log
-		return nullptr; // Return nullptr
+	if (fTGA == NULL) { //If error was found..
+		Debug::Log("Could not open: " + std::string(filepath));
+		return nullptr; //Return false
 	}
 
-	GLubyte header[12]; // File header to determine file type
-	if (fread(&header, sizeof(header), 1, file) == 0) { //If failure to read file header
-		Debug::Log("Error reading file header: " + std::string(filePath));
-		return false; //Return false
-	}
-
-	//Load image data into texture
+	//Texture instance
 	Texture* texture = new Texture();
 
-	if (fread(texture->header, sizeof(texture->header), 1, file) == 0) {
-		Debug::Log("Error reading targa: " + std::string(filePath)); // Log
-		return nullptr; // Return nullptr
+	// Header
+	TGAHeader header;
+
+	// file data.
+	TGA targa;
+
+	if (fread(&header, sizeof(header), 1, fTGA) == 0) { //If failure to read file header
+		Debug::Log("Error reading file header: " + std::string(filepath));
+		return nullptr; //Return false
 	}
 
-	texture->width = texture->header[1] * 256 + texture->header[0]; //Calculate width
-	texture->height = texture->header[3] * 256 + texture->header[2]; //Calculate height
-	texture->bitsPerPixel = texture->header[4];
-
-	//Do some checks
-	if (texture->width <= 0 || texture->height <= 0 || texture->bitsPerPixel != 24 && texture->bitsPerPixel != 32) {
-		Debug::Log("Targa data is invalid: " + std::string(filePath));
-		return nullptr;
+	TextureData* textureData = new TextureData();
+	if (fread(targa.header, sizeof(targa.header), 1, fTGA) == 0) { //Attempt to read next 6 bytes
+		Debug::Log("Error reading TGA: " + std::string(filepath));
+		return nullptr; // Return false
 	}
 
-	//Determine texture type
-	if(texture->bitsPerPixel == 24) {
-		texture->type = GL_RGB;
-	}
-	else {
-		texture->type = GL_RGBA;
-	}
+	textureData->width = targa.header[1] * 256 + targa.header[0]; //Calculate height
+	textureData->height = targa.header[3] * 256 + targa.header[2]; //Calculate width
+	textureData->bpp = targa.header[4];
+	targa.width = textureData->width;
+	targa.height = textureData->height;
+	targa.bpp = textureData->bpp;
 
-	texture->bytesPerPixel = (texture->bitsPerPixel / 8);
-	texture->imageSize = (texture->bytesPerPixel * texture->width * texture->height);
-
-	texture->imageData = (GLubyte*)malloc(texture->imageSize); //Allocate memory
-
-	if (texture->imageData == NULL) {
-		Debug::Log("Texture data was not allocated correctly: " + std::string(filePath));
-		return nullptr;
+	if ((textureData->width <= 0) || (textureData->height <= 0) || ((textureData->bpp != 24) && (textureData->bpp != 32))) { 	// Make Sure All Information Is Valid
+		Debug::Log("Targa data is invalid! : " + std::string(filepath));
+		return nullptr;               // Return False
 	}
 
-	if (fread(texture->imageData, 1, texture->imageSize, file) != texture->imageSize) {
-		Debug::Log("Cant read image data: " + std::string(filePath));
-		return nullptr;
+	if (textureData->bpp == 32) { // if its a 32bpp image
+		textureData->type = GL_RGBA; //Set type to RGBA
+	}
+	else { // else it must be 24bpp Image
+		textureData->type = GL_RGB; //Set type to RGB
 	}
 
-	//Convert from BGR to RGB and upload to GPU
-	TextureLoader::BGR2RGB(texture);
+	targa.bytesPerPixel = (targa.bpp / 8); // Calculate the BYTES per pixel
+	targa.imageSize = (targa.bytesPerPixel * targa.width * targa.height); //Calculate the memory needed to store the image
+
+	textureData->bytesPerPixel = targa.bytesPerPixel;
+
+	textureData->imageData = (GLubyte*)malloc(targa.imageSize); //Allocate memory
+
+	if (textureData->imageData == NULL) { // Check if imageData was allocated correctly
+		Debug::Log("textureData was not allocated correctly : " + std::string(filepath));
+		return nullptr; // If Not, Return False
+	}
+
+	if (fread(textureData->imageData, 1, targa.imageSize, fTGA) != targa.imageSize) { 	// Attempt To Read All The Image Data
+		Debug::Log("cant read image data : " + std::string(filepath));
+		return nullptr; //If we cant read the data return false
+	}
+
+	texture->textureData = textureData;
+
+	TextureLoader::BGR2RGB(texture); //Convert from BGR to RGB
 	TextureLoader::UploadToGPU(texture);
 
+	Debug::Log("Texture created succesfully! Texture bits per pixel = " + std::to_string(textureData->bpp));
 
-	//Success
-	Debug::Log("Generated Texture: " + std::string(filePath) + ", Bits per pixel: " + std::to_string(texture->bitsPerPixel));
-	return texture;
+	fclose(fTGA);                   // Close The File
+	return texture;                    // Return Success
 }
