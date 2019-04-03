@@ -1,7 +1,7 @@
 // Source file for core class.
 // Core class handles all main functionality of the engine.
 //
-// Version: 26/3/2019
+// Version: 3/4/2019
 //
 // Copyright (C) Jens Heukers - All Rights Reserved
 // Unauthorized copying of this file, via any medium is strictly prohibited
@@ -9,6 +9,7 @@
 // Written by Jens Heukers, March 2019
 #include "core.h"
 #include "debug.h"
+#include "scenemanager.h"
 
 Core* Core::instance; // The singleton instance
 
@@ -37,6 +38,28 @@ void Core::Initialize(int argc, char* argv[]) {
 }
 
 void Core::Update() {
+	//Static time instances
+	static float frames = 0;
+	static float lastTime = (float)glfwGetTime();
+
+	//Handle Time
+	instance->deltaTime = instance->CalculateDeltaTime();
+	instance->timeElapsed = (float)glfwGetTime();
+
+	if (instance->timeElapsed >= lastTime + 1) {
+		instance->fps = frames;
+		frames = 0;
+		lastTime = instance->timeElapsed;
+	}
+
+	if (SceneManager::GetActiveScene()) {
+		//Update Scene
+		SceneManager::GetActiveScene()->Update();
+
+		//Render Scene
+		SceneManager::GetActiveScene()->RenderScene(instance->renderer);
+	}
+	
 	//If window should not close, we poll events, swap buffers and clear, else we set active to false
 	if (!glfwWindowShouldClose(instance->renderer->GetWindow())) {
 		instance->renderer->PollEvents();
@@ -46,6 +69,9 @@ void Core::Update() {
 	else {
 		instance->isActive = false;
 	}
+
+	//Increment frames
+	frames++;
 }
 
 bool Core::IsActive() {
@@ -61,5 +87,10 @@ std::string Core::GetExecutableDirectoryPath() {
 }
 
 float Core::CalculateDeltaTime() {
-	return 0.0f;
+	static float lastTime = (float)glfwGetTime();
+	float currentTime = (float)glfwGetTime();
+
+	float _deltaTime = currentTime - lastTime;
+	lastTime = currentTime;
+	return _deltaTime;
 }

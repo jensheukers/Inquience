@@ -45,7 +45,7 @@ add_custom_command(TARGET Dustville POST_BUILD
 
 add_custom_command(TARGET Dustville POST_BUILD 
 					COMMAND ${CMAKE_COMMAND} -E copy_directory
-						${CMAKE_SOURCE_DIR}/Dustville/shaders $<TARGET_FILE_DIR:Dustville>/shaders)
+						${CMAKE_SOURCE_DIR}/engine/shaders $<TARGET_FILE_DIR:Dustville>/shaders)
 						
 add_custom_command(TARGET Dustville POST_BUILD 
 					COMMAND ${CMAKE_COMMAND} -E make_directory

@@ -1,6 +1,6 @@
 // Header file for entity class.
 //
-// Version: 28/3/2019
+// Version: 3/4/2019
 //
 // Copyright (C) Jens Heukers - All Rights Reserved
 // Unauthorized copying of this file, via any medium is strictly prohibited
@@ -13,6 +13,12 @@
 #include <vector>
 #include "math/vec2.h"
 
+//Include sprite
+#include "sprite.h"
+
+//Forward declare renderer
+class Renderer;
+
 class Entity {
 private:
 	Entity* parent; /***< The parent instance */
@@ -20,7 +26,7 @@ private:
 
 	//Transformations
 	Vec2 position; /***< The global position (Parent transformations included)*/
-	Vec2 rotation; /***< The global rotation (Parent transformations included)*/
+	float rotation; /***< The global rotation (Parent transformations included)*/
 	Vec2 scale; /***< The global scale (Parent transformations included)*/
 protected:
 	/**
@@ -34,13 +40,22 @@ protected:
 	void UpdateChildren();
 
 	/**
+	* Calls the renderer to render to the screen
+	* @param Renderer*
+	*/
+	void Render(Renderer* renderer);
+
+	/**
 	* Update gets called every frame
 	* @return void
 	*/
 	virtual void Update() {};
 public:
+	//Local members
+	Sprite * sprite; /***< The sprite used by this entity*/
+
 	Vec2 localPosition; /***< The local position of the Entity*/
-	Vec2 localRotation; /***< The local rotation of the Entity*/
+	float localRotation; /***< The local rotation of the Entity*/
 	Vec2 localScale; /***< The local scale of the Entity*/
 
 	/**

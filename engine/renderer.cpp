@@ -1,6 +1,6 @@
 // Source file for renderer class.
 //
-// Version: 26/3/2019
+// Version: 3/4/2019
 //
 // Copyright (C) Jens Heukers - All Rights Reserved
 // Unauthorized copying of this file, via any medium is strictly prohibited
@@ -77,17 +77,20 @@ int Renderer::Initialize(int width, int height, const char* title) {
 }
 
 void Renderer::DrawSprite(Texture* texture, Vec2 position, Vec2 size, float rotation) {
+	//Calculate size, make it equal texture size
+	Vec2 calculatedSize = Vec2(texture->textureData->width * size.x, texture->textureData->height * size.y);
+
 	//Use default shader program
 	glUseProgram(defaultShader->GetShaderProgram());
 
 	glm::mat4 model(1.0);
 	model = glm::translate(model, glm::vec3(position.ToGLM(), 0.0f));  // First translate (transformations are: scale happens first, then rotation and then finall translation happens; reversed order)
 
-	model = glm::translate(model, glm::vec3(0.5f * size.x, 0.5f * size.y, 0.0f)); // Move origin of rotation to center of quad
+	model = glm::translate(model, glm::vec3(0.5f * calculatedSize.x, 0.5f * calculatedSize.y, 0.0f)); // Move origin of rotation to center of quad
 	model = glm::rotate(model, rotation, glm::vec3(0.0f, 0.0f, 1.0f)); // Then rotate
-	model = glm::translate(model, glm::vec3(-0.5f * size.x, -0.5f * size.y, 0.0f)); // Move origin back
+	model = glm::translate(model, glm::vec3(-0.5f * calculatedSize.x, -0.5f * calculatedSize.y, 0.0f)); // Move origin back
 
-	model = glm::scale(model, glm::vec3(size.ToGLM(), 1.0f)); // Last scale
+	model = glm::scale(model, glm::vec3(calculatedSize.ToGLM(), 1.0f)); // Last scale
 	defaultShader->SetMat4("model", model);
 
 	//Bind texture

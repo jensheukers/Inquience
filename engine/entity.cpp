@@ -1,12 +1,13 @@
 // Source file for entity class.
 //
-// Version: 28/3/2019
+// Version: 3/4/2019
 //
 // Copyright (C) Jens Heukers - All Rights Reserved
 // Unauthorized copying of this file, via any medium is strictly prohibited
 // Proprietary and confidential
 // Written by Jens Heukers, March 2019
 #include "entity.h"
+#include "renderer.h"
 
 void Entity::HandleParentTransformations() {
 	if (!this->parent) { // If we have no parent
@@ -29,8 +30,20 @@ void Entity::UpdateChildren() {
 	}
 }
 
+void Entity::Render(Renderer* renderer) {
+	for (int i = 0; i < (int)this->children.size(); i++) {
+		this->children[i]->Render(renderer);
+	}
+
+	//Render
+	if (this->sprite) {
+		renderer->DrawSprite(this->sprite->GetTexture(), position, scale, rotation);
+	}
+}
+
 Entity::Entity() {
 	this->parent = nullptr; // Set parent to nullptr
+	this->localScale = Vec2(1, 1); // Set scale to 1,1
 }
 
 Entity* Entity::AddChild(Entity* entity) {
@@ -47,6 +60,8 @@ Entity* Entity::RemoveChild(int index) {
 			return entity;
 		}
 	}
+
+	return nullptr;
 }
 
 Entity* Entity::GetChild(int index) {
@@ -55,6 +70,7 @@ Entity* Entity::GetChild(int index) {
 			return this->children[i];
 		}
 	}
+	return nullptr;
 }
 
 Entity* Entity::GetParent() {

@@ -2,7 +2,7 @@
 // Core class handles all main functionality of the engine.
 // Core class is a singleton instance, meaning it can be accessed from anywhere in the program
 //
-// Version: 26/3/2019
+// Version: 3/4/2019
 //
 // Copyright (C) Jens Heukers - All Rights Reserved
 // Unauthorized copying of this file, via any medium is strictly prohibited
@@ -23,6 +23,11 @@ private:
 	//Local variables
 	std::string executableDirectoryPath; /***< The path to the executable directory*/
 	bool isActive; /***< Determines if the engine is active*/
+
+	//Time
+	float deltaTime; /***< The amount of seconds between frames*/
+	float fps; /***< The amount of frames per second*/
+	float timeElapsed; /***< The time in seconds since the program started*/
 public:
 	/**
 	* Initalizes the Core of the engine
@@ -53,6 +58,24 @@ public:
 	* @return std::string
 	*/
 	static std::string GetExecutableDirectoryPath();
+
+	/**
+	* Returns the deltaTime
+	* @return float
+	*/
+	static float GetDeltaTime() { return instance->deltaTime; };
+
+	/**
+	* Returns the time elapsed since start of the program
+	* @return float
+	*/
+	static float GetTimeElapsed() { return instance->timeElapsed; }
+
+	/**
+	* Returns the frames per second
+	* @return float
+	*/
+	static float GetFramesPerSecond() { return instance->fps; };
 
 	//Local methods
 

@@ -9,8 +9,9 @@
 #ifndef SPRITE_H
 #define SPRITE_H
 
-//Include Texture.h
+//Include Texture.h and vector2 
 #include "texture.h"
+#include "math/vec2.h"
 
 class Sprite {
 private:
