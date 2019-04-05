@@ -10,6 +10,7 @@
 #include "core.h"
 #include "debug.h"
 #include "scenemanager.h"
+#include "input.h"
 
 Core* Core::instance; // The singleton instance
 
@@ -32,6 +33,9 @@ void Core::Initialize(int argc, char* argv[]) {
 	instance->renderer = new Renderer();
 	instance->renderer->Initialize(800, 600, "Dustville");
 
+	//Initialize Input
+	Input::Init(instance->renderer->GetWindow());
+
 	instance->isActive = true;
 
 	Debug::Log("Engine Initialized");
@@ -52,6 +56,10 @@ void Core::Update() {
 		lastTime = instance->timeElapsed;
 	}
 
+	//Update Input
+	Input::HandleUpdates();
+
+	//Update Entities
 	if (SceneManager::GetActiveScene()) {
 		//Update Scene
 		SceneManager::GetActiveScene()->Update();
