@@ -1,28 +1,35 @@
 // Header file for entity class.
 //
-// Version: 3/4/2019
+// Version: 5/4/2019
 //
 // Copyright (C) Jens Heukers - All Rights Reserved
 // Unauthorized copying of this file, via any medium is strictly prohibited
 // Proprietary and confidential
-// Written by Jens Heukers, March 2019
+// Written by Jens Heukers, April 2019
 #ifndef ENTITY_H
 #define ENTITY_H
+
+//Include debug.h
+#include "debug.h"
 
 //Include std::vector and Vec2
 #include <vector>
 #include "math/vec2.h"
 
-//Include sprite
-#include "sprite.h"
+//Include component
+#include "component.h"
 
 //Forward declare renderer
 class Renderer;
 
 class Entity {
 private:
+	//Local Members
 	Entity* parent; /***< The parent instance */
 	std::vector<Entity*> children; /***< List of children*/
+
+	//Components
+	std::vector<Component*> components; /***< List of components*/
 
 	//Transformations
 	Vec2 position; /***< The global position (Parent transformations included)*/
@@ -40,6 +47,11 @@ protected:
 	void UpdateChildren();
 
 	/**
+	* Updates all components
+	*/
+	void UpdateComponents();
+
+	/**
 	* Calls the renderer to render to the screen
 	* @param Renderer*
 	*/
@@ -51,9 +63,6 @@ protected:
 	*/
 	virtual void Update() {};
 public:
-	//Local members
-	Sprite * sprite; /***< The sprite used by this entity*/
-
 	Vec2 localPosition; /***< The local position of the Entity*/
 	float localRotation; /***< The local rotation of the Entity*/
 	Vec2 localScale; /***< The local scale of the Entity*/
@@ -102,6 +111,60 @@ public:
 	* @return void
 	*/
 	void SetParent(Entity* entity);
+
+	/**
+	* Adds a component to the components vector
+	* @return T* (template)
+	*/
+	template<class T>
+	T* AddComponent() {	
+		//First check if T is a derived component
+		if (!std::is_base_of<Component, T>::value) {
+			Debug::Log(std::string(typeid(T).name()) + " Is not a derived Component!");
+			return nullptr; // Return nullptr
+		}
+
+		//Create a new instance of the component, and set the owner
+		T* instance = new T();
+		Component* component = dynamic_cast<Component*>(instance);
+		component->SetOwner(this);
+
+		//Push back and return
+		components.push_back(component);
+		return instance;
+	}
+
+	/**
+	* Gets a component from the components vector, if index is not provided, will return the first found instance
+	* if none is found, will return nullptr.
+	* @return T* (template)
+	*/
+	template<class T>
+	T* GetComponent(int index = 0) {
+		int steps = index;
+		for (int i = 0; i < (int)components.size(); i++) {
+			if (dynamic_cast<T*>(components[i])) {
+				if (steps != 0) { steps--; continue; }
+				else return (T*)components[i]; // Assume components[i] == The given input template class
+			}
+		}
+
+		//Return nullptr if not found
+		return nullptr;
+	}
+
+	/**
+	* Returns true if component is in the components list, else returns false
+	* @return bool
+	*/
+	template<class T>
+	bool HasComponent() {
+		for (int i = 0; i < (int)components.size(); i++) {
+			if (dynamic_cast<T*>(components[i]))
+				return true;
+		}
+		return false;
+	}
 
 	/**
 	* Returns the position of the entity

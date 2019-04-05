@@ -1,6 +1,6 @@
 // Source file for renderer class.
 //
-// Version: 3/4/2019
+// Version: 5/4/2019
 //
 // Copyright (C) Jens Heukers - All Rights Reserved
 // Unauthorized copying of this file, via any medium is strictly prohibited
@@ -77,6 +77,9 @@ int Renderer::Initialize(int width, int height, const char* title) {
 }
 
 void Renderer::DrawSprite(Texture* texture, Vec2 position, Vec2 size, float rotation) {
+	//Make sure texture is not nullptr
+	if (texture == nullptr) return; // Return if true
+
 	//Calculate size, make it equal texture size
 	Vec2 calculatedSize = Vec2(texture->textureData->width * size.x, texture->textureData->height * size.y);
 

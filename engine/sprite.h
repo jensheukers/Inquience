@@ -1,6 +1,6 @@
 // Header file Sprite class.
 //
-// Version: 1/4/2019
+// Version: 5/4/2019
 //
 // Copyright (C) Jens Heukers - All Rights Reserved
 // Unauthorized copying of this file, via any medium is strictly prohibited
@@ -9,11 +9,14 @@
 #ifndef SPRITE_H
 #define SPRITE_H
 
+//Include component, since sprite is a component
+#include "component.h"
+
 //Include Texture.h and vector2 
 #include "texture.h"
 #include "math/vec2.h"
 
-class Sprite {
+class Sprite : public Component {
 private:
 	Texture* texture; /***< The texture the sprite uses*/
 public:

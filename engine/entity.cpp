@@ -1,6 +1,6 @@
 // Source file for entity class.
 //
-// Version: 3/4/2019
+// Version: 5/4/2019
 //
 // Copyright (C) Jens Heukers - All Rights Reserved
 // Unauthorized copying of this file, via any medium is strictly prohibited
@@ -30,14 +30,20 @@ void Entity::UpdateChildren() {
 	}
 }
 
+void Entity::UpdateComponents() {
+	for (Component* component : components) {
+		component->Update();
+	}
+}
+
 void Entity::Render(Renderer* renderer) {
 	for (int i = 0; i < (int)this->children.size(); i++) {
 		this->children[i]->Render(renderer);
 	}
 
 	//Render
-	if (this->sprite) {
-		renderer->DrawSprite(this->sprite->GetTexture(), position, scale, rotation);
+	if (this->HasComponent<Sprite>()) {
+		renderer->DrawSprite(this->GetComponent<Sprite>()->GetTexture(), position, scale, rotation);
 	}
 }
 
