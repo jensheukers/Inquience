@@ -1,6 +1,6 @@
 // Source file for renderer class.
 //
-// Version: 5/4/2019
+// Version: 6/4/2019
 //
 // Copyright (C) Jens Heukers - All Rights Reserved
 // Unauthorized copying of this file, via any medium is strictly prohibited
@@ -25,7 +25,7 @@ int Renderer::Initialize(int width, int height, const char* title) {
 	window = glfwCreateWindow(width, height, title, NULL, NULL);
 	glfwMakeContextCurrent(window); // Make current context
 	
-	screenResolution = Vec2(width, height);
+	screenResolution = Vec2((float)width, (float)height);
 
 	//Initialize GLEW
 	if (glewInit() != GLEW_OK) {
@@ -76,7 +76,7 @@ int Renderer::Initialize(int width, int height, const char* title) {
 	return 0;
 }
 
-void Renderer::DrawSprite(Texture* texture, Vec2 position, Vec2 size, float rotation) {
+void Renderer::DrawSprite(Texture* texture, Vec2 position, Vec2 size, float rotation, int zIndex) {
 	//Make sure texture is not nullptr
 	if (texture == nullptr) return; // Return if true
 
@@ -95,6 +95,9 @@ void Renderer::DrawSprite(Texture* texture, Vec2 position, Vec2 size, float rota
 
 	model = glm::scale(model, glm::vec3(calculatedSize.ToGLM(), 1.0f)); // Last scale
 	defaultShader->SetMat4("model", model);
+
+	//Z-Index
+	defaultShader->SetInt("zIndex", zIndex);
 
 	//Bind texture
 	glActiveTexture(GL_TEXTURE0);

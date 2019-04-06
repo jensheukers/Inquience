@@ -1,6 +1,6 @@
 // Source file for entity class.
 //
-// Version: 5/4/2019
+// Version: 6/4/2019
 //
 // Copyright (C) Jens Heukers - All Rights Reserved
 // Unauthorized copying of this file, via any medium is strictly prohibited
@@ -43,13 +43,13 @@ void Entity::Render(Renderer* renderer) {
 
 	//Render
 	if (this->HasComponent<Sprite>()) {
-		renderer->DrawSprite(this->GetComponent<Sprite>()->GetTexture(), position, scale, rotation);
+		renderer->DrawSprite(this->GetComponent<Sprite>()->GetTexture(), position, this->GetComponent<Sprite>()->GetScale() + scale, 
+							 rotation, this->GetComponent<Sprite>()->GetZIndex());
 	}
 }
 
 Entity::Entity() {
 	this->parent = nullptr; // Set parent to nullptr
-	this->localScale = Vec2(1, 1); // Set scale to 1,1
 }
 
 Entity* Entity::AddChild(Entity* entity) {

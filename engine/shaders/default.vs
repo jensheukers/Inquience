@@ -10,8 +10,11 @@ uniform mat4 projection;
 //Model Matrix
 uniform mat4 model;
 
+//Z-Index
+uniform int zIndex;
+
 void main()
 {
-    gl_Position = projection * model * vec4(aPos.x, aPos.y, aPos.z, 1.0);
+    gl_Position = projection * model * vec4(aPos.x, aPos.y, aPos.z + zIndex, 1.0);
 	texCoords = aTexCoords;
 }
