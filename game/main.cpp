@@ -16,6 +16,7 @@ int main(int argc, char * argv[]) {
 	SceneManager::SetActiveScene(new Scene());
 	Entity* ent = new Entity();
 	ent->AddComponent<Sprite>()->SetTexture(TextureLoader::LoadTarga("res/test.tga"));
+	TextureLoader::LoadTarga("res/test.tga");
 
 	SceneManager::GetActiveScene()->AddChild(ent);
 

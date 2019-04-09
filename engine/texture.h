@@ -1,6 +1,6 @@
 // Header file Texture class.
 //
-// Version: 2/4/2019
+// Version: 9/4/2019
 //
 // Copyright (C) Jens Heukers - All Rights Reserved
 // Unauthorized copying of this file, via any medium is strictly prohibited
@@ -9,6 +9,11 @@
 
 #ifndef TEXTURE_H
 #define TEXTURE_H
+
+//Include map so we can store pointers to loaded textures
+#include <map>
+
+//Include glm and glew
 #include "glm/glm.hpp"
 #include "GL/glew.h"
 
@@ -70,6 +75,15 @@ typedef struct {
 
 class TextureLoader {
 private:
+	static TextureLoader* instance; /***< The instance of the textureloader*/
+	std::map<std::string, Texture*> loadedTextures; /***< map of already loaded textures*/
+
+	/**
+	* Returns the instance of the TextureLoader
+	* @return TextureLoader*
+	*/
+	static TextureLoader* GetInstance();
+
 	/**
 	* Converts BGR to RGB
 	*/
@@ -80,11 +94,22 @@ private:
 	*/
 	static void UploadToGPU(Texture* texture);
 
+	/**
+	* Returns the loadedTextures map
+	* @return std::map<std::string, Texture*>*
+	*/
+	static std::map<std::string, Texture*>* GetLoadedTextures();
 public:
 	/**
 	* Load a Targa File.
 	*/
 	static Texture* LoadTarga(char* filepath);
+
+	/**
+	* Terminates the TextureLoader
+	* @return void
+	*/
+	static void Terminate();
 };
 
 #endif // !TEXTURE_H

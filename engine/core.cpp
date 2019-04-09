@@ -86,7 +86,10 @@ bool Core::IsActive() {
 	return instance->isActive;
 }
 
-void Core::Destroy() {	
+void Core::Destroy() {
+	//Terminate TextureLoader
+	TextureLoader::Terminate();
+
 	delete instance; // Delete instance
 }
 

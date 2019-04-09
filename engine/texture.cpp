@@ -1,6 +1,6 @@
 // Source file Texture class.
 //
-// Version: 2/4/2019
+// Version: 9/4/2019
 //
 // Copyright (C) Jens Heukers - All Rights Reserved
 // Unauthorized copying of this file, via any medium is strictly prohibited
@@ -13,6 +13,15 @@
 
 //Include Core.h for static GetApplicationBuildDirectory method
 #include "core.h"
+
+TextureLoader* TextureLoader::instance; // Declare instance
+
+TextureLoader* TextureLoader::GetInstance() {
+	if (!instance) {
+		instance = new TextureLoader();
+	}
+	return instance;
+}
 
 void TextureLoader::BGR2RGB(Texture* texture) {
 	int bufferSize = (texture->textureData->width * texture->textureData->height) * texture->textureData->bytesPerPixel;
@@ -49,7 +58,19 @@ void TextureLoader::UploadToGPU(Texture* texture) {
 	glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 }
 
+std::map<std::string, Texture*>* TextureLoader::GetLoadedTextures() {
+	return &GetInstance()->loadedTextures;
+}
+
 Texture* TextureLoader::LoadTarga(char* filepath) {
+	//Check if texture has been loaded before
+	for (std::map<std::string, Texture*>::reverse_iterator it = GetLoadedTextures()->rbegin(); it != GetLoadedTextures()->rend(); ++it) {
+		if (it->first == filepath) {
+			Debug::Log("Returning already loaded texture...");
+			return it->second;
+		}
+	}
+
 	FILE* fTGA; //Declare file pointer
 	fopen_s(&fTGA, Core::GetExecutableDirectoryPath().append(filepath).c_str(), "rb"); //Open file for reading
 
@@ -119,8 +140,17 @@ Texture* TextureLoader::LoadTarga(char* filepath) {
 	TextureLoader::BGR2RGB(texture); //Convert from BGR to RGB
 	TextureLoader::UploadToGPU(texture);
 
+	//GetLoadedTextures()[std::string(filepath)] = texture;
 	Debug::Log("Texture created succesfully! Texture bits per pixel = " + std::to_string(textureData->bpp));
 
 	fclose(fTGA);                   // Close The File
 	return texture;                    // Return Success
+}
+
+void TextureLoader::Terminate() {
+	//Delete all textures
+	for (std::map<std::string, Texture*>::reverse_iterator it = GetLoadedTextures()->rbegin(); it != GetLoadedTextures()->rend(); ++it) {
+		delete it->second;
+		Debug::Log("Unloaded texture: " + it->first);
+	}
 }
