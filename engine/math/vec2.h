@@ -1,11 +1,12 @@
 // Header file for vec2 class.
 //
-// Version: 2/4/2019
+// Version: 6/4/2019
 //
 // Copyright (C) Jens Heukers - All Rights Reserved
 // Unauthorized copying of this file, via any medium is strictly prohibited
 // Proprietary and confidential
-// Written by Jens Heukers, March 2019
+// Written by Jens Heukers, April 2019
+
 #ifndef VEC2_H
 #define VEC2_H
 
@@ -164,6 +165,22 @@ public:
 	}
 #endif // GLM_SETUP_INCLUDED
 
+	//Other methods
+
+	/**
+	* The distance between this and other vec2
+	* @param Vec2
+	* @return float
+	*/
+	float Distance(Vec2 other);
+
+	/**
+	* The distance between a and b vec2
+	* @param Vec2
+	* @param Vec2
+	* @return float
+	*/
+	static float Distance(Vec2 a, Vec2 b);
 };
 
 #endif // !VEC2_H

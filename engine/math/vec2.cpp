@@ -1,16 +1,17 @@
-// Header file for vec2 class.
-// Core class handles all main functionality of the engine.
-// Core class is a singleton instance, meaning it can be accessed from anywhere in the program
-//
-// Version: 28/3/2019
+// Source file for vec2 class.
+// Version: 6/4/2019
 //
 // Copyright (C) Jens Heukers - All Rights Reserved
 // Unauthorized copying of this file, via any medium is strictly prohibited
 // Proprietary and confidential
-// Written by Jens Heukers, March 2019
+// Written by Jens Heukers, April 2019
+
 #include "vec2.h"
 
-Vec2::Vec2() {
-	this->x = 0;
-	this->y = 0;
+float Vec2::Distance(Vec2 other) {
+	return other.x - this->x + other.y + this->y;
+}
+
+float Vec2::Distance(Vec2 a, Vec2 b) {
+	return b.x - a.x + b.y + a.y;
 }
