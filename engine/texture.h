@@ -98,7 +98,7 @@ private:
 	* Returns the loadedTextures map
 	* @return std::map<std::string, Texture*>*
 	*/
-	static std::map<std::string, Texture*>* GetLoadedTextures();
+	static std::map<std::string, Texture*>& GetLoadedTextures();
 public:
 	/**
 	* Load a Targa File.

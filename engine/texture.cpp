@@ -58,13 +58,13 @@ void TextureLoader::UploadToGPU(Texture* texture) {
 	glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 }
 
-std::map<std::string, Texture*>* TextureLoader::GetLoadedTextures() {
-	return &GetInstance()->loadedTextures;
+std::map<std::string, Texture*>& TextureLoader::GetLoadedTextures() {
+	return GetInstance()->loadedTextures;
 }
 
 Texture* TextureLoader::LoadTarga(char* filepath) {
 	//Check if texture has been loaded before
-	for (std::map<std::string, Texture*>::reverse_iterator it = GetLoadedTextures()->rbegin(); it != GetLoadedTextures()->rend(); ++it) {
+	for (std::map<std::string, Texture*>::reverse_iterator it = GetLoadedTextures().rbegin(); it != GetLoadedTextures().rend(); ++it) {
 		if (it->first == filepath) {
 			Debug::Log("Returning already loaded texture...");
 			return it->second;
@@ -140,7 +140,7 @@ Texture* TextureLoader::LoadTarga(char* filepath) {
 	TextureLoader::BGR2RGB(texture); //Convert from BGR to RGB
 	TextureLoader::UploadToGPU(texture);
 
-	//GetLoadedTextures()[std::string(filepath)] = texture;
+	GetLoadedTextures()[std::string(filepath)] = texture;
 	Debug::Log("Texture created succesfully! Texture bits per pixel = " + std::to_string(textureData->bpp));
 
 	fclose(fTGA);                   // Close The File
@@ -149,7 +149,7 @@ Texture* TextureLoader::LoadTarga(char* filepath) {
 
 void TextureLoader::Terminate() {
 	//Delete all textures
-	for (std::map<std::string, Texture*>::reverse_iterator it = GetLoadedTextures()->rbegin(); it != GetLoadedTextures()->rend(); ++it) {
+	for (std::map<std::string, Texture*>::reverse_iterator it = GetLoadedTextures().rbegin(); it != GetLoadedTextures().rend(); ++it) {
 		delete it->second;
 		Debug::Log("Unloaded texture: " + it->first);
 	}
