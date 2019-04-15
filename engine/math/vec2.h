@@ -181,6 +181,15 @@ public:
 	* @return float
 	*/
 	static float Distance(Vec2 a, Vec2 b);
+
+	/**
+	* Lerp between to points, where amount is distance, note that amount should be normalized
+	* @param Vec2
+	* @param Vec2
+	* @param float
+	* @return Vec2
+	*/
+	static Vec2 Lerp(Vec2 a, Vec2 b, float amount);
 };
 
 #endif // !VEC2_H

@@ -7,6 +7,7 @@
 // Proprietary and confidential
 // Written by Jens Heukers, April 2019
 #include "../engine/core.h"
+#include "unit.h"
 
 int main(int argc, char * argv[]) {
 	Core::Initialize(argc, argv);
