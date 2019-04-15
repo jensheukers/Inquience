@@ -1,6 +1,6 @@
 // Source file for renderer class.
 //
-// Version: 6/4/2019
+// Version: 15/4/2019
 //
 // Copyright (C) Jens Heukers - All Rights Reserved
 // Unauthorized copying of this file, via any medium is strictly prohibited
@@ -8,7 +8,36 @@
 // Written by Jens Heukers, March 2019
 #include <glm/gtc/matrix_transform.hpp>
 #include "renderer.h"
+#include "entity.h"
 #include "debug.h"
+
+void Renderer::DrawSprite(Texture* texture, Vec2 position, Vec2 size, float rotation) {
+	//Make sure texture is not nullptr
+	if (texture == nullptr) return; // Return if true
+
+									//Calculate size, make it equal texture size
+	Vec2 calculatedSize = Vec2(texture->textureData->width * size.x, texture->textureData->height * size.y);
+
+	//Use default shader program
+	glUseProgram(defaultShader->GetShaderProgram());
+
+	glm::mat4 model(1.0);
+	model = glm::translate(model, glm::vec3(position.ToGLM(), 0.0f));  // First translate (transformations are: scale happens first, then rotation and then finall translation happens; reversed order)
+
+	model = glm::translate(model, glm::vec3(0.5f * calculatedSize.x, 0.5f * calculatedSize.y, 0.0f)); // Move origin of rotation to center of quad
+	model = glm::rotate(model, rotation, glm::vec3(0.0f, 0.0f, 1.0f)); // Then rotate
+	model = glm::translate(model, glm::vec3(-0.5f * calculatedSize.x, -0.5f * calculatedSize.y, 0.0f)); // Move origin back
+
+	model = glm::scale(model, glm::vec3(calculatedSize.ToGLM(), 1.0f)); // Last scale
+	defaultShader->SetMat4("model", model);
+
+	//Bind texture
+	glActiveTexture(GL_TEXTURE0);
+	glBindTexture(GL_TEXTURE_2D, texture->_glTexture);
+
+	//Draw
+	glDrawArrays(GL_TRIANGLES, 0, 6);
+}
 
 int Renderer::Initialize(int width, int height, const char* title) {
 	//Initialize GLFW
@@ -76,35 +105,45 @@ int Renderer::Initialize(int width, int height, const char* title) {
 	return 0;
 }
 
-void Renderer::DrawSprite(Texture* texture, Vec2 position, Vec2 size, float rotation, int zIndex) {
-	//Make sure texture is not nullptr
-	if (texture == nullptr) return; // Return if true
+void Renderer::RegisterEntity(Entity* entity) {
+	this->renderList.push_back(entity);
+}
 
-	//Calculate size, make it equal texture size
-	Vec2 calculatedSize = Vec2(texture->textureData->width * size.x, texture->textureData->height * size.y);
+void Renderer::RemoveEntity(Entity* entity) {
+	for (int i = 0; i < (int)renderList.size(); i++) {
+		if (renderList[i] == entity) {
+			renderList.erase(renderList.begin() + i);
+		}
+	}
+}
 
-	//Use default shader program
-	glUseProgram(defaultShader->GetShaderProgram());
+void Renderer::RenderFrame() {
+	//First create a new list of entities, and sort entities based on their z-index
+	std::vector<Entity*> sortedRenderList;
 
-	glm::mat4 model(1.0);
-	model = glm::translate(model, glm::vec3(position.ToGLM(), 0.0f));  // First translate (transformations are: scale happens first, then rotation and then finall translation happens; reversed order)
+	//First determine highest z-index
+	int highest;
+	for (Entity* e : renderList) {
+		if (!e->HasComponent<Sprite>()) continue;
+		if (e->GetComponent<Sprite>()->GetZIndex() > highest) {
+			highest = e->GetComponent<Sprite>()->GetZIndex();
+		}
+	}
 
-	model = glm::translate(model, glm::vec3(0.5f * calculatedSize.x, 0.5f * calculatedSize.y, 0.0f)); // Move origin of rotation to center of quad
-	model = glm::rotate(model, rotation, glm::vec3(0.0f, 0.0f, 1.0f)); // Then rotate
-	model = glm::translate(model, glm::vec3(-0.5f * calculatedSize.x, -0.5f * calculatedSize.y, 0.0f)); // Move origin back
+	//Now go through all "Layers"
+	for (int i = 0; i <= highest; i++) {
+		for (Entity* e : renderList) {
+			if (!e->HasComponent<Sprite>()) continue;
+			if (e->GetComponent<Sprite>()->GetZIndex() == i) {
+				sortedRenderList.push_back(e);
+			}
+		}
+	}
 
-	model = glm::scale(model, glm::vec3(calculatedSize.ToGLM(), 1.0f)); // Last scale
-	defaultShader->SetMat4("model", model);
-
-	//Z-Index
-	defaultShader->SetInt("zIndex", zIndex);
-
-	//Bind texture
-	glActiveTexture(GL_TEXTURE0);
-	glBindTexture(GL_TEXTURE_2D, texture->_glTexture);
-
-	//Draw
-	glDrawArrays(GL_TRIANGLES, 0, 6);
+	//Now we got everything sorted so we can render the frame
+	for (Entity* e : sortedRenderList) {
+		this->DrawSprite(e->GetComponent<Sprite>()->GetTexture(), e->GetPosition(), e->GetComponent<Sprite>()->GetScale(), e->localRotation);
+	}
 }
 
 void Renderer::PollEvents() {

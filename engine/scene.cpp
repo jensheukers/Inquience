@@ -11,7 +11,3 @@
 void Scene::Update() {
 	this->UpdateChildren(); 
 }
-
-void Scene::RenderScene(Renderer* renderer) {
-	this->Render(renderer);
-}

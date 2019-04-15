@@ -16,9 +16,4 @@ public:
 	* Updates all the scene children
 	*/
 	void Update() override;
-
-	/**
-	* Calls the private render function
-	*/
-	void RenderScene(Renderer* renderer);
 };

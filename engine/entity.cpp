@@ -1,12 +1,13 @@
 // Source file for entity class.
 //
-// Version: 6/4/2019
+// Version: 15/4/2019
 //
 // Copyright (C) Jens Heukers - All Rights Reserved
 // Unauthorized copying of this file, via any medium is strictly prohibited
 // Proprietary and confidential
 // Written by Jens Heukers, March 2019
 #include "entity.h"
+#include "core.h"
 #include "renderer.h"
 
 void Entity::HandleParentTransformations() {
@@ -36,18 +37,6 @@ void Entity::UpdateComponents() {
 	}
 }
 
-void Entity::Render(Renderer* renderer) {
-	for (int i = 0; i < (int)this->children.size(); i++) {
-		this->children[i]->Render(renderer);
-	}
-
-	//Render
-	if (this->HasComponent<Sprite>()) {
-		renderer->DrawSprite(this->GetComponent<Sprite>()->GetTexture(), position, this->GetComponent<Sprite>()->GetScale() + scale, 
-							 rotation, this->GetComponent<Sprite>()->GetZIndex());
-	}
-}
-
 Entity::Entity() {
 	this->parent = nullptr; // Set parent to nullptr
 }
@@ -55,6 +44,10 @@ Entity::Entity() {
 Entity* Entity::AddChild(Entity* entity) {
 	this->children.push_back(entity);
 	entity->SetParent(this);
+
+	//Register to renderer
+	Core::GetRendererInstance()->RegisterEntity(entity);
+
 	return entity;
 }
 
@@ -62,6 +55,7 @@ Entity* Entity::RemoveChild(int index) {
 	for (int i = 0; i < (int)this->children.size(); i++) {
 		if (i == index) {
 			Entity* entity = this->children[i];
+			Core::GetRendererInstance()->RemoveEntity(entity);
 			this->children.erase(this->children.begin() + i);
 			return entity;
 		}

@@ -63,9 +63,7 @@ void Core::Update() {
 	if (SceneManager::GetActiveScene()) {
 		//Update Scene
 		SceneManager::GetActiveScene()->Update();
-
-		//Render Scene
-		SceneManager::GetActiveScene()->RenderScene(instance->renderer);
+		instance->renderer->RenderFrame();
 	}
 	
 	//If window should not close, we poll events, swap buffers and clear, else we set active to false
@@ -95,6 +93,10 @@ void Core::Destroy() {
 
 std::string Core::GetExecutableDirectoryPath() {
 	return instance->executableDirectoryPath;
+}
+
+Renderer* Core::GetRendererInstance() {
+	return instance->renderer;
 }
 
 float Core::CalculateDeltaTime() {

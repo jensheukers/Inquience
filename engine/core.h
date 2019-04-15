@@ -77,6 +77,12 @@ public:
 	*/
 	static float GetFramesPerSecond() { return instance->fps; };
 
+	/**
+	* Returns the renderer instance
+	* @return Renderer*
+	*/
+	static Renderer* GetRendererInstance();
+
 	//Local methods
 
 	/**

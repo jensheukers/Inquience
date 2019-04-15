@@ -1,6 +1,6 @@
 // Header file for entity class.
 //
-// Version: 5/4/2019
+// Version: 15/4/2019
 //
 // Copyright (C) Jens Heukers - All Rights Reserved
 // Unauthorized copying of this file, via any medium is strictly prohibited
@@ -50,12 +50,6 @@ protected:
 	* Updates all components
 	*/
 	void UpdateComponents();
-
-	/**
-	* Calls the renderer to render to the screen
-	* @param Renderer*
-	*/
-	void Render(Renderer* renderer);
 
 	/**
 	* Update gets called every frame
