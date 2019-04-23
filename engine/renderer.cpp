@@ -1,12 +1,13 @@
 // Source file for renderer class.
 //
-// Version: 15/4/2019
+// Version: 23/4/2019
 //
 // Copyright (C) Jens Heukers - All Rights Reserved
 // Unauthorized copying of this file, via any medium is strictly prohibited
 // Proprietary and confidential
 // Written by Jens Heukers, March 2019
 #include <glm/gtc/matrix_transform.hpp>
+#include "scenemanager.h"
 #include "renderer.h"
 #include "entity.h"
 #include "debug.h"
@@ -15,14 +16,18 @@ void Renderer::DrawSprite(Texture* texture, Vec2 position, Vec2 size, float rota
 	//Make sure texture is not nullptr
 	if (texture == nullptr) return; // Return if true
 
-									//Calculate size, make it equal texture size
+	//Calculate the position with camera position
+	Vec2 calculatedPos = Vec2(position.x - SceneManager::GetActiveScene()->GetActiveCamera()->GetPosition().x, 
+							  position.y - SceneManager::GetActiveScene()->GetActiveCamera()->GetPosition().y);
+
+	//Calculate size, make it equal texture size
 	Vec2 calculatedSize = Vec2(texture->textureData->width * size.x, texture->textureData->height * size.y);
 
 	//Use default shader program
 	glUseProgram(defaultShader->GetShaderProgram());
 
 	glm::mat4 model(1.0);
-	model = glm::translate(model, glm::vec3(position.ToGLM(), 0.0f));  // First translate (transformations are: scale happens first, then rotation and then finall translation happens; reversed order)
+	model = glm::translate(model, glm::vec3(calculatedPos.ToGLM(), 0.0f));  // First translate (transformations are: scale happens first, then rotation and then finall translation happens; reversed order)
 
 	model = glm::translate(model, glm::vec3(0.5f * calculatedSize.x, 0.5f * calculatedSize.y, 0.0f)); // Move origin of rotation to center of quad
 	model = glm::rotate(model, rotation, glm::vec3(0.0f, 0.0f, 1.0f)); // Then rotate
@@ -118,6 +123,11 @@ void Renderer::RemoveEntity(Entity* entity) {
 }
 
 void Renderer::RenderFrame() {
+	if (!SceneManager::GetActiveScene()->GetActiveCamera()) {
+		Debug::Log("No camera present for rendering!");
+		return;
+	}
+
 	//First create a new list of entities, and sort entities based on their z-index
 	std::vector<Entity*> sortedRenderList;
 

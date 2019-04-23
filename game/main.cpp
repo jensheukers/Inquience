@@ -7,13 +7,20 @@
 // Proprietary and confidential
 // Written by Jens Heukers, April 2019
 #include "../engine/core.h"
+#include "../engine/scenemanager.h"
+#include "../engine/input.h"
 #include "unit.h"
 
 int main(int argc, char * argv[]) {
 	Core::Initialize(argc, argv);
 
+	Unit* unit = new Unit();
+	SceneManager::SetActiveScene(new Scene());
+	SceneManager::GetActiveScene()->AddChild(unit);
+
 	while (Core::IsActive()) {
 		Core::Update(); // Handle updates
+		unit->SetDestination(Input::GetMousePosition());
 	}
 
 	Core::Destroy();
