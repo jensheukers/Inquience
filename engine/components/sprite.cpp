@@ -7,7 +7,7 @@
 // Proprietary and confidential
 // Written by Jens Heukers, May 2019
 #include "sprite.h"
-#include "debug.h"
+#include "../debug.h"
 
 SpriteUV::SpriteUV() {
 	this->leftUp = Vec2(0, 0); // 0, 1
@@ -26,8 +26,8 @@ SpriteUV::SpriteUV(Sprite* sprite, int amount, int index) {
 
 	//Iterate through image
 	int _index = 0;
-	for (int y = 0; y < sprite->GetTexture()->textureData->height; y += amount) {
-		for (int x = 0; x < sprite->GetTexture()->textureData->width; x += amount) {
+	for (int y = 0; y < (int)sprite->GetTexture()->textureData->height; y += amount) {
+		for (int x = 0; x < (int)sprite->GetTexture()->textureData->width; x += amount) {
 			if (_index == index) {
 				//Normalize positions
 				this->leftUp = Vec2((float)x / sprite->GetTexture()->textureData->width, (float)y / sprite->GetTexture()->textureData->height);

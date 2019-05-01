@@ -7,6 +7,8 @@ project (Dustville)
 # Main engine files
 file(GLOB MAIN "engine/*.cpp" "engine/*.h" )
 file(GLOB GRAPHICS "engine/graphics/*.cpp" "engine/graphics/*.h")
+file(GLOB COMPONENTS "engine/components/*.cpp" "engine/components/*.h")
+file(GLOB MATH "engine/math/*.cpp" "engine/math/*.h")
 file(GLOB GAME "game/*.cpp" "game/*.h")
 
 # Includes
@@ -57,4 +59,6 @@ add_custom_command(TARGET Dustville POST_BUILD
 # Filter groups
 source_group("engine" FILES ${MAIN})
 source_group("graphics" FILES ${GRAPHICS})
+source_group("components" FILES ${COMPONENTS})
 source_group("game" FILES ${GAME})
+source_group("math" FILES ${MATH})

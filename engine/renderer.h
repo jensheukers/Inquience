@@ -12,7 +12,7 @@
 #include <GLFW/glfw3.h>
 #include <vector>
 #include "graphics/shader.h"
-#include "sprite.h"
+#include "components/sprite.h"
 #include "math/vec2.h"
 
 class Entity; // Forward declartion of entity

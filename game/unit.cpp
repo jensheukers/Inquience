@@ -8,7 +8,7 @@
 // Written by Jens Heukers, May 2019
 #include "unit.h"
 #include "../engine/core.h"
-#include "../engine/sprite.h"
+#include "../engine/components/sprite.h"
 
 Unit::Unit() {
 	//Unit has a sprite component added by default, and default texture is set to placeholder

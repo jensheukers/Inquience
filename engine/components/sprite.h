@@ -10,11 +10,11 @@
 #define SPRITE_H
 
 //Include component, since sprite is a component
-#include "component.h"
+#include "../component.h"
 
 //Include Texture.h and vector2 
-#include "texture.h"
-#include "math/vec2.h"
+#include "../texture.h"
+#include "../math/vec2.h"
 
 //Forward declare
 class Sprite;
