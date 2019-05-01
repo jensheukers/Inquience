@@ -5,7 +5,7 @@
 // Copyright (C) Jens Heukers - All Rights Reserved
 // Unauthorized copying of this file, via any medium is strictly prohibited
 // Proprietary and confidential
-// Written by Jens Heukers, April 2019
+// Written by Jens Heukers, May 2019
 #ifndef COMPONENT_H
 #define COMPONENT_H
 

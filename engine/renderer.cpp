@@ -1,20 +1,32 @@
 // Source file for renderer class.
 //
-// Version: 23/4/2019
+// Version: 1/5/2019
 //
 // Copyright (C) Jens Heukers - All Rights Reserved
 // Unauthorized copying of this file, via any medium is strictly prohibited
 // Proprietary and confidential
-// Written by Jens Heukers, March 2019
+// Written by Jens Heukers, May 2019
 #include <glm/gtc/matrix_transform.hpp>
 #include "scenemanager.h"
 #include "renderer.h"
 #include "entity.h"
 #include "debug.h"
 
-void Renderer::DrawSprite(Texture* texture, Vec2 position, Vec2 size, float rotation) {
+void Renderer::DrawSprite(Texture* texture, Vec2 position, Vec2 size, float rotation, SpriteUV uvData) {
 	//Make sure texture is not nullptr
 	if (texture == nullptr) return; // Return if true
+
+	//Sub-Buffer data
+	float vertices[] = {
+		1.0f,  1.0f, 0.0f, uvData.rightUp.x, uvData.rightUp.y,
+		1.0f, 0.0f, 0.0f, uvData.rightDown.x, uvData.rightDown.y,
+		0.0f,  1.0f, 0.0f, uvData.leftUp.x, uvData.leftUp.y,
+		1.0f, 0.0f, 0.0f, uvData.rightDown.x, uvData.rightDown.y,
+		0.0f, 0.0f, 0.0f, uvData.leftDown.x, uvData.leftDown.y,
+		0.0f,  1.0f, 0.0f, uvData.leftUp.x, uvData.leftUp.y
+	};
+
+	glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(vertices), vertices);
 
 	//Calculate the position with camera position
 	Vec2 calculatedPos = Vec2(position.x - SceneManager::GetActiveScene()->GetActiveCamera()->GetPosition().x, 
@@ -97,7 +109,7 @@ int Renderer::Initialize(int width, int height, const char* title) {
 
 	glBindVertexArray(this->vao);
 	glBindBuffer(GL_ARRAY_BUFFER, this->vbo);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_DYNAMIC_DRAW);
 	
 	//Setup vertex attribute pointer
 	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)0);
@@ -152,7 +164,7 @@ void Renderer::RenderFrame() {
 
 	//Now we got everything sorted so we can render the frame
 	for (Entity* e : sortedRenderList) {
-		this->DrawSprite(e->GetComponent<Sprite>()->GetTexture(), e->GetPosition(), e->GetComponent<Sprite>()->GetScale(), e->localRotation);
+		this->DrawSprite(e->GetComponent<Sprite>()->GetTexture(), e->GetPosition(), e->GetComponent<Sprite>()->GetScale() / e->GetComponent<Sprite>()->GetSplits(), e->localRotation, e->GetComponent<Sprite>()->uvCoordinates);
 	}
 }
 

@@ -1,11 +1,11 @@
 // Header file Texture class.
 //
-// Version: 9/4/2019
+// Version: 29/4/2019
 //
 // Copyright (C) Jens Heukers - All Rights Reserved
 // Unauthorized copying of this file, via any medium is strictly prohibited
 // Proprietary and confidential
-// Written by Jens Heukers, April 2019
+// Written by Jens Heukers, May 2019
 
 #ifndef TEXTURE_H
 #define TEXTURE_H
@@ -32,9 +32,6 @@ typedef struct {
 
 	/** The height of the entire image*/
 	GLuint height;
-
-	/** Texture ID for use with glBindTexture() method*/
-	GLuint texId;
 
 	/** Data stored in *ImageData (GL_RGB OR GL_RGBA)*/
 	GLuint type;
@@ -69,8 +66,8 @@ typedef struct {
 } TGA;
 
 typedef struct {
-  TextureData* textureData; /***< Pointer to the texture data*/
-  GLuint _glTexture; /***< The pointer to the gl texture on the GPU*/
+	TextureData* textureData; /***< Pointer to the texture data*/
+	GLuint _glTexture; /***< The pointer to the gl texture on the GPU*/
 } Texture;
 
 class TextureLoader {
@@ -102,6 +99,7 @@ private:
 public:
 	/**
 	* Load a Targa File.
+	* @return Texture*
 	*/
 	static Texture* LoadTarga(char* filepath);
 

@@ -1,11 +1,11 @@
 // Header file for renderer class.
 //
-// Version: 15/4/2019
+// Version: 1/5/2019
 //
 // Copyright (C) Jens Heukers - All Rights Reserved
 // Unauthorized copying of this file, via any medium is strictly prohibited
 // Proprietary and confidential
-// Written by Jens Heukers, April 2019
+// Written by Jens Heukers, May 2019
 #ifndef RENDERER_H
 #define RENDERER_H
 #include <GL/glew.h>
@@ -37,7 +37,7 @@ private:
 	* Renders a sprite
 	* @return void
 	*/
-	void DrawSprite(Texture* texture, Vec2 position, Vec2 scale, float rotation);
+	void DrawSprite(Texture* texture, Vec2 position, Vec2 scale, float rotation, SpriteUV uvData = SpriteUV());
 
 public:
 	/**
