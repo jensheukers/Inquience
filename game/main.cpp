@@ -8,6 +8,9 @@
 // Written by Jens Heukers, May 2019
 #include "../engine/core.h"
 
+//Define default tilemap scale
+#define DEFAULT_TILEMAP_TILE_SCALE 32 
+
 int main(int argc, char * argv[]) {
 	Core::Initialize(argc, argv);
 
@@ -16,6 +19,5 @@ int main(int argc, char * argv[]) {
 	}
 
 	Core::Destroy();
-
-	return 0; // Return succes
+	return 0; // return succes
 }

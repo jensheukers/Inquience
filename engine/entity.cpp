@@ -28,6 +28,7 @@ void Entity::UpdateChildren() {
 		child->HandleParentTransformations(); // Handle the parent transformations
 		child->UpdateChildren(); // Update their children
 		child->Update(); // Update child
+		child->UpdateComponents(); // Update components
 	}
 }
 
