@@ -18,3 +18,7 @@ void Debug::Log(const char* message) {
 void Debug::Log(std::string message) {
 	std::cout << __TIME__ << " - " << message << std::endl;
 }
+
+void Debug::Log(int message) {
+	std::cout << __TIME__ << " - " << std::to_string(message) << std::endl;
+}

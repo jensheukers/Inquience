@@ -27,6 +27,12 @@ public:
 	* @return void
 	*/
 	static void Log(std::string message);
+
+	/**
+	* Logs a int
+	* @return void
+	*/
+	static void Log(int message);
 };
 
 
