@@ -144,7 +144,7 @@ void Renderer::RenderFrame() {
 	std::vector<Entity*> sortedRenderList;
 
 	//First determine highest z-index
-	int highest;
+	int highest = 0;
 	for (Entity* e : renderList) {
 		if (!e->HasComponent<Sprite>()) continue;
 		if (e->GetComponent<Sprite>()->GetZIndex() > highest) {
@@ -164,7 +164,7 @@ void Renderer::RenderFrame() {
 
 	//Now we got everything sorted so we can render the frame
 	for (Entity* e : sortedRenderList) {
-		this->DrawSprite(e->GetComponent<Sprite>()->GetTexture(), e->GetPosition(), e->GetComponent<Sprite>()->GetScale() / e->GetComponent<Sprite>()->GetSplits(), e->localRotation, e->GetComponent<Sprite>()->uvCoordinates);
+		this->DrawSprite(e->GetComponent<Sprite>()->GetTexture(), e->GetPosition(), e->GetComponent<Sprite>()->GetScale() / (float)e->GetComponent<Sprite>()->GetSplits(), e->localRotation, e->GetComponent<Sprite>()->uvCoordinates);
 	}
 }
 

@@ -1,6 +1,6 @@
 // Header file for vec2 class.
 //
-// Version: 6/4/2019
+// Version: 2/5/2019
 //
 // Copyright (C) Jens Heukers - All Rights Reserved
 // Unauthorized copying of this file, via any medium is strictly prohibited
@@ -14,6 +14,9 @@
 #ifdef GLM_SETUP_INCLUDED
 #include "glm/glm.hpp"
 #endif // GLM_SETUP_INCLUDED
+
+//Define PI
+#define PI 3.14159265359
 
 //Vec2 class has extra implemtations for glm if glm is defined
 class Vec2 {
@@ -175,6 +178,35 @@ public:
 	float Distance(Vec2 other);
 
 	/**
+	* Get the direction between this and other vec2
+	* @param Vec2
+	* @return Vec2
+	*/
+	Vec2 Direction(Vec2 other);
+
+	/**
+	* Get the normalized direction between this and other vec2
+	* @param Vec2
+	* @return Vec2
+	*/
+	Vec2 DirectionNormalized(Vec2 other);
+
+	/**
+	* Get the angle between this and other vec2
+	* @param Vec2
+	* @return float
+	*/
+	float Angle(Vec2 other);
+
+	/**
+	* Returns the magnitude of this vector
+	* @return float
+	*/
+	float Magnitude();
+
+	//Static methods
+
+	/**
 	* The distance between a and b vec2
 	* @param Vec2
 	* @param Vec2
@@ -190,6 +222,20 @@ public:
 	* @return Vec2
 	*/
 	static Vec2 Lerp(Vec2 a, Vec2 b, float amount);
+
+	/**
+	* Returns value converted from radians to degrees
+	* @param float
+	* @return float
+	*/
+	static float RadToDeg(float radians);
+
+	/**
+	* Returns value converted from degrees to radians
+	* @param float
+	* @return float
+	*/
+	static float DegToRad(float degrees);
 };
 
 #endif // !VEC2_H

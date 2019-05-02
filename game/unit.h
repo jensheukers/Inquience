@@ -15,10 +15,6 @@ class Unit : public Entity {
 private:
 	float speed; /***< The movement speed of the unit*/
 	Vec2 destination; /***< The destination vector of the unit*/
-
-	//These members are set mostly every frame
-	float amountTravelled; /***< Amount travelled in the current lerp, reset if arrived at destination*/
-	Vec2 lastIdlePosition; /***< The last position when unit has reached its destination*/
 public:
 	/**
 	* Constructor
