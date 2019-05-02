@@ -215,6 +215,10 @@ GLFWwindow* Renderer::GetWindow() {
 	return window;
 }
 
+Vec2 Renderer::GetResolution() {
+	return screenResolution;
+}
+
 Renderer::~Renderer() {
 	ImGui_ImplOpenGL3_Shutdown();
 	ImGui_ImplGlfw_Shutdown();

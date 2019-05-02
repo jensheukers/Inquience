@@ -1,7 +1,7 @@
 // Source file for core class.
 // Core class handles all main functionality of the engine.
 //
-// Version: 2/5/2019
+// Version: 3/5/2019
 //
 // Copyright (C) Jens Heukers - All Rights Reserved
 // Unauthorized copying of this file, via any medium is strictly prohibited
@@ -33,6 +33,9 @@ void Core::Initialize(int argc, char* argv[]) {
 	instance->renderer = new Renderer();
 	instance->renderer->Initialize(800, 600, "Dustville");
 
+	//Create Editor
+	instance->editor = new Editor();
+
 	//Initialize Input
 	Input::Init(instance->renderer->GetWindow());
 
@@ -61,6 +64,11 @@ void Core::Update() {
 
 	//Update Entities
 	if (SceneManager::GetActiveScene()) {
+		//Update editor if active
+		if (instance->editorActive) {
+			instance->editor->Update();
+		}
+
 		//Update Scene
 		SceneManager::GetActiveScene()->Update();
 		instance->renderer->RenderFrame();
@@ -103,6 +111,17 @@ std::string Core::GetExecutableDirectoryPath() {
 
 Renderer* Core::GetRendererInstance() {
 	return instance->renderer;
+}
+
+void Core::EnableEditor(bool state) {
+	instance->editorActive = state;
+
+	if (state) {
+		Debug::Log("Editor enabled");
+	}
+	else {
+		Debug::Log("Editor disabled");
+	}
 }
 
 float Core::CalculateDeltaTime() {

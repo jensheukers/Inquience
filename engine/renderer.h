@@ -89,6 +89,12 @@ public:
 	GLFWwindow* GetWindow();
 
 	/**
+	* Returns the window resolution as a Vec2
+	* @return Vec2
+	*/
+	Vec2 GetResolution();
+
+	/**
 	* Destructor
 	*/
 	~Renderer();

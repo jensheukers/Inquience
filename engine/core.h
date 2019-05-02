@@ -2,27 +2,34 @@
 // Core class handles all main functionality of the engine.
 // Core class is a singleton instance, meaning it can be accessed from anywhere in the program
 //
-// Version: 3/4/2019
+// Version: 3/5/2019
 //
 // Copyright (C) Jens Heukers - All Rights Reserved
 // Unauthorized copying of this file, via any medium is strictly prohibited
 // Proprietary and confidential
-// Written by Jens Heukers, March 2019
+// Written by Jens Heukers, May 2019
 #ifndef CORE_H
 #define CORE_H
 #include <string>
+
+//Include renderer.h
 #include "renderer.h"
+
+//Include editor.h
+#include "editor.h"
 
 class Core {
 private:
 	static Core* instance; /***< The singleton instance*/
 	
 	//References
-	Renderer* renderer; /***< The renderer instance*/
+	Renderer* renderer; /***< The renderer instance pointer*/
+	Editor* editor; /***< The editor instance pointer*/
 
 	//Local variables
 	std::string executableDirectoryPath; /***< The path to the executable directory*/
 	bool isActive; /***< Determines if the engine is active*/
+	bool editorActive; /***< Determines if the editor is to be shown or not*/
 
 	//Time
 	float deltaTime; /***< The amount of seconds between frames*/
@@ -82,6 +89,12 @@ public:
 	* @return Renderer*
 	*/
 	static Renderer* GetRendererInstance();
+
+	/**
+	* Enables or disables the editor
+	* @param bool
+	*/
+	static void EnableEditor(bool state);
 
 	//Local methods
 

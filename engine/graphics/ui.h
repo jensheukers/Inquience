@@ -16,7 +16,7 @@
 #include "../components/sprite.h"
 
 //User Interface Element is a entity
-class UIElement : Entity {
+class UIElement : public Entity {
 private:
 	bool entered; /***< True if mouse is inside the uiElement*/
 public:
