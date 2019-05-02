@@ -1,6 +1,6 @@
 // Header file for renderer class.
 //
-// Version: 1/5/2019
+// Version: 2/5/2019
 //
 // Copyright (C) Jens Heukers - All Rights Reserved
 // Unauthorized copying of this file, via any medium is strictly prohibited
@@ -87,6 +87,11 @@ public:
 	* @return GLFWWindow*
 	*/
 	GLFWwindow* GetWindow();
+
+	/**
+	* Destructor
+	*/
+	~Renderer();
 };
 
 #endif // !RENDERER_H

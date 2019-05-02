@@ -1,12 +1,12 @@
 // Source file for core class.
 // Core class handles all main functionality of the engine.
 //
-// Version: 3/4/2019
+// Version: 2/5/2019
 //
 // Copyright (C) Jens Heukers - All Rights Reserved
 // Unauthorized copying of this file, via any medium is strictly prohibited
 // Proprietary and confidential
-// Written by Jens Heukers, March 2019
+// Written by Jens Heukers, May 2019
 #include "core.h"
 #include "debug.h"
 #include "scenemanager.h"
@@ -65,6 +65,9 @@ void Core::Update() {
 		SceneManager::GetActiveScene()->Update();
 		instance->renderer->RenderFrame();
 	}
+	else {
+		Debug::Log("No active scene");
+	}
 	
 	//If window should not close, we poll events, swap buffers and clear, else we set active to false
 	if (!glfwWindowShouldClose(instance->renderer->GetWindow())) {
@@ -87,6 +90,9 @@ bool Core::IsActive() {
 void Core::Destroy() {
 	//Terminate TextureLoader
 	TextureLoader::Terminate();
+
+	//Terminate renderer
+	delete instance->renderer;
 
 	delete instance; // Delete instance
 }

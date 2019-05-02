@@ -12,6 +12,11 @@
 #include "entity.h"
 #include "debug.h"
 
+//Include imgui
+#include "../external/imgui/imgui.h"
+#include "../external/imgui/imgui_impl_glfw.h"
+#include "../external/imgui/imgui_impl_opengl3.h"
+
 void Renderer::DrawSprite(Texture* texture, Vec2 position, Vec2 size, float rotation, SpriteUV uvData) {
 	//Make sure texture is not nullptr
 	if (texture == nullptr) return; // Return if true
@@ -118,6 +123,22 @@ int Renderer::Initialize(int width, int height, const char* title) {
 	glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)(3 * sizeof(float)));
 	glEnableVertexAttribArray(1);
 
+	// Setup Dear ImGui context
+	ImGui::CreateContext();
+	ImGuiIO& io = ImGui::GetIO(); (void)io;
+
+	// Setup Dear ImGui style
+	ImGui::StyleColorsDark();
+
+	// Setup Platform/Renderer bindings
+	ImGui_ImplGlfw_InitForOpenGL(window, true);
+	ImGui_ImplOpenGL3_Init("#version 330");
+
+	//Start a new IMGUI Frame
+	ImGui_ImplOpenGL3_NewFrame();
+	ImGui_ImplGlfw_NewFrame();
+	ImGui::NewFrame();
+
 	Debug::Log("Renderer Initialized");
 	return 0;
 }
@@ -166,6 +187,10 @@ void Renderer::RenderFrame() {
 	for (Entity* e : sortedRenderList) {
 		this->DrawSprite(e->GetComponent<Sprite>()->GetTexture(), e->GetPosition(), e->GetComponent<Sprite>()->GetScale() / (float)e->GetComponent<Sprite>()->GetSplits(), e->localRotation, e->GetComponent<Sprite>()->uvCoordinates);
 	}
+
+	//ImGui render
+	ImGui::Render();
+	ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 }
 
 void Renderer::PollEvents() {
@@ -178,8 +203,24 @@ void Renderer::SwapBuffers() {
 
 void Renderer::Clear() {
 	glClear(GL_COLOR_BUFFER_BIT);
+
+	//We start a new imgui frame here so we can draw in between frames
+	ImGui::EndFrame();
+	ImGui_ImplOpenGL3_NewFrame();
+	ImGui_ImplGlfw_NewFrame();
+	ImGui::NewFrame();
 }
 
 GLFWwindow* Renderer::GetWindow() {
 	return window;
+}
+
+Renderer::~Renderer() {
+	ImGui_ImplOpenGL3_Shutdown();
+	ImGui_ImplGlfw_Shutdown();
+	ImGui::DestroyContext();
+
+	glfwDestroyWindow(this->window);
+	glfwTerminate(); // Terminate GLFW
+	Debug::Log("GLFW Terminated"); // Log
 }
