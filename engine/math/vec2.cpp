@@ -25,7 +25,7 @@ Vec2 Vec2::DirectionNormalized(Vec2 other) {
 }
 
 float Vec2::Angle(Vec2 other) {
-	return atan2(this->y - other.y, this->x - other.x);
+	return (float)atan2(this->y - other.y, this->x - other.x);
 }
 
 float Vec2::Magnitude() {
@@ -43,9 +43,9 @@ Vec2 Vec2::Lerp(Vec2 a, Vec2 b, float amount) {
 }
 
 float Vec2::RadToDeg(float radians) {
-	return (radians * 180 / PI) + 180;
+	return (float)(radians * 180 / PI) + 180;
 }
 
 float Vec2::DegToRad(float degrees) {
-	return (float)degrees * PI / 180;
+	return (float)(degrees * PI / 180);
 }

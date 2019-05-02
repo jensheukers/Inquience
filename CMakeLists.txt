@@ -10,6 +10,7 @@ file(GLOB GRAPHICS "engine/graphics/*.cpp" "engine/graphics/*.h")
 file(GLOB COMPONENTS "engine/components/*.cpp" "engine/components/*.h")
 file(GLOB MATH "engine/math/*.cpp" "engine/math/*.h")
 file(GLOB GAME "game/*.cpp" "game/*.h")
+file(GLOB IMGUI "external/imgui/*.cpp" "external/imgui/*.h")
 
 # Includes
 set(GLFW_DIR "external/glfw")
@@ -21,7 +22,7 @@ link_directories(${GLFW_DIR}/lib-vc2015 ${GLEW_DIR}/lib/Win32)
 
 # Add Executable
 
-add_executable(Dustville ${MAIN} ${GRAPHICS} ${GAME})
+add_executable(Dustville ${MAIN} ${GRAPHICS} ${GAME} ${COMPONENTS} ${MATH} ${IMGUI})
 
 set(CMAKE_CXX_FLAGS_RELEASE "/MD")
 set(CMAKE_CXX_FLAGS_DEBUG "/MD")
@@ -62,3 +63,4 @@ source_group("graphics" FILES ${GRAPHICS})
 source_group("components" FILES ${COMPONENTS})
 source_group("game" FILES ${GAME})
 source_group("math" FILES ${MATH})
+source_group("imgui" FILES ${IMGUI})
