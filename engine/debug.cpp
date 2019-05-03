@@ -9,16 +9,25 @@
 #include <iostream>
 #include "debug.h"
 
-Debug* Debug::instance; // The singleton instance
+const char* Debug::lastLog;
 
 void Debug::Log(const char* message) {
-	std::cout << __TIME__ << " - " << message << std::endl;
+	if (message != lastLog) {
+		std::cout << __TIME__ << " - " << message << std::endl;
+		lastLog = message;
+	}
 }
 
 void Debug::Log(std::string message) {
-	std::cout << __TIME__ << " - " << message << std::endl;
+	if (message != lastLog) {
+		std::cout << __TIME__ << " - " << message << std::endl;
+		lastLog = message.c_str();
+	}
 }
 
 void Debug::Log(int message) {
-	std::cout << __TIME__ << " - " << std::to_string(message) << std::endl;
+	if (std::to_string(message) != lastLog) {
+		std::cout << __TIME__ << " - " << std::to_string(message) << std::endl;
+		lastLog = std::to_string(message).c_str();
+	}
 }

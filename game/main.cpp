@@ -14,6 +14,8 @@
 int main(int argc, char * argv[]) {
 	Core::Initialize(argc, argv);
 
+	Core::EnableEditor(true);
+
 	while (Core::IsActive()) {
 		Core::Update(); // Handle updates
 	}

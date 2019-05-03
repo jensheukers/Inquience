@@ -14,7 +14,7 @@
 
 class Debug {
 private:
-	static Debug* instance; /***< The instance of the debug class*/
+	static const char* lastLog; /***< The last logged message*/
 public:
 	/**
 	* Logs a message to the console
