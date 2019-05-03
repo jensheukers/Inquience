@@ -1,11 +1,11 @@
 // Source file for entity class.
 //
-// Version: 15/4/2019
+// Version: 3/5/2019
 //
 // Copyright (C) Jens Heukers - All Rights Reserved
 // Unauthorized copying of this file, via any medium is strictly prohibited
 // Proprietary and confidential
-// Written by Jens Heukers, March 2019
+// Written by Jens Heukers, May 2019
 #include "entity.h"
 #include "core.h"
 #include "renderer.h"
@@ -74,6 +74,15 @@ Entity* Entity::GetChild(int index) {
 	return nullptr;
 }
 
+bool Entity::HasChild(Entity* entity) {
+	for (int i = 0; i < (int)this->children.size(); i++) {
+		if (children[i] == entity) {
+			return true;
+		}
+	}
+	return false;
+}
+
 Entity* Entity::GetParent() {
 	return this->parent;
 }
@@ -88,4 +97,10 @@ void Entity::SetParent(Entity* entity) {
 
 Vec2 Entity::GetPosition() {
 	return this->position;
+}
+
+Entity::~Entity() {
+	for (int i = 0; i < (int)children.size(); i++) {
+		delete children[i];
+	}
 }

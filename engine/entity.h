@@ -1,6 +1,6 @@
 // Header file for entity class.
 //
-// Version: 15/4/2019
+// Version: 3/5/2019
 //
 // Copyright (C) Jens Heukers - All Rights Reserved
 // Unauthorized copying of this file, via any medium is strictly prohibited
@@ -88,6 +88,13 @@ public:
 	Entity* GetChild(int index);
 
 	/**
+	* Returns true if entity has child
+	* @param Entity*
+	* @return bool
+	*/
+	bool HasChild(Entity* entity);
+
+	/**
 	* Returns the parent of this entity
 	* @return Entity*
 	*/
@@ -164,6 +171,11 @@ public:
 	* Returns the position of the entity
 	*/
 	Vec2 GetPosition();
+
+	/**
+	* Destructor
+	*/
+	~Entity();
 };
 
 #endif // !ENTITY_H

@@ -1,12 +1,12 @@
 // Header file for SceneManager class.
 // SceneManager is a singleton instance
 //
-// Version: 3/4/2019
+// Version: 3/5/2019
 //
 // Copyright (C) Jens Heukers - All Rights Reserved
 // Unauthorized copying of this file, via any medium is strictly prohibited
 // Proprietary and confidential
-// Written by Jens Heukers, March 2019
+// Written by Jens Heukers, May 2019
 #include "scene.h"
 
 class SceneManager {
@@ -34,4 +34,10 @@ public:
 	* @return Scene*
 	*/
 	static Scene* GetActiveScene();
+
+	/**
+	* Terminates the SceneManager
+	* @return void
+	*/
+	static void Terminate();
 };

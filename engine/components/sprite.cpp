@@ -48,6 +48,7 @@ SpriteUV::SpriteUV(Sprite* sprite, int amount, int index) {
 Sprite::Sprite() {
 	this->scale = Vec2(1, 1);
 	this->splits = 1;
+	this->texture = nullptr;
 }
 
 Texture* Sprite::SetTexture(Texture* texture) {

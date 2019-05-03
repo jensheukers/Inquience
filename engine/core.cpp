@@ -59,9 +59,6 @@ void Core::Update() {
 		lastTime = instance->timeElapsed;
 	}
 
-	//Update Input
-	Input::HandleUpdates();
-
 	//Update Entities
 	if (SceneManager::GetActiveScene()) {
 		//Update editor if active
@@ -93,6 +90,9 @@ void Core::Update() {
 		instance->isActive = false;
 	}
 
+	//Update Input
+	Input::HandleUpdates();
+
 	//Increment frames
 	frames++;
 }
@@ -107,6 +107,9 @@ void Core::Destroy() {
 
 	//Terminate renderer
 	delete instance->renderer;
+
+	//Delete scenemanager
+	SceneManager::Terminate();
 
 	delete instance; // Delete instance
 }

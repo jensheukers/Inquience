@@ -95,6 +95,11 @@ public:
 	Vec2 GetResolution();
 
 	/**
+	* local window size callback method
+	*/
+	void WindowSizeCallback(GLFWwindow* window, int width, int height);
+
+	/**
 	* Destructor
 	*/
 	~Renderer();

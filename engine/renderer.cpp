@@ -12,10 +12,18 @@
 #include "entity.h"
 #include "debug.h"
 
+//Include core.h to get instance for callback
+#include "core.h"
+
 //Include imgui
 #include "../external/imgui/imgui.h"
 #include "../external/imgui/imgui_impl_glfw.h"
 #include "../external/imgui/imgui_impl_opengl3.h"
+
+void window_size_callback(GLFWwindow* window, int width, int height)
+{
+	Core::GetRendererInstance()->WindowSizeCallback(window, width, height);
+}
 
 void Renderer::DrawSprite(Texture* texture, Vec2 position, Vec2 size, float rotation, SpriteUV uvData) {
 	//Make sure texture is not nullptr
@@ -76,6 +84,8 @@ int Renderer::Initialize(int width, int height, const char* title) {
 	window = glfwCreateWindow(width, height, title, NULL, NULL);
 	glfwMakeContextCurrent(window); // Make current context
 	
+	glfwSetWindowSizeCallback(window, window_size_callback);
+
 	screenResolution = Vec2((float)width, (float)height);
 
 	//Initialize GLEW
@@ -88,6 +98,8 @@ int Renderer::Initialize(int width, int height, const char* title) {
 	glClearColor(0.0f, 0.0f, 0.0f, 0.0f); // Clear color should be black
 	glDisable(GL_BLEND);
 	glDisable(GL_LIGHTING);
+
+	glViewport(0, 0, (float)width, (float)height);
 
 	//Create default shader
 	defaultShader = new Shader("shaders/default.vs","shaders/default.fs");
@@ -122,6 +134,9 @@ int Renderer::Initialize(int width, int height, const char* title) {
 
 	glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)(3 * sizeof(float)));
 	glEnableVertexAttribArray(1);
+
+	glEnable(GL_BLEND);
+	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
 	// Setup Dear ImGui context
 	ImGui::CreateContext();
@@ -217,6 +232,12 @@ GLFWwindow* Renderer::GetWindow() {
 
 Vec2 Renderer::GetResolution() {
 	return screenResolution;
+}
+
+void Renderer::WindowSizeCallback(GLFWwindow* window, int width, int height) {
+	glm::mat4 projection = glm::ortho(0.0f, (float)width, (float)height, 0.0f, -1.0f, 1.0f);
+	defaultShader->SetMat4("projection", projection);
+	screenResolution = Vec2((float)width, (float)height);
 }
 
 Renderer::~Renderer() {
