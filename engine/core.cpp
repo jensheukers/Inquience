@@ -31,7 +31,7 @@ void Core::Initialize(int argc, char* argv[]) {
 
 	//Create renderer
 	instance->renderer = new Renderer();
-	instance->renderer->Initialize(800, 600, "Dustville");
+	instance->renderer->Initialize(1920, 1080, "Dustville");
 
 	//Create Editor
 	instance->editor = new Editor();
@@ -58,6 +58,9 @@ void Core::Update() {
 		frames = 0;
 		lastTime = instance->timeElapsed;
 	}
+
+	//Update Input
+	Input::HandleUpdates();
 
 	//Update Entities
 	if (SceneManager::GetActiveScene()) {
@@ -89,9 +92,6 @@ void Core::Update() {
 	else {
 		instance->isActive = false;
 	}
-
-	//Update Input
-	Input::HandleUpdates();
 
 	//Increment frames
 	frames++;

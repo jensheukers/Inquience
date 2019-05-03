@@ -235,8 +235,7 @@ Vec2 Renderer::GetResolution() {
 }
 
 void Renderer::WindowSizeCallback(GLFWwindow* window, int width, int height) {
-	glm::mat4 projection = glm::ortho(0.0f, (float)width, (float)height, 0.0f, -1.0f, 1.0f);
-	defaultShader->SetMat4("projection", projection);
+	glViewport(0, 0, (float)width, (float)height);
 	screenResolution = Vec2((float)width, (float)height);
 }
 
