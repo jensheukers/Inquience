@@ -1,6 +1,6 @@
 // Source file for entity class.
 //
-// Version: 3/5/2019
+// Version: 4/5/2019
 //
 // Copyright (C) Jens Heukers - All Rights Reserved
 // Unauthorized copying of this file, via any medium is strictly prohibited
@@ -13,12 +13,10 @@
 void Entity::HandleParentTransformations() {
 	if (!this->parent) { // If we have no parent
 		this->position = localPosition;
-		this->rotation = localRotation;
 		this->scale = localScale;
 	}
 	else { // If we do have a parent, we want to include translations
 		this->position = this->parent->position + localPosition;
-		this->rotation = this->parent->rotation + localRotation;
 		this->scale = this->parent->scale + localScale;
 	}
 }
@@ -40,6 +38,8 @@ void Entity::UpdateComponents() {
 
 Entity::Entity() {
 	this->parent = nullptr; // Set parent to nullptr
+	this->position = Vec2(0,0);
+	this->scale = Vec2(1, 1);
 }
 
 Entity* Entity::AddChild(Entity* entity) {

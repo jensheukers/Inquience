@@ -1,6 +1,6 @@
 // Source file for Editor class.
 //
-// Version: 3/5/2019
+// Version: 4/5/2019
 //
 // Copyright (C) Jens Heukers - All Rights Reserved
 // Unauthorized copying of this file, via any medium is strictly prohibited
@@ -19,14 +19,14 @@
 
 void Grid::Construct() {
 	//Empty the gridtiles list, if already filled
-	for (int i = 0; i < gridTiles.size(); i++) {
+	for (int i = 0; i < (int)gridTiles.size(); i++) {
 		gridTiles.erase(gridTiles.begin(), gridTiles.begin() + i);
 	}
 
-	for (int x = 0; x <= scale.x * tileScale.x; x += tileScale.x) {
-		for (int y = 0; y <= scale.y * tileScale.y; y += tileScale.y) {
+	for (int x = 0; x <= scale.x * tileScale.x; x += (int)tileScale.x) {
+		for (int y = 0; y <= scale.y * tileScale.y; y += (int)tileScale.y) {
 			GridTile tile;
-			tile.position = Vec2(x, y);
+			tile.position = Vec2((float)x, (float)y);
 			tile.occupied = false;
 			gridTiles.push_back(tile);
 		}
@@ -34,7 +34,7 @@ void Grid::Construct() {
 }
 
 Vec2 Grid::GetTilePosition(Vec2 position) {
-	for (int i = 0; i < gridTiles.size(); i++) {
+	for (int i = 0; i < (int)gridTiles.size(); i++) {
 		if (Physics::InBounds(position, gridTiles[i].position, gridTiles[i].position + tileScale)) {
 			return gridTiles[i].position;
 		}
@@ -115,19 +115,17 @@ Editor::Editor() {
 	preferencesActive = false;
 
 	selectedEntity = nullptr;
-	
-	//Setup cursor Entity, add sprite
-	cursorEntity = new Entity();
-	cursorEntity->AddComponent<Sprite>();
 
 	//Create Grid
 	grid = new Grid();
 
 	//Set default values
-	grid->scale = Vec2(10, 10);
+	grid->scale = Vec2(100, 100);
 	grid->tileScale = Vec2(32, 32);
-	grid->Construct();
+	//grid->Construct();
 }
+
+#include <iostream>
 
 void Editor::Update() {
 	//Static variables
@@ -141,19 +139,6 @@ void Editor::Update() {
 	io.KeysDown[KEYCODE_UP] = Input::GetKeyDown(KEYCODE_UP);
 	io.KeysDown[KEYCODE_LEFT] = Input::GetKeyDown(KEYCODE_LEFT);
 	io.KeysDown[KEYCODE_RIGHT] = Input::GetKeyDown(KEYCODE_RIGHT);
-
-	//Add Cursor Entity if not a child
-	if (SceneManager::GetActiveScene()) {
-		if (!SceneManager::GetActiveScene()->HasChild(cursorEntity)) {
-			SceneManager::GetActiveScene()->AddChild(cursorEntity);
-		}
-	}
-
-	if (levelEditorActive) {
-		//Set position of cursor entity
-		Vec2 position = grid->GetTilePosition(Input::GetMousePosition());
-		cursorEntity->localPosition = position;
-	}
 
 	//Menu bar
 	ImGui::BeginMainMenuBar();
@@ -230,6 +215,8 @@ void Editor::Update() {
 			static int tileSize = 32;
 			static int tileIndex = 0;
 
+			static Sprite tileMapSprite;
+
 			static char buffer[128]; // Allocate buffer
 			ImGui::InputText("Tilemap texture path", buffer, sizeof(buffer));
 			ImGui::SameLine();
@@ -244,25 +231,47 @@ void Editor::Update() {
 			unsigned glTexId = 0;
 
 			if (tileMapTexture != nullptr) {
-				texSize = ImVec2(tileMapTexture->textureData->width, tileMapTexture->textureData->height);
+				texSize = ImVec2((float)tileMapTexture->textureData->width, (float)tileMapTexture->textureData->height);
 				glTexId = tileMapTexture->_glTexture;
 
 				//Set cursorEntity sprite texture
-				cursorEntity->GetComponent<Sprite>()->SetTexture(tileMapTexture);
-				cursorEntity->GetComponent<Sprite>()->uvCoordinates = SpriteUV(cursorEntity->GetComponent<Sprite>(), tileSize, tileIndex);
+				tileMapSprite.SetTexture(tileMapTexture);
+				tileMapSprite.uvCoordinates = SpriteUV(&tileMapSprite, tileSize, tileIndex);
 			}
 			ImGui::Text("Selected Tile:");
 			ImGui::SameLine();
 
-			ImGui::Image((void*)(intptr_t)glTexId, ImVec2(tileSize, tileSize), ImVec2(cursorEntity->GetComponent<Sprite>()->uvCoordinates.leftUp.x,
-				cursorEntity->GetComponent<Sprite>()->uvCoordinates.leftUp.y), ImVec2(cursorEntity->GetComponent<Sprite>()->uvCoordinates.rightDown.x,
-					cursorEntity->GetComponent<Sprite>()->uvCoordinates.rightDown.y));
+			ImGui::Image((void*)(intptr_t)glTexId, ImVec2((float)tileSize, (float)tileSize), ImVec2(tileMapSprite.uvCoordinates.leftDown.x,
+				tileMapSprite.uvCoordinates.leftDown.y), ImVec2(tileMapSprite.uvCoordinates.rightUp.x,
+					tileMapSprite.uvCoordinates.rightUp.y));
 
 			ImGui::Text("Tilemap:");
 			ImGui::SameLine();
-			ImGui::Image((void*)(intptr_t)glTexId, texSize, ImVec2(1, 1), ImVec2(0, 0));
+			ImGui::Image((void*)(intptr_t)glTexId, texSize, ImVec2(0, 1), ImVec2(1, 0));
 
 			ImGui::EndTabItem();
+
+			//Tile placement
+			if (Input::GetKeyDown(KEYCODE_0)) {
+				//Create instance
+				Entity* entity = new Entity();
+
+				//Sprite component
+				entity->AddComponent<Sprite>();
+				entity->GetComponent<Sprite>()->SetTexture(TextureLoader::LoadTarga("res/test.tga"));
+				entity->GetComponent<Sprite>()->uvCoordinates = tileMapSprite.uvCoordinates;
+				entity->GetComponent<Sprite>()->SetSplits(tileMapSprite.GetSplits());
+
+				//Determine position
+				Vec2 position = grid->GetTilePosition(Input::GetMousePosition());
+				entity->localPosition = position;
+
+				std::cout << position.x << "  " << position.y << std::endl;
+				std::cout << Input::GetMousePosition().x << " " << Input::GetMousePosition().y << std::endl;
+
+				//Add to scene
+				SceneManager::GetActiveScene()->AddChild(entity);
+			}
 		}
 
 		if (ImGui::BeginTabItem("World Edit")) {
@@ -279,14 +288,14 @@ void Editor::Update() {
 		ImGui::BeginTabBar("LevelEditorTabBar");
 		if (ImGui::BeginTabItem("Grid")) {
 
-			static int gridScale[2] = { 10, 10 };
+			static int gridScale[2] = { 100, 100 };
 			ImGui::InputInt2("Grid Size", gridScale);
 
 			static int tileScale[2] = { 32, 32 };
 			ImGui::InputInt2("Tile Size", tileScale);
 
-			grid->scale = Vec2(gridScale[0], gridScale[1]);
-			grid->tileScale = Vec2(tileScale[0], tileScale[1]);
+			grid->scale = Vec2((float)gridScale[0], (float)gridScale[1]);
+			grid->tileScale = Vec2((float)tileScale[0], (float)tileScale[1]);
 
 
 			if (ImGui::Button("Apply")) {

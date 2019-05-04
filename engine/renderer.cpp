@@ -25,10 +25,7 @@ void window_size_callback(GLFWwindow* window, int width, int height)
 	Core::GetRendererInstance()->WindowSizeCallback(window, width, height);
 }
 
-void Renderer::DrawSprite(Texture* texture, Vec2 position, Vec2 size, float rotation, SpriteUV uvData) {
-	//Make sure texture is not nullptr
-	if (texture == nullptr) return; // Return if true
-
+void Renderer::DrawSprite(Texture* texture, Vec2 position, Vec2 size, SpriteUV uvData) {
 	//Sub-Buffer data
 	float vertices[] = {
 		1.0f,  1.0f, 0.0f, uvData.rightUp.x, uvData.rightUp.y,
@@ -52,12 +49,7 @@ void Renderer::DrawSprite(Texture* texture, Vec2 position, Vec2 size, float rota
 	glUseProgram(defaultShader->GetShaderProgram());
 
 	glm::mat4 model(1.0);
-	model = glm::translate(model, glm::vec3(calculatedPos.ToGLM(), 0.0f));  // First translate (transformations are: scale happens first, then rotation and then finall translation happens; reversed order)
-
-	model = glm::translate(model, glm::vec3(0.5f * calculatedSize.x, 0.5f * calculatedSize.y, 0.0f)); // Move origin of rotation to center of quad
-	model = glm::rotate(model, rotation, glm::vec3(0.0f, 0.0f, 1.0f)); // Then rotate
-	model = glm::translate(model, glm::vec3(-0.5f * calculatedSize.x, -0.5f * calculatedSize.y, 0.0f)); // Move origin back
-
+	model = glm::translate(model, glm::vec3(calculatedPos.ToGLM(), 0.0f));  // First translate
 	model = glm::scale(model, glm::vec3(calculatedSize.ToGLM(), 1.0f)); // Last scale
 	defaultShader->SetMat4("model", model);
 
@@ -183,6 +175,7 @@ void Renderer::RenderFrame() {
 	int highest = 0;
 	for (Entity* e : renderList) {
 		if (!e->HasComponent<Sprite>()) continue;
+		if (!e->GetComponent<Sprite>()->GetTexture()) continue;
 		if (e->GetComponent<Sprite>()->GetZIndex() > highest) {
 			highest = e->GetComponent<Sprite>()->GetZIndex();
 		}
@@ -200,7 +193,7 @@ void Renderer::RenderFrame() {
 
 	//Now we got everything sorted so we can render the frame
 	for (Entity* e : sortedRenderList) {
-		this->DrawSprite(e->GetComponent<Sprite>()->GetTexture(), e->GetPosition(), e->GetComponent<Sprite>()->GetScale() / (float)e->GetComponent<Sprite>()->GetSplits(), e->localRotation, e->GetComponent<Sprite>()->uvCoordinates);
+		this->DrawSprite(e->GetComponent<Sprite>()->GetTexture(), e->GetPosition(), e->GetComponent<Sprite>()->GetScale() / (float)e->GetComponent<Sprite>()->GetSplits(), e->GetComponent<Sprite>()->uvCoordinates);
 	}
 
 	//ImGui render

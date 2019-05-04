@@ -47,7 +47,6 @@ private:
 	bool preferencesActive; /***< If true the preferences will be shown*/
 
 	Entity* selectedEntity; /***< The selected entity instance*/
-	Entity* cursorEntity; /***< The reference cursor entity*/
 
 	//Grid
 	Grid* grid; /***< The grid instance*/

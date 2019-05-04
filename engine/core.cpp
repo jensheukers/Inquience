@@ -59,9 +59,6 @@ void Core::Update() {
 		lastTime = instance->timeElapsed;
 	}
 
-	//Update Input
-	Input::HandleUpdates();
-
 	//Update Entities
 	if (SceneManager::GetActiveScene()) {
 		//Update editor if active
@@ -83,6 +80,9 @@ void Core::Update() {
 		}
 	}
 	
+	//Update Input
+	Input::HandleUpdates();
+
 	//If window should not close, we poll events, swap buffers and clear, else we set active to false
 	if (!glfwWindowShouldClose(instance->renderer->GetWindow())) {
 		instance->renderer->PollEvents();

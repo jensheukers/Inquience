@@ -46,6 +46,7 @@ SpriteUV::SpriteUV(Sprite* sprite, int amount, int index) {
 }
 
 Sprite::Sprite() {
+	this->zIndex = 0;
 	this->scale = Vec2(1, 1);
 	this->splits = 1;
 	this->texture = nullptr;

@@ -33,7 +33,6 @@ private:
 
 	//Transformations
 	Vec2 position; /***< The global position (Parent transformations included)*/
-	float rotation; /***< The global rotation (Parent transformations included)*/
 	Vec2 scale; /***< The global scale (Parent transformations included)*/
 protected:
 	/**
@@ -58,7 +57,6 @@ protected:
 	virtual void Update() {};
 public:
 	Vec2 localPosition; /***< The local position of the Entity*/
-	float localRotation; /***< The local rotation of the Entity*/
 	Vec2 localScale; /***< The local scale of the Entity*/
 
 	/**

@@ -37,7 +37,7 @@ private:
 	* Renders a sprite
 	* @return void
 	*/
-	void DrawSprite(Texture* texture, Vec2 position, Vec2 scale, float rotation, SpriteUV uvData = SpriteUV());
+	void DrawSprite(Texture* texture, Vec2 position, Vec2 scale, SpriteUV uvData = SpriteUV());
 
 public:
 	/**
