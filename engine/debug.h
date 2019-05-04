@@ -13,8 +13,6 @@
 //Debug class is a singleton instance
 
 class Debug {
-private:
-	static const char* lastLog; /***< The last logged message*/
 public:
 	/**
 	* Logs a message to the console
