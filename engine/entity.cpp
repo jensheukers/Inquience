@@ -65,9 +65,31 @@ Entity* Entity::RemoveChild(int index) {
 	return nullptr;
 }
 
+Entity* Entity::RemoveChild(Entity* entity) {
+	for (int i = 0; i < (int)this->children.size(); i++) {
+		if (this->children[i] == entity) {
+			Entity* entity = this->children[i];
+			Core::GetRendererInstance()->RemoveEntity(entity);
+			this->children.erase(this->children.begin() + i);
+			return entity;
+		}
+	}
+
+	return nullptr;
+}
+
 Entity* Entity::GetChild(int index) {
 	for (int i = 0; i < (int)this->children.size(); i++) {
 		if (i == index) {
+			return this->children[i];
+		}
+	}
+	return nullptr;
+}
+
+Entity* Entity::GetChild(Entity* entity) {
+	for (int i = 0; i < (int)this->children.size(); i++) {
+		if (this->children[i] == entity) {
 			return this->children[i];
 		}
 	}
@@ -102,5 +124,10 @@ Vec2 Entity::GetPosition() {
 Entity::~Entity() {
 	for (int i = 0; i < (int)children.size(); i++) {
 		delete children[i];
+	}
+
+	//Delete all components
+	for (int i = 0; i < (int)components.size(); i++) {
+		delete components[i];
 	}
 }

@@ -1,6 +1,6 @@
 // Header file for entity class.
 //
-// Version: 3/5/2019
+// Version: 4/5/2019
 //
 // Copyright (C) Jens Heukers - All Rights Reserved
 // Unauthorized copying of this file, via any medium is strictly prohibited
@@ -79,11 +79,25 @@ public:
 	Entity* RemoveChild(int index);
 
 	/**
+	* Removes a child from the children vector where pointer matches
+	* @param Entity*
+	* @return Entity*
+	*/
+	Entity* RemoveChild(Entity* entity);
+
+	/**
 	* Returns a child where index matches
 	* @param int
 	* @return Entity*
 	*/
 	Entity* GetChild(int index);
+
+	/**
+	* Returns a child where pointer matches
+	* @param Entity*
+	* @return Entity*
+	*/
+	Entity* GetChild(Entity* entity);
 
 	/**
 	* Returns true if entity has child

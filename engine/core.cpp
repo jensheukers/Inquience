@@ -31,7 +31,7 @@ void Core::Initialize(int argc, char* argv[]) {
 
 	//Create renderer
 	instance->renderer = new Renderer();
-	instance->renderer->Initialize(1920, 1080, "Dustville");
+	instance->renderer->Initialize(1280, 720, "Dustville");
 
 	//Create Editor
 	instance->editor = new Editor();

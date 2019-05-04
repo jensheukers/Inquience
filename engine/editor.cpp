@@ -33,14 +33,14 @@ void Grid::Construct() {
 	}
 }
 
-Vec2 Grid::GetTilePosition(Vec2 position) {
+GridTile* Grid::GetTilePosition(Vec2 position) {
 	for (int i = 0; i < (int)gridTiles.size(); i++) {
 		if (Physics::InBounds(position, gridTiles[i].position, gridTiles[i].position + tileScale)) {
-			return gridTiles[i].position;
+			return &gridTiles[i];
 		}
 	}
 
-	return Vec2(0,0);
+	return nullptr;
 }
 
 Editor::Editor() {
@@ -122,7 +122,7 @@ Editor::Editor() {
 	//Set default values
 	grid->scale = Vec2(100, 100);
 	grid->tileScale = Vec2(32, 32);
-	//grid->Construct();
+	grid->Construct();
 }
 
 #include <iostream>
@@ -252,25 +252,45 @@ void Editor::Update() {
 			ImGui::EndTabItem();
 
 			//Tile placement
-			if (Input::GetKeyDown(KEYCODE_0)) {
-				//Create instance
-				Entity* entity = new Entity();
+			if (Input::GetButtonDown(BUTTONCODE_LEFT) && Input::GetKey(KEYCODE_LEFT_CONTROL)) {
+				GridTile* tile = grid->GetTilePosition(Input::GetMousePosition());
 
-				//Sprite component
-				entity->AddComponent<Sprite>();
-				entity->GetComponent<Sprite>()->SetTexture(TextureLoader::LoadTarga("res/test.tga"));
-				entity->GetComponent<Sprite>()->uvCoordinates = tileMapSprite.uvCoordinates;
-				entity->GetComponent<Sprite>()->SetSplits(tileMapSprite.GetSplits());
+				if (tile != nullptr && !tile->occupied) {
+					//Create instance
+					Entity* entity = new Entity();
 
-				//Determine position
-				Vec2 position = grid->GetTilePosition(Input::GetMousePosition());
-				entity->localPosition = position;
+					//Set position
+					entity->localPosition = tile->position;
 
-				std::cout << position.x << "  " << position.y << std::endl;
-				std::cout << Input::GetMousePosition().x << " " << Input::GetMousePosition().y << std::endl;
+					//Sprite component
+					entity->AddComponent<Sprite>();
+					entity->GetComponent<Sprite>()->SetTexture(TextureLoader::LoadTarga("res/test.tga"));
+					entity->GetComponent<Sprite>()->uvCoordinates = tileMapSprite.uvCoordinates;
+					entity->GetComponent<Sprite>()->SetSplits(tileMapSprite.GetSplits());
 
-				//Add to scene
-				SceneManager::GetActiveScene()->AddChild(entity);
+					//Occupy and set tileEntity
+					tile->occupied = true;
+					tile->tileEntity = entity;
+
+					//Add to scene
+					SceneManager::GetActiveScene()->AddChild(entity);
+				}
+			}
+
+			//Tile removal
+			if (Input::GetButtonDown(BUTTONCODE_RIGHT) && Input::GetKey(KEYCODE_LEFT_CONTROL)) {
+				GridTile* tile = grid->GetTilePosition(Input::GetMousePosition());
+
+				if (tile != nullptr && tile->occupied) {
+					Entity* entity = tile->tileEntity;
+					
+					//Delete entity
+					delete SceneManager::GetActiveScene()->RemoveChild(entity);
+
+					//Set tile properties
+					tile->occupied = false;
+					tile->tileEntity = nullptr;
+				}
 			}
 		}
 

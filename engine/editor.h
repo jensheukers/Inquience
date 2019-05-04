@@ -17,6 +17,7 @@
 struct GridTile {
 	bool occupied; /***< True if a tile is occupied*/
 	Vec2 position; /***< Position of the gridTile*/
+	Entity* tileEntity; /***< The entity that is occupying the tile*/
 };
 
 struct Grid {
@@ -30,11 +31,11 @@ struct Grid {
 	void Construct();
 
 	/**
-	* Returns the nearest position nearest to position
+	* Returns the Tile nearest to position
 	* @param Vec2
-	* @return Vec2
+	* @return GridTile
 	*/
-	Vec2 GetTilePosition(Vec2 position);
+	GridTile* GetTilePosition(Vec2 position);
 };
 
 class Editor {
