@@ -1,6 +1,6 @@
 // Source file Texture class.
 //
-// Version: 10/4/2019
+// Version: 4/5/2019
 //
 // Copyright (C) Jens Heukers - All Rights Reserved
 // Unauthorized copying of this file, via any medium is strictly prohibited
@@ -136,6 +136,7 @@ Texture* TextureLoader::LoadTarga(char* filepath) {
 	}
 
 	texture->textureData = textureData;
+	texture->path = filepath;
 
 	TextureLoader::BGR2RGB(texture); //Convert from BGR to RGB
 	TextureLoader::UploadToGPU(texture);

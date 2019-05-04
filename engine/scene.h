@@ -36,4 +36,18 @@ public:
 	* @return Camera*
 	*/
 	Camera* GetActiveCamera();
+
+	/**
+	* Load scene data from a external source
+	* @param path
+	* @return void
+	*/
+	void Load(char* filePath);
+
+	/**
+	* Save scene data to a external source
+	* @param path
+	* @return void
+	*/
+	void Save(char* filePath);
 };

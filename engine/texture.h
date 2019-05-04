@@ -1,6 +1,6 @@
 // Header file Texture class.
 //
-// Version: 29/4/2019
+// Version: 4/5/2019
 //
 // Copyright (C) Jens Heukers - All Rights Reserved
 // Unauthorized copying of this file, via any medium is strictly prohibited
@@ -68,6 +68,7 @@ typedef struct {
 typedef struct {
 	TextureData* textureData; /***< Pointer to the texture data*/
 	GLuint _glTexture; /***< The pointer to the gl texture on the GPU*/
+	char* path; /***< Path to the texture*/
 } Texture;
 
 class TextureLoader {
