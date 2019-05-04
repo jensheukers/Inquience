@@ -204,6 +204,12 @@ public:
 	*/
 	float Magnitude();
 
+	/**
+	* Returns the vector in a string
+	* @return const char*
+	*/
+	const char* ToString();
+
 	//Static methods
 
 	/**

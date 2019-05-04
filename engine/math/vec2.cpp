@@ -10,6 +10,9 @@
 #include "vec2.h"
 #include <math.h>
 
+//Include string
+#include <string>
+
 float Vec2::Distance(Vec2 other) {
 	float dx = other.x - this->x;
 	float dy = other.y - this->y;
@@ -30,6 +33,10 @@ float Vec2::Angle(Vec2 other) {
 
 float Vec2::Magnitude() {
 	return (float)sqrt(this->x * this->x + this->y * this->y);
+}
+
+const char* Vec2::ToString() {
+	return std::string(std::to_string(x) + " , " + std::to_string(y)).c_str();
 }
 
 float Vec2::Distance(Vec2 a, Vec2 b) {
