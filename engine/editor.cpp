@@ -196,11 +196,38 @@ void Editor::Update() {
 
 	if (loadMenuActive) {
 		ImGui::Begin("Load", &loadMenuActive);
+		static char buffer[128]; // Allocate buffer
+		ImGui::InputText("Path", buffer, sizeof(buffer));
+		ImGui::SameLine();
+		if (ImGui::Button("Load")) {
+			SceneManager::LoadScene(buffer);
+
+			//TEMPORARY
+			SceneManager::GetActiveScene()->SetActiveCamera(new Camera());
+
+			//Check for grid positions
+			for (int i = 0; i < (int)SceneManager::GetActiveScene()->GetChildren().size(); i++) {
+				Entity* entity = SceneManager::GetActiveScene()->GetChild(i);
+				
+				for (int ii = 0; ii < (int)grid->gridTiles.size(); ii++) {
+					if (grid->gridTiles[ii].position == entity->GetPosition()) {
+						grid->gridTiles[ii].occupied = true;
+						grid->gridTiles[ii].tileEntity = entity;
+					}
+				}
+			}
+		}
 		ImGui::End();
 	}
 
 	if (saveMenuActive) {
 		ImGui::Begin("Save", &saveMenuActive);
+		static char buffer[128]; // Allocate buffer
+		ImGui::InputText("Path", buffer, sizeof(buffer));
+		ImGui::SameLine();
+		if (ImGui::Button("Save")) {
+			SceneManager::GetActiveScene()->Save(buffer);
+		}
 		ImGui::End();
 	}
 

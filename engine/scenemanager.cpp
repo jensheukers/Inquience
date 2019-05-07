@@ -1,7 +1,7 @@
 // Source file for SceneManager class.
 // SceneManager is a singleton instance
 //
-// Version: 3/5/2019
+// Version: 4/5/2019
 //
 // Copyright (C) Jens Heukers - All Rights Reserved
 // Unauthorized copying of this file, via any medium is strictly prohibited
@@ -26,6 +26,16 @@ Scene* SceneManager::SetActiveScene(Scene* scene) {
 
 Scene* SceneManager::GetActiveScene() {
 	return GetInstance()->activeScene;
+}
+
+Scene* SceneManager::LoadScene(char* path) {
+	if (instance->activeScene) {
+		delete instance->activeScene;
+	}
+
+	instance->activeScene = new Scene();
+	instance->activeScene->Load(path);
+	return instance->activeScene;
 }
 
 void SceneManager::Terminate() {

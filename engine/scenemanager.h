@@ -1,7 +1,7 @@
 // Header file for SceneManager class.
 // SceneManager is a singleton instance
 //
-// Version: 3/5/2019
+// Version: 4/5/2019
 //
 // Copyright (C) Jens Heukers - All Rights Reserved
 // Unauthorized copying of this file, via any medium is strictly prohibited
@@ -34,6 +34,13 @@ public:
 	* @return Scene*
 	*/
 	static Scene* GetActiveScene();
+
+	/**
+	* Safely Unloads active scene if there is one, then creates a new scene instance and loads scene from file
+	* @param char*
+	* @return Scene*
+	*/
+	static Scene* LoadScene(char* path);
 
 	/**
 	* Terminates the SceneManager

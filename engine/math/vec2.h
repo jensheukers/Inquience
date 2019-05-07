@@ -69,6 +69,13 @@ public:
 #endif // GLM_SETUP_INCLUDED
 
 	//Operator overloaders
+	bool Vec2::operator ==(Vec2 &v) {
+		if (this->x == v.x && this->y == v.y) {
+			return true;
+		}
+		return false;
+	}
+
 	Vec2 Vec2::operator +(Vec2 &v) {
 		Vec2 res;
 		
