@@ -291,7 +291,7 @@ void Editor::Update() {
 
 					//Sprite component
 					entity->AddComponent<Sprite>();
-					entity->GetComponent<Sprite>()->SetTexture(TextureLoader::LoadTarga("res/test.tga"));
+					entity->GetComponent<Sprite>()->SetTexture(TextureLoader::LoadTarga("res/terrain_tiles.tga"));
 					entity->GetComponent<Sprite>()->uvCoordinates = tileMapSprite.uvCoordinates;
 					entity->GetComponent<Sprite>()->SetSplits(tileMapSprite.GetSplits());
 

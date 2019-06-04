@@ -12,6 +12,10 @@
 #include "scenemanager.h"
 #include "input.h"
 
+//Include steamworks api
+#include <steam_api.h>
+#include <steam_gameserver.h>
+
 Core* Core::instance; // The singleton instance
 
 void Core::Initialize(int argc, char* argv[]) {
@@ -40,6 +44,11 @@ void Core::Initialize(int argc, char* argv[]) {
 	Input::Init(instance->renderer->GetWindow());
 
 	instance->isActive = true;
+
+	//Initialize Steamworks API
+	if (SteamAPI_Init()) {
+		Debug::Log("Steam Initialized");
+	}
 
 	Debug::Log("Engine Initialized");
 }
