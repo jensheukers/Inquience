@@ -17,9 +17,10 @@ set(GLFW_DIR "external/glfw")
 set(GLEW_DIR "external/glew")
 set(GLM_DIR "external/glm")
 set(STEAM_DIR "external/steam")
+set(FREETYPE_DIR "external/freetype")
 
-include_directories(${GLFW_DIR}/include ${GLEW_DIR}/include ${GLM_DIR} ${STEAM_DIR})
-link_directories(${GLFW_DIR}/lib-vc2015 ${GLEW_DIR}/lib/Win32 ${STEAM_DIR}/lib)
+include_directories(${GLFW_DIR}/include ${GLEW_DIR}/include ${GLM_DIR} ${STEAM_DIR} ${FREETYPE_DIR}/include)
+link_directories(${GLFW_DIR}/lib-vc2015 ${GLEW_DIR}/lib/Win32 ${STEAM_DIR}/lib ${FREETYPE_DIR}/win32)
 
 # Add Executable
 
@@ -29,7 +30,7 @@ set(CMAKE_CXX_FLAGS_RELEASE "/MD")
 set(CMAKE_CXX_FLAGS_DEBUG "/MD")
 
 # Link libraries
-target_link_libraries(Dustville glfw3.lib glfw3dll.lib opengl32.lib glew32.lib glew32s.lib sdkencryptedappticket.lib steam_api.lib)
+target_link_libraries(Dustville glfw3.lib glfw3dll.lib opengl32.lib glew32.lib glew32s.lib sdkencryptedappticket.lib steam_api.lib freetype.lib)
 SET (CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} /SAFESEH:NO")
 SET (CMAKE_SHARED_LINKER_FLAGS "${CMAKE_SHARED_LINKER_FLAGS} /SAFESEH:NO")
 SET (CMAKE_MODULE_LINKER_FLAGS "${CMAKE_MODULE_LINKER_FLAGS} /SAFESEH:NO")
@@ -51,6 +52,9 @@ add_custom_command(TARGET Dustville POST_BUILD
 					COMMAND ${CMAKE_COMMAND} -E copy
 						${CMAKE_SOURCE_DIR}/external/steam/lib/steam_api.dll $<TARGET_FILE_DIR:Dustville>)
 						
+add_custom_command(TARGET Dustville POST_BUILD 
+					COMMAND ${CMAKE_COMMAND} -E copy
+						${CMAKE_SOURCE_DIR}/external/freetype/win32/freetype.dll $<TARGET_FILE_DIR:Dustville>)						
 	
 add_custom_command(TARGET Dustville POST_BUILD 
 					COMMAND ${CMAKE_COMMAND} -E make_directory
