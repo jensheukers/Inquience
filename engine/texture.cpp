@@ -54,8 +54,8 @@ void TextureLoader::UploadToGPU(Texture* texture) {
 		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, texture->textureData->width, texture->textureData->height, 0, GL_RGBA, GL_UNSIGNED_BYTE, texture->textureData->imageData);
 	}
 
-	glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-	glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+	glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+	glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 }
 
 std::map<std::string, Texture*>& TextureLoader::GetLoadedTextures() {
