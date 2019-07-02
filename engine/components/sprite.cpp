@@ -1,11 +1,11 @@
 // Source file Sprite class.
 //
-// Version: 1/5/2019
+// Version: 2/7/2019
 //
 // Copyright (C) Jens Heukers - All Rights Reserved
 // Unauthorized copying of this file, via any medium is strictly prohibited
 // Proprietary and confidential
-// Written by Jens Heukers, May 2019
+// Written by Jens Heukers, July 2019
 #include "sprite.h"
 #include "../debug.h"
 
@@ -83,4 +83,13 @@ int Sprite::GetSplits() {
 
 void Sprite::SetSplits(int splits) {
 	this->splits = splits;
+}
+
+Vec2 Sprite::GetTextureScale() {
+	if (this->GetTexture()) {
+		return Vec2(GetTexture()->textureData->width / GetSplits(), GetTexture()->textureData->height / GetSplits());
+	}
+	else {
+		return Vec2();
+	}
 }

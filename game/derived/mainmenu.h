@@ -27,6 +27,32 @@ public:
 	void OnStay() override;
 };
 
+class OptionButton : public UIElement {
+public:
+	/**
+	* Constructor
+	*/
+	OptionButton();
+
+	// Overrides
+	void OnEnter() override;
+	void OnLeave() override;
+	void OnStay() override;
+};
+
+class QuitButton : public UIElement {
+public:
+	/**
+	* Constructor
+	*/
+	QuitButton();
+
+	// Overrides
+	void OnEnter() override;
+	void OnLeave() override;
+	void OnStay() override;
+};
+
 class MainMenu : public Scene {
 public:
 	/**

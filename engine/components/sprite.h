@@ -1,11 +1,11 @@
 // Header file Sprite class.
 //
-// Version: 1/5/2019
+// Version: 2/7/2019
 //
 // Copyright (C) Jens Heukers - All Rights Reserved
 // Unauthorized copying of this file, via any medium is strictly prohibited
 // Proprietary and confidential
-// Written by Jens Heukers, May 2019
+// Written by Jens Heukers, July 2019
 #ifndef SPRITE_H
 #define SPRITE_H
 
@@ -104,6 +104,12 @@ public:
 	* @param int
 	*/
 	void SetSplits(int splits);
+
+	/**
+	* Returns the accurate texture scale with splits included
+	* @return Vec2
+	*/
+	Vec2 GetTextureScale();
 };
 
 #endif // !SPRITE_H
