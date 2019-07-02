@@ -26,6 +26,8 @@ void window_size_callback(GLFWwindow* window, int width, int height)
 }
 
 void Renderer::DrawSprite(Texture* texture, Vec2 position, Vec2 size, SpriteUV uvData) {
+	glBindVertexArray(this->vao);
+
 	//Sub-Buffer data
 	float vertices[] = {
 		1.0f,  1.0f, 0.0f, uvData.rightUp.x, uvData.rightUp.y,
@@ -59,6 +61,53 @@ void Renderer::DrawSprite(Texture* texture, Vec2 position, Vec2 size, SpriteUV u
 
 	//Draw
 	glDrawArrays(GL_TRIANGLES, 0, 6);
+	glBindVertexArray(0);
+}
+
+void Renderer::DrawText(Font* font, std::string text, GLfloat x, GLfloat y, GLfloat scale, glm::vec3 color) {
+	// Activate corresponding render state	
+	glUseProgram(textShader->GetShaderProgram());
+	textShader->SetVec3("textColor", color);
+
+	glActiveTexture(GL_TEXTURE0);
+
+	glBindVertexArray(textVao);
+
+	// Iterate through all characters
+	std::string::const_iterator c;
+	for (c = text.begin(); c != text.end(); c++)
+	{
+		Character ch = font->characters[*c];
+
+		GLfloat xpos = x + ch.bearing.x * scale;
+		GLfloat ypos = y + (ch.size.y - ch.bearing.y) * scale;
+
+		GLfloat w = ch.size.x * scale;
+		GLfloat h = ch.size.y * scale;
+
+		GLfloat vertices[6][4] = {
+			{ xpos,     ypos - h, 0.0, 0.0 },
+			{ xpos,     ypos,     0.0, 1.0 },
+			{ xpos + w, ypos,     1.0, 1.0 },
+
+			{ xpos,     ypos - h,  0.0, 0.0 },
+			{ xpos + w, ypos,      1.0, 1.0 },
+			{ xpos + w, ypos - h,  1.0, 0.0 }
+		};
+		// Render glyph texture over quad
+		glBindTexture(GL_TEXTURE_2D, ch.textureID);
+		// Update content of VBO memory
+		glBindBuffer(GL_ARRAY_BUFFER, textVbo);
+		glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(vertices), vertices); // Be sure to use glBufferSubData and not glBufferData
+
+		glBindBuffer(GL_ARRAY_BUFFER, 0);
+		// Render quad
+		glDrawArrays(GL_TRIANGLES, 0, 6);
+		// Now advance cursors for next glyph (note that advance is number of 1/64 pixels)
+		x += (ch.advance >> 6) * scale; // Bitshift by 6 to get value in pixels (2^6 = 64 (divide amount of 1/64th pixels by 64 to get amount of pixels))
+	}
+	glBindVertexArray(0);
+	glBindTexture(GL_TEXTURE_2D, 0);
 }
 
 int Renderer::Initialize(int width, int height, const char* title) {
@@ -93,14 +142,32 @@ int Renderer::Initialize(int width, int height, const char* title) {
 
 	glViewport(0, 0, (float)width, (float)height);
 
-	//Create default shader
+	//Create default shader and text shader
 	defaultShader = new Shader("shaders/default.vs","shaders/default.fs");
+	textShader = new Shader("shaders/text.vs", "shaders/text.fs");
 
 	//Use default shader program, to set some uniforms
 	glUseProgram(defaultShader->GetShaderProgram());
 
 	glm::mat4 projection = glm::ortho(0.0f, screenResolution.x, screenResolution.y, 0.0f, -1.0f, 1.0f);
 	defaultShader->SetMat4("projection", projection);
+
+	glUseProgram(textShader->GetShaderProgram());
+	textShader->SetMat4("projection", projection);
+
+	// Generate buffers for text rendering quad
+	glGenVertexArrays(1, &textVao);
+	glGenBuffers(1, &textVbo);
+
+	glBindVertexArray(textVao);
+	glBindBuffer(GL_ARRAY_BUFFER, textVbo);
+
+	glBufferData(GL_ARRAY_BUFFER, sizeof(GLfloat) * 6 * 4, NULL, GL_DYNAMIC_DRAW);
+	glEnableVertexAttribArray(0);
+
+	glVertexAttribPointer(0, 4, GL_FLOAT, GL_FALSE, 4 * sizeof(GLfloat), 0);
+	glBindBuffer(GL_ARRAY_BUFFER, 0);
+	glBindVertexArray(0);
 
 	//Setup quad VBO and VAO
 	float vertices[] = {
@@ -126,6 +193,7 @@ int Renderer::Initialize(int width, int height, const char* title) {
 
 	glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)(3 * sizeof(float)));
 	glEnableVertexAttribArray(1);
+	glBindVertexArray(0);
 
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
@@ -162,6 +230,18 @@ void Renderer::RemoveEntity(Entity* entity) {
 	}
 }
 
+void Renderer::RegisterText(Text* text) {
+	this->textList.push_back(text);
+}
+
+void Renderer::RemoveText(Text* text) {
+	for (int i = 0; i < (int)textList.size(); i++) {
+		if (textList[i] == text) {
+			textList.erase(textList.begin() + i);
+		}
+	}
+}
+
 void Renderer::RenderFrame() {
 	if (!SceneManager::GetActiveScene()->GetActiveCamera()) {
 		Debug::Log("No camera present for rendering!");
@@ -194,6 +274,11 @@ void Renderer::RenderFrame() {
 	//Now we got everything sorted so we can render the frame
 	for (Entity* e : sortedRenderList) {
 		this->DrawSprite(e->GetComponent<Sprite>()->GetTexture(), e->GetPosition(), e->GetComponent<Sprite>()->GetScale() / (float)e->GetComponent<Sprite>()->GetSplits(), e->GetComponent<Sprite>()->uvCoordinates);
+	}
+
+	//Render text
+	for (Text* t : textList) {
+		this->DrawText(t->GetFont(), t->GetText(), t->GetPosition().x, t->GetPosition().y, 1, t->GetColor());
 	}
 
 	//ImGui render

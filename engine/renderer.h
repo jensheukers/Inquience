@@ -12,6 +12,7 @@
 #include <GLFW/glfw3.h>
 #include <vector>
 #include "graphics/shader.h"
+#include "graphics/font.h"
 #include "components/sprite.h"
 #include "math/vec2.h"
 
@@ -22,7 +23,8 @@ class Renderer {
 private:
 	GLFWwindow* window; /***< The glfw window to render to*/
 	Shader* defaultShader; /***< The default shader program*/
-	
+	Shader* textShader; /***< The text shader program*/
+
 	//Local members
 	Vec2 screenResolution; /***< The resolution of the window*/
 
@@ -30,14 +32,24 @@ private:
 	unsigned int vbo; /***< The default Vertex Buffer Object*/
 	unsigned int vao; /***< The default Vertex Array Object*/
 
+	//Text VBO and VAO
+	unsigned int textVbo; /***< The text vbo*/
+	unsigned int textVao; /***< The text vao*/
+
 	//Lists
 	std::vector<Entity*> renderList; /***< List of entities to render*/
+	std::vector<Text*> textList; /***< List of text to render*/
 
 	/**
 	* Renders a sprite
 	* @return void
 	*/
 	void DrawSprite(Texture* texture, Vec2 position, Vec2 scale, SpriteUV uvData = SpriteUV());
+
+	/**
+	* Draws text to the screen
+	*/
+	void DrawText(Font* font, std::string text, GLfloat x, GLfloat y, GLfloat scale, glm::vec3 color);
 
 public:
 	/**
@@ -60,6 +72,20 @@ public:
 	* @return void
 	*/
 	void RemoveEntity(Entity* entity);
+
+	/**
+	* Adds a text to the render list
+	* @param Text*
+	* @return void
+	*/
+	void RegisterText(Text* entity);
+
+	/**
+	* Removes a text from the render list
+	* @param Text*
+	* @return void
+	*/
+	void RemoveText(Text* entity);
 
 	/**
 	* Renders the current frame, Filters out all entities that are not in camera view, and does a z-index test

@@ -1,14 +1,16 @@
 // Source file for entity class.
 //
-// Version: 4/5/2019
+// Version: 2/7/2019
 //
 // Copyright (C) Jens Heukers - All Rights Reserved
 // Unauthorized copying of this file, via any medium is strictly prohibited
 // Proprietary and confidential
-// Written by Jens Heukers, May 2019
+// Written by Jens Heukers, July 2019
 #include "entity.h"
 #include "core.h"
 #include "renderer.h"
+
+//Include font.h to check if child is text when added
 
 void Entity::HandleParentTransformations() {
 	if (!this->parent) { // If we have no parent
@@ -47,7 +49,13 @@ Entity* Entity::AddChild(Entity* entity) {
 	entity->SetParent(this);
 
 	//Register to renderer
-	Core::GetRendererInstance()->RegisterEntity(entity);
+
+	if (dynamic_cast<Text*>(entity)) {
+		Core::GetRendererInstance()->RegisterText(dynamic_cast<Text*>(entity));
+	}
+	else {
+		Core::GetRendererInstance()->RegisterEntity(entity);
+	}
 
 	return entity;
 }
@@ -56,7 +64,14 @@ Entity* Entity::RemoveChild(int index) {
 	for (int i = 0; i < (int)this->children.size(); i++) {
 		if (i == index) {
 			Entity* entity = this->children[i];
-			Core::GetRendererInstance()->RemoveEntity(entity);
+
+			if (dynamic_cast<Text*>(entity)) {
+				Core::GetRendererInstance()->RemoveText(dynamic_cast<Text*>(entity));
+			}
+			else {
+				Core::GetRendererInstance()->RemoveEntity(entity);
+			}
+
 			this->children.erase(this->children.begin() + i);
 			return entity;
 		}
@@ -69,7 +84,14 @@ Entity* Entity::RemoveChild(Entity* entity) {
 	for (int i = 0; i < (int)this->children.size(); i++) {
 		if (this->children[i] == entity) {
 			Entity* entity = this->children[i];
-			Core::GetRendererInstance()->RemoveEntity(entity);
+
+			if (dynamic_cast<Text*>(entity)) {
+				Core::GetRendererInstance()->RemoveText(dynamic_cast<Text*>(entity));
+			}
+			else {
+				Core::GetRendererInstance()->RemoveEntity(entity);
+			}
+
 			this->children.erase(this->children.begin() + i);
 			return entity;
 		}

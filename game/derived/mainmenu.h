@@ -13,8 +13,12 @@
 #include "../../engine/scenemanager.h"
 #include "../../engine/graphics/ui.h"
 
+class Text;
+
 //Buttons 
 class StartButton : public UIElement {
+private:
+	Text * text; /*** The text of the button*/
 public:
 	/**
 	* Constructor
@@ -28,6 +32,8 @@ public:
 };
 
 class OptionButton : public UIElement {
+private:
+	Text * text; /*** The text of the button*/
 public:
 	/**
 	* Constructor
@@ -41,6 +47,8 @@ public:
 };
 
 class QuitButton : public UIElement {
+private:
+	Text * text; /*** The text of the button*/
 public:
 	/**
 	* Constructor
