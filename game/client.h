@@ -10,10 +10,16 @@
 #ifndef CLIENT_H
 #define CLIENT_H
 
+class Scene; //Forward declare
+
 //Singleton instance
 class Client {
 private:
 	static Client* instance; /***< The singleton client instance */
+
+	//Scenes
+	Scene* mainMenu; /***< The main menu scene pointer*/
+
 public:
 	/***
 	* Constructor, if instance pointer is already set then we destroy the newly created instance 

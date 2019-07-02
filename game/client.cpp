@@ -1,4 +1,4 @@
-// Header file for client class, client handles / supervises all gameplay
+// Source file for client class, client handles / supervises all gameplay
 // Client is a singleton instance, and should never be destroyed during gameplay
 //
 // Version: 2/7/2019
@@ -7,10 +7,19 @@
 // Unauthorized copying of this file, via any medium is strictly prohibited
 // Proprietary and confidential
 // Written by Jens Heukers, July 2019
+
+//Include client header
 #include "client.h"
 
 //Include engine related headers
 #include "../engine/debug.h"
+#include "../engine/scenemanager.h"
+
+//Include game related headers
+#include "unit.h"
+
+//Derived
+#include "derived/mainmenu.h"
 
 Client* Client::instance; // Declare instance
 
@@ -26,7 +35,11 @@ Client::Client() {
 }
 
 void Client::Start() {
-	//Start
+	//Load the main menu first
+	instance->mainMenu = new MainMenu();
+	
+	//Set active
+	SceneManager::SetActiveScene(instance->mainMenu);
 }
 
 void Client::Update() {

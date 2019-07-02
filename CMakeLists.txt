@@ -9,7 +9,7 @@ file(GLOB MAIN "engine/*.cpp" "engine/*.h" )
 file(GLOB GRAPHICS "engine/graphics/*.cpp" "engine/graphics/*.h")
 file(GLOB COMPONENTS "engine/components/*.cpp" "engine/components/*.h")
 file(GLOB MATH "engine/math/*.cpp" "engine/math/*.h")
-file(GLOB GAME "game/*.cpp" "game/*.h")
+file(GLOB GAME "game/*.cpp" "game/*.h" "game/derived/*.cpp" "game/derived/*.h")
 file(GLOB IMGUI "external/imgui/*.cpp" "external/imgui/*.h")
 
 # Includes
