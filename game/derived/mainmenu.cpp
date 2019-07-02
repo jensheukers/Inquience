@@ -10,8 +10,29 @@
 //Include mainmenu header
 #include "mainmenu.h"
 
+StartButton::StartButton() {
+	this->AddComponent<Sprite>();
+	this->GetComponent<Sprite>()->SetTexture(TextureLoader::LoadTarga("res/ui_elements.tga"));
+	this->GetComponent<Sprite>()->uvCoordinates = SpriteUV(this->GetComponent<Sprite>(), 64, 12);
+	this->GetComponent<Sprite>()->SetScale(Vec2(2.5f, 2.5f));
+}
+
+void StartButton::OnEnter() {
+	Debug::Log("asdfasdf");
+}
+
+void StartButton::OnLeave() {
+
+}
+
+void StartButton::OnStay() {
+
+}
+
 MainMenu::MainMenu() {
 	//Construct scene
 	this->SetActiveCamera(new Camera());
 
+	StartButton* button = new StartButton();
+	this->AddChild(button);
 }

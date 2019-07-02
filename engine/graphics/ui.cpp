@@ -1,11 +1,11 @@
 // Source file for User Interface Elements.
 //
-// Version: 2/5/2019
+// Version: 2/7/2019
 //
 // Copyright (C) Jens Heukers - All Rights Reserved
 // Unauthorized copying of this file, via any medium is strictly prohibited
 // Proprietary and confidential
-// Written by Jens Heukers, May 2019
+// Written by Jens Heukers, July 2019
 #include "ui.h"
 
 //Include input for position checks, and physics for checks
@@ -16,7 +16,7 @@ void UIElement::Update() {
 	if (!this->HasComponent<Sprite>()) return;
 	if (!this->GetComponent<Sprite>()->GetTexture()) return;
 
-	Vec2 bounds = Vec2(this->GetComponent<Sprite>()->GetTexture()->textureData->width, this->GetComponent<Sprite>()->GetTexture()->textureData->height);
+	Vec2 bounds = Vec2(this->GetComponent<Sprite>()->GetTexture()->textureData->width, this->GetComponent<Sprite>()->GetTexture()->textureData->height) * this->GetComponent<Sprite>()->GetScale();
 	if (Physics::InBounds(Input::GetMousePosition(), this->GetPosition(), this->GetPosition() + (bounds / (float)this->GetComponent<Sprite>()->GetSplits()))) {
 		if (!entered) {
 			OnEnter();

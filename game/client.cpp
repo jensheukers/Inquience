@@ -13,12 +13,11 @@
 
 //Include engine related headers
 #include "../engine/debug.h"
-#include "../engine/scenemanager.h"
 
 //Include game related headers
 #include "unit.h"
 
-//Derived
+//Derived -- Note we dont include SceneManager because mainmenu.h already knows about it
 #include "derived/mainmenu.h"
 
 Client* Client::instance; // Declare instance

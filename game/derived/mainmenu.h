@@ -9,8 +9,23 @@
 #ifndef MAIN_MENU_SCENE_H
 #define MAIN_MENU_SCENE_H
 
-//Include scene.h
-#include "../../engine/scene.h"
+//Include scenemanager.h & ui.h
+#include "../../engine/scenemanager.h"
+#include "../../engine/graphics/ui.h"
+
+//Buttons 
+class StartButton : public UIElement {
+public:
+	/**
+	* Constructor
+	*/
+	StartButton();
+
+	// Overrides
+	void OnEnter() override;
+	void OnLeave() override;
+	void OnStay() override;
+};
 
 class MainMenu : public Scene {
 public:
