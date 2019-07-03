@@ -27,16 +27,31 @@ struct Character {
 	unsigned int advance;    // Offset to advance to next glyph
 };
 
-
-class Font {
-public:
+struct Font {
 	std::map<unsigned int, Character> characters;
+};
+
+//FontLoader is a singleton class
+class FontLoader {
+private:
+	static FontLoader* instance; /***< Instance of the fontLoader*/
+	std::map<std::string, Font*> loadedFonts; /***< Map containing all loaded fonts*/
 
 	/**
-	* Constructor requires path to .tff file, then loads all font faces
-	* @param std::string
+	* Returns all loaded fonts
+	* @return std::map<std::string, Font*>&
 	*/
-	Font(std::string ttf, int size = 48);
+	static std::map<std::string, Font*>& GetLoadedFonts();
+
+	/**
+	* Returns the instance, if no exists then a new instance will be created
+	*/
+	static FontLoader* GetInstance();
+public:
+	/**
+	* Returns a loaded font if succesfull, if font is already loaded it will return the instance
+	*/
+	static Font* LoadFont(std::string ttf, int size = 48);
 };
 
 //Include ui.h for text
