@@ -1,12 +1,12 @@
 // Source file for core class.
 // Core class handles all main functionality of the engine.
 //
-// Version: 3/5/2019
+// Version: 3/7/2019
 //
 // Copyright (C) Jens Heukers - All Rights Reserved
 // Unauthorized copying of this file, via any medium is strictly prohibited
 // Proprietary and confidential
-// Written by Jens Heukers, May 2019
+// Written by Jens Heukers, July 2019
 #include "core.h"
 #include "debug.h"
 #include "scenemanager.h"
@@ -140,6 +140,10 @@ void Core::EnableEditor(bool state) {
 	else {
 		Debug::Log("Editor disabled");
 	}
+}
+
+void Core::Terminate() {
+	instance->isActive = false;
 }
 
 float Core::CalculateDeltaTime() {

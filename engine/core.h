@@ -2,12 +2,12 @@
 // Core class handles all main functionality of the engine.
 // Core class is a singleton instance, meaning it can be accessed from anywhere in the program
 //
-// Version: 3/5/2019
+// Version: 3/7/2019
 //
 // Copyright (C) Jens Heukers - All Rights Reserved
 // Unauthorized copying of this file, via any medium is strictly prohibited
 // Proprietary and confidential
-// Written by Jens Heukers, May 2019
+// Written by Jens Heukers, July 2019
 #ifndef CORE_H
 #define CORE_H
 #include <string>
@@ -95,6 +95,11 @@ public:
 	* @param bool
 	*/
 	static void EnableEditor(bool state);
+
+	/**
+	* Disables the core, settings isActive to false
+	*/
+	static void Terminate();
 
 	//Local methods
 

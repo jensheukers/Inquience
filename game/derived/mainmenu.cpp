@@ -85,6 +85,9 @@ void QuitButton::OnLeave() {
 }
 
 void QuitButton::OnStay() {
+	if (Input::GetButtonDown(BUTTONCODE_LEFT)) {
+		Core::Terminate();
+	}
 }
 
 MainMenu::MainMenu() {
