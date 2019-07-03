@@ -22,7 +22,7 @@ StartButton::StartButton() {
 	this->GetComponent<Sprite>()->uvCoordinates = SpriteUV(this->GetComponent<Sprite>(), 64, 12);
 	this->GetComponent<Sprite>()->SetScale(Vec2(3, 3));
 
-	Font* font = new Font("C:/Users/jensh/Documents/Projects/dustville/game/res/yoster.ttf");
+	Font* font = new Font(Core::GetExecutableDirectoryPath().append("res/yoster.ttf"));
 	text = new Text(font, "Play");
 	text->localPosition = Vec2(35, 110);
 	this->AddChild(text);
@@ -45,7 +45,7 @@ OptionButton::OptionButton() {
 	this->GetComponent<Sprite>()->uvCoordinates = SpriteUV(this->GetComponent<Sprite>(), 64, 12);
 	this->GetComponent<Sprite>()->SetScale(Vec2(3, 3));
 
-	Font* font = new Font("C:/Users/jensh/Documents/Projects/dustville/game/res/yoster.ttf");
+	Font* font = new Font(Core::GetExecutableDirectoryPath().append("res/yoster.ttf"));
 	text = new Text(font, "Options");
 	text->localPosition = Vec2(0, 110);
 	this->AddChild(text);
@@ -69,7 +69,7 @@ QuitButton::QuitButton() {
 	this->GetComponent<Sprite>()->uvCoordinates = SpriteUV(this->GetComponent<Sprite>(), 64, 12);
 	this->GetComponent<Sprite>()->SetScale(Vec2(3, 3));
 
-	Font* font = new Font("C:/Users/jensh/Documents/Projects/dustville/game/res/yoster.ttf");
+	Font* font = new Font(Core::GetExecutableDirectoryPath().append("res/yoster.ttf"));
 	text = new Text(font, "Quit");
 	text->localPosition = Vec2(35, 110);
 	this->AddChild(text);

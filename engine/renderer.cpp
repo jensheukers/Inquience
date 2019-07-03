@@ -1,11 +1,11 @@
 // Source file for renderer class.
 //
-// Version: 1/5/2019
+// Version: 3/7/2019
 //
 // Copyright (C) Jens Heukers - All Rights Reserved
 // Unauthorized copying of this file, via any medium is strictly prohibited
 // Proprietary and confidential
-// Written by Jens Heukers, May 2019
+// Written by Jens Heukers, July 2019
 #include <glm/gtc/matrix_transform.hpp>
 #include "scenemanager.h"
 #include "renderer.h"
@@ -152,6 +152,7 @@ int Renderer::Initialize(int width, int height, const char* title) {
 	glm::mat4 projection = glm::ortho(0.0f, screenResolution.x, screenResolution.y, 0.0f, -1.0f, 1.0f);
 	defaultShader->SetMat4("projection", projection);
 
+	//Text shader
 	glUseProgram(textShader->GetShaderProgram());
 	textShader->SetMat4("projection", projection);
 
@@ -315,8 +316,6 @@ Vec2 Renderer::GetResolution() {
 void Renderer::WindowSizeCallback(GLFWwindow* window, int width, int height) {
 	glViewport(0, 0, (float)width, (float)height);
 	screenResolution = Vec2((float)width, (float)height);
-	glm::mat4 projection = glm::ortho(0.0f, screenResolution.x, screenResolution.y, 0.0f, -1.0f, 1.0f);
-	defaultShader->SetMat4("projection", projection);
 }
 
 Renderer::~Renderer() {
