@@ -62,6 +62,7 @@ private:
 	Font* font; /***< The font used in the text*/
 	std::string text; /***< The text to display*/
 	glm::vec3 color; /***< The color of the text*/
+	float size; /***< The size of the text*/
 public:
 	/**
 	* Constructor, takes in font, text and colour
@@ -94,6 +95,18 @@ public:
 	* @return glm::vec3
 	*/
 	glm::vec3 GetColor();
+
+	/**
+	* Set the size of the text
+	* @param float
+	*/
+	void SetSize(float size);
+
+	/**
+	* Get the size of the text
+	* @return float
+	*/ 
+	float GetSize();
 
 	/**
 	* Returns the font of the text

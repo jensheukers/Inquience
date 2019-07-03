@@ -279,7 +279,7 @@ void Renderer::RenderFrame() {
 
 	//Render text
 	for (Text* t : textList) {
-		this->DrawText(t->GetFont(), t->GetText(), t->GetPosition().x, t->GetPosition().y, 1, t->GetColor());
+		this->DrawText(t->GetFont(), t->GetText(), t->GetPosition().x, t->GetPosition().y, t->GetSize(), t->GetColor());
 	}
 
 	//ImGui render

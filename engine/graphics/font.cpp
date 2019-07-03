@@ -108,6 +108,7 @@ Text::Text(Font* font, std::string text, glm::vec3 color) {
 	this->font = font;
 	this->text = text;
 	this->color = color;
+	this->size = 1;
 }
 
 void Text::SetText(std::string text) {
@@ -124,6 +125,14 @@ void Text::SetColor(glm::vec3 color) {
 
 glm::vec3 Text::GetColor() {
 	return this->color;
+}
+
+void Text::SetSize(float size) {
+	this->size = size;
+}
+
+float Text::GetSize() {
+	return this->size;
 }
 
 Font* Text::GetFont() {

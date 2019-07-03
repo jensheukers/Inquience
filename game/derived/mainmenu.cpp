@@ -47,7 +47,8 @@ OptionButton::OptionButton() {
 
 	Font* font = FontLoader::LoadFont("res/yoster.ttf");
 	text = new Text(font, "Options");
-	text->localPosition = Vec2(0, 110);
+	text->SetSize(0.8f);
+	text->localPosition = Vec2(15, 110);
 	this->AddChild(text);
 }
 
