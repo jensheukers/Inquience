@@ -145,6 +145,14 @@ Vec2 Entity::GetPosition() {
 
 Entity::~Entity() {
 	for (int i = 0; i < (int)children.size(); i++) {
+		//delete child from renderer
+		if (dynamic_cast<Text*>(children[i])) {
+			Core::GetRendererInstance()->RemoveText(dynamic_cast<Text*>(children[i]));
+		}
+		else {
+			Core::GetRendererInstance()->RemoveEntity(children[i]);
+		}
+
 		delete children[i];
 	}
 
