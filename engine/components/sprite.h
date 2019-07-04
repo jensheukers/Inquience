@@ -80,10 +80,26 @@ public:
 	void SetScale(Vec2 scale);
 
 	/**
-	* Returns the scale vec2, if there are slices they are included in the calculation
+	* Returns the scale vec2
 	* @return Vec2
 	*/
 	Vec2 GetScale();
+
+	/**
+	* Returns the center of the sprite in local space
+	* @return Vec2
+	*/
+	Vec2 GetCenter();
+
+	/**
+	* Splits the texture, sprite should have a texture assigned and texture width & height should be equal to work
+	* sets uv to uvData for tile index
+	* (This function allows for TileMaps to be used)
+	* @param int, amount of pixels per tile
+	* @param int, index for selected tile
+	* @return UV
+	*/
+	UV Split(int pixelsPerTile, int index);
 };
 
 #endif // !SPRITE_H

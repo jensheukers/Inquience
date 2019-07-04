@@ -25,6 +25,8 @@ void window_size_callback(GLFWwindow* window, int width, int height)
 	Core::GetRendererInstance()->WindowSizeCallback(window, width, height);
 }
 
+#include <iostream>
+
 void Renderer::DrawSprite(Sprite* sprite, Vec2 position, Vec2 size) {
 	glBindVertexArray(this->vao);
 
@@ -61,7 +63,10 @@ void Renderer::DrawSprite(Sprite* sprite, Vec2 position, Vec2 size) {
 
 	//Draw
 	glDrawArrays(GL_TRIANGLES, 0, 6);
+
+	//Unbind
 	glBindVertexArray(0);
+	glBindTexture(GL_TEXTURE_2D, 0);
 }
 
 void Renderer::DrawText(Font* font, std::string text, GLfloat x, GLfloat y, GLfloat scale, glm::vec3 color) {
@@ -274,7 +279,7 @@ void Renderer::RenderFrame() {
 
 	//Now we got everything sorted so we can render the frame
 	for (Entity* e : sortedRenderList) {
-		this->DrawSprite(e->GetComponent<Sprite>(), e->GetPosition(), e->GetComponent<Sprite>()->GetScale());
+		this->DrawSprite(e->GetComponent<Sprite>(), e->GetPosition(), e->GetComponent<Sprite>()->GetScale() / e->GetComponent<Sprite>()->slices);
 	}
 
 	//Render text

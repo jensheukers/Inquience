@@ -19,7 +19,7 @@
 StartButton::StartButton() {
 	this->AddComponent<Sprite>();
 	this->GetComponent<Sprite>()->SetTexture(TextureLoader::LoadTarga("res/ui_elements.tga"));
-	//this->GetComponent<Sprite>()->uvCoordinates = SpriteUV(this->GetComponent<Sprite>(), 64, 12);
+	this->GetComponent<Sprite>()->Split(64, 12);
 	this->GetComponent<Sprite>()->SetScale(Vec2(3, 3));
 
 	Font* font = FontLoader::LoadFont("res/yoster.ttf");
@@ -42,7 +42,7 @@ void StartButton::OnStay() {
 OptionButton::OptionButton() {
 	this->AddComponent<Sprite>();
 	this->GetComponent<Sprite>()->SetTexture(TextureLoader::LoadTarga("res/ui_elements.tga"));
-	//this->GetComponent<Sprite>()->uvCoordinates = SpriteUV(this->GetComponent<Sprite>(), 64, 12);
+	this->GetComponent<Sprite>()->Split(64, 12);
 	this->GetComponent<Sprite>()->SetScale(Vec2(3, 3));
 
 	Font* font = FontLoader::LoadFont("res/yoster.ttf");
@@ -67,7 +67,7 @@ void OptionButton::OnStay() {
 QuitButton::QuitButton() {
 	this->AddComponent<Sprite>();
 	this->GetComponent<Sprite>()->SetTexture(TextureLoader::LoadTarga("res/ui_elements.tga"));
-	//this->GetComponent<Sprite>()->uvCoordinates = SpriteUV(this->GetComponent<Sprite>(), 64, 12);
+	this->GetComponent<Sprite>()->Split(64, 12);
 	this->GetComponent<Sprite>()->SetScale(Vec2(3, 3));
 
 	Font* font = FontLoader::LoadFont("res/yoster.ttf");
@@ -96,22 +96,20 @@ MainMenu::MainMenu() {
 
 	//Add start button
 	StartButton* startButton = new StartButton();
-	startButton->localPosition = Core::GetRendererInstance()->GetResolution() / 2 - Vec2((startButton->GetComponent<Sprite>()->GetScale().x * startButton->GetComponent<Sprite>()->GetScale().x) / 2,
-																						 (startButton->GetComponent<Sprite>()->GetScale().y * startButton->GetComponent<Sprite>()->GetScale().y) / 2);
+	startButton->localPosition = Core::GetRendererInstance()->GetResolution() / 2 - startButton->GetComponent<Sprite>()->GetCenter();
 	startButton->localPosition = startButton->localPosition + Vec2(0, -50);
 	this->AddChild(startButton);
 
 	//Add options button
 	OptionButton* optionButton = new OptionButton();
-	optionButton->localPosition = Core::GetRendererInstance()->GetResolution() / 2 - Vec2((optionButton->GetComponent<Sprite>()->GetScale().x * optionButton->GetComponent<Sprite>()->GetScale().x) / 2,
-																						  (optionButton->GetComponent<Sprite>()->GetScale().y * optionButton->GetComponent<Sprite>()->GetScale().y) / 2);
+
+	optionButton->localPosition = Core::GetRendererInstance()->GetResolution() / 2 - optionButton->GetComponent<Sprite>()->GetCenter();
 	optionButton->localPosition = optionButton->localPosition + Vec2(0, 100);
 	this->AddChild(optionButton);
 
 	//Add quit button
 	QuitButton* quitButton = new QuitButton();
-	quitButton->localPosition = Core::GetRendererInstance()->GetResolution() / 2 - Vec2((quitButton->GetComponent<Sprite>()->GetScale().x * quitButton->GetComponent<Sprite>()->GetScale().x) / 2,
-																						(quitButton->GetComponent<Sprite>()->GetScale().y * quitButton->GetComponent<Sprite>()->GetScale().y) / 2);
+	quitButton->localPosition = Core::GetRendererInstance()->GetResolution() / 2 - quitButton->GetComponent<Sprite>()->GetCenter();
 	quitButton->localPosition = quitButton->localPosition + Vec2(0, 250);
 	this->AddChild(quitButton);
 }
