@@ -20,24 +20,16 @@
 class Sprite;
 
 //Used to determine sprite uv coordinates
-struct SpriteUV {
+struct UV {
 	Vec2 leftUp; /***< The leftUp texture coordinate*/
 	Vec2 rightUp; /***< The rightUp texture coordinate*/
 	Vec2 leftDown; /***< The leftDown texture coordinate*/
 	Vec2 rightDown; /***< The rightDown texture coordinate*/
 
 	/**
-	* Default constructor
+	* Constructor
 	*/
-	SpriteUV();
-
-	/**
-	* Constructor, Specify Sprite, then amount of tiles in texture, and give index
-	* @param Sprite*
-	* @param int amount
-	* @param int index
-	*/
-	SpriteUV(Sprite* texture, int amount, int index);
+	UV();
 };
 
 class Sprite : public Component {
@@ -45,9 +37,9 @@ private:
 	Texture* texture; /***< The texture the sprite uses*/
 	Vec2 scale; /***< The scale of the sprite, default set in constructor to (1, 1)*/
 	int zIndex; /***< The z-index of the sprite*/
-	int splits; /*** Amount of devides used if uvCoordinates have been modified (Allows for scaling in Renderer). */
 public:
-	SpriteUV uvCoordinates; /***< The UV Coordinates of the sprite*/
+	UV uv; /***< The UV Coordinates of the sprite*/
+	int slices; /*** Amount of devides used if uv coordinates have been modified (Allows for scaling in Renderer). */
 
 	/**
 	* Constructor
@@ -88,28 +80,10 @@ public:
 	void SetScale(Vec2 scale);
 
 	/**
-	* Returns the scale vec2
+	* Returns the scale vec2, if there are slices they are included in the calculation
 	* @return Vec2
 	*/
 	Vec2 GetScale();
-
-	/**
-	* Returns the amount of splits
-	* @return int
-	*/
-	int GetSplits();
-
-	/**
-	* Sets the amount of splits, unneccecary to call from user end
-	* @param int
-	*/
-	void SetSplits(int splits);
-
-	/**
-	* Returns the accurate texture scale with splits included
-	* @return Vec2
-	*/
-	Vec2 GetTextureScale();
 };
 
 #endif // !SPRITE_H

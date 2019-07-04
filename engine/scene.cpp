@@ -88,7 +88,7 @@ void Scene::Load(char* filePath) {
 						ampersands.push_back(ampersand);
 					}
 
-					SpriteUV uvData = SpriteUV();
+					UV uvData = UV();
 					uvData.leftUp.x = std::stof(ampersands[0]);
 					uvData.leftUp.y = std::stof(ampersands[1]);
 					uvData.rightUp.x = std::stof(ampersands[2]);
@@ -97,10 +97,10 @@ void Scene::Load(char* filePath) {
 					uvData.leftDown.y = std::stof(ampersands[5]);
 					uvData.rightDown.x = std::stof(ampersands[6]);
 					uvData.rightDown.y = std::stof(ampersands[7]);
-					currentEntity->GetComponent<Sprite>()->uvCoordinates = uvData;
+					currentEntity->GetComponent<Sprite>()->uv = uvData;
 
 					//Splits
-					currentEntity->GetComponent<Sprite>()->SetSplits(std::stoi(commas[2]));
+					currentEntity->GetComponent<Sprite>()->slices = std::stoi(commas[2]);
 				}
 			}
 		}
@@ -121,13 +121,13 @@ void Scene::Save(char* filePath) {
 		if (GetChild(i)->HasComponent<Sprite>() && GetChild(i)->GetComponent<Sprite>()->GetTexture()) {
 			file << "sprite=" << GetChild(i)->GetComponent<Sprite>()->GetTexture()->path << ",";
 
-			SpriteUV uvData = GetChild(i)->GetComponent<Sprite>()->uvCoordinates;
+			UV uvData = GetChild(i)->GetComponent<Sprite>()->uv;
 			file << uvData.leftUp.x << "&" << uvData.leftUp.y << "&";
 			file << uvData.rightUp.x << "&" << uvData.rightUp.y << "&";
 			file << uvData.leftDown.x << "&" << uvData.leftDown.y << "&";
 			file << uvData.rightDown.x << "&" << uvData.rightDown.y << ",";
 
-			file << GetChild(i)->GetComponent<Sprite>()->GetSplits() << "\n";	
+			file << GetChild(i)->GetComponent<Sprite>()->slices << "\n";	
 		}
 	}
 

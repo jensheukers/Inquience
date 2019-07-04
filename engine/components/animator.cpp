@@ -12,12 +12,12 @@
 #include "../entity.h"
 #include "animator.h"
 
-Animation::Animation(std::vector<SpriteUV> frames) {
+Animation::Animation(std::vector<UV> frames) {
 	this->frames = frames;
 	this->frameTime = DEFAULT_FRAME_TIME;
 }
 
-SpriteUV Animation::NextFrame() {
+UV Animation::NextFrame() {
 	if (currentFrameIndex != (int)frames.size() - 1) {
 		currentFrameIndex = currentFrameIndex + 1;
 	}
@@ -27,7 +27,7 @@ SpriteUV Animation::NextFrame() {
 	return CurrentFrame();
 }
 
-SpriteUV Animation::PreviousFrame() {
+UV Animation::PreviousFrame() {
 	if (currentFrameIndex != 0) {
 		currentFrameIndex = currentFrameIndex - 1;
 	}
@@ -37,7 +37,7 @@ SpriteUV Animation::PreviousFrame() {
 	return CurrentFrame();
 }
 
-SpriteUV Animation::CurrentFrame() {
+UV Animation::CurrentFrame() {
 	return frames[currentFrameIndex];
 }
 
@@ -71,7 +71,7 @@ void Animator::Update() {
 
 	if (lastPlayTime + currentAnimation->frameTime < Core::GetTimeElapsed()) {
 		//Set uv coordinates
-		this->GetOwner()->GetComponent<Sprite>()->uvCoordinates = currentAnimation->NextFrame();
+		this->GetOwner()->GetComponent<Sprite>()->uv = currentAnimation->NextFrame();
 
 		//Set last playtime
 		lastPlayTime = Core::GetTimeElapsed();

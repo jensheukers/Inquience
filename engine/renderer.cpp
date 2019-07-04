@@ -1,6 +1,6 @@
 // Source file for renderer class.
 //
-// Version: 3/7/2019
+// Version: 4/7/2019
 //
 // Copyright (C) Jens Heukers - All Rights Reserved
 // Unauthorized copying of this file, via any medium is strictly prohibited
@@ -25,17 +25,17 @@ void window_size_callback(GLFWwindow* window, int width, int height)
 	Core::GetRendererInstance()->WindowSizeCallback(window, width, height);
 }
 
-void Renderer::DrawSprite(Texture* texture, Vec2 position, Vec2 size, SpriteUV uvData) {
+void Renderer::DrawSprite(Sprite* sprite, Vec2 position, Vec2 size) {
 	glBindVertexArray(this->vao);
 
 	//Sub-Buffer data
 	float vertices[] = {
-		1.0f,  1.0f, 0.0f, uvData.rightUp.x, uvData.rightUp.y,
-		1.0f, 0.0f, 0.0f, uvData.rightDown.x, uvData.rightDown.y,
-		0.0f,  1.0f, 0.0f, uvData.leftUp.x, uvData.leftUp.y,
-		1.0f, 0.0f, 0.0f, uvData.rightDown.x, uvData.rightDown.y,
-		0.0f, 0.0f, 0.0f, uvData.leftDown.x, uvData.leftDown.y,
-		0.0f,  1.0f, 0.0f, uvData.leftUp.x, uvData.leftUp.y
+		1.0f,  1.0f, 0.0f, sprite->uv.rightUp.x, sprite->uv.rightUp.y,
+		1.0f, 0.0f, 0.0f, sprite->uv.rightDown.x, sprite->uv.rightDown.y,
+		0.0f,  1.0f, 0.0f, sprite->uv.leftUp.x, sprite->uv.leftUp.y,
+		1.0f, 0.0f, 0.0f, sprite->uv.rightDown.x, sprite->uv.rightDown.y,
+		0.0f, 0.0f, 0.0f, sprite->uv.leftDown.x, sprite->uv.leftDown.y,
+		0.0f,  1.0f, 0.0f, sprite->uv.leftUp.x, sprite->uv.leftUp.y
 	};
 
 	glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(vertices), vertices);
@@ -45,7 +45,7 @@ void Renderer::DrawSprite(Texture* texture, Vec2 position, Vec2 size, SpriteUV u
 							  position.y - SceneManager::GetActiveScene()->GetActiveCamera()->GetPosition().y);
 
 	//Calculate size, make it equal texture size
-	Vec2 calculatedSize = Vec2(texture->textureData->width * size.x, texture->textureData->height * size.y);
+	Vec2 calculatedSize = Vec2(sprite->GetTexture()->textureData->width * size.x, sprite->GetTexture()->textureData->height * size.y);
 
 	//Use default shader program
 	glUseProgram(defaultShader->GetShaderProgram());
@@ -57,7 +57,7 @@ void Renderer::DrawSprite(Texture* texture, Vec2 position, Vec2 size, SpriteUV u
 
 	//Bind texture
 	glActiveTexture(GL_TEXTURE0);
-	glBindTexture(GL_TEXTURE_2D, texture->_glTexture);
+	glBindTexture(GL_TEXTURE_2D, sprite->GetTexture()->_glTexture);
 
 	//Draw
 	glDrawArrays(GL_TRIANGLES, 0, 6);
@@ -140,7 +140,7 @@ int Renderer::Initialize(int width, int height, const char* title) {
 	glDisable(GL_BLEND);
 	glDisable(GL_LIGHTING);
 
-	glViewport(0, 0, (float)width, (float)height);
+	glViewport(0, 0, (GLsizei)width, (GLsizei)height);
 
 	//Create default shader and text shader
 	defaultShader = new Shader("shaders/default.vs","shaders/default.fs");
@@ -274,7 +274,7 @@ void Renderer::RenderFrame() {
 
 	//Now we got everything sorted so we can render the frame
 	for (Entity* e : sortedRenderList) {
-		this->DrawSprite(e->GetComponent<Sprite>()->GetTexture(), e->GetPosition(), e->GetComponent<Sprite>()->GetScale() / (float)e->GetComponent<Sprite>()->GetSplits(), e->GetComponent<Sprite>()->uvCoordinates);
+		this->DrawSprite(e->GetComponent<Sprite>(), e->GetPosition(), e->GetComponent<Sprite>()->GetScale());
 	}
 
 	//Render text
@@ -314,7 +314,7 @@ Vec2 Renderer::GetResolution() {
 }
 
 void Renderer::WindowSizeCallback(GLFWwindow* window, int width, int height) {
-	glViewport(0, 0, (float)width, (float)height);
+	glViewport(0, 0, (GLsizei)width, (GLsizei)height);
 	screenResolution = Vec2((float)width, (float)height);
 }
 

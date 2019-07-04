@@ -26,34 +26,34 @@
 //Animation class
 class Animation {
 private:
-	std::vector<SpriteUV> frames; /***< The uv coordinates of every frame, note that animation should use one default texture*/
+	std::vector<UV> frames; /***< The uv coordinates of every frame, note that animation should use one default texture*/
 	int currentFrameIndex; /***< The index of the current frame*/
 public:
 	float frameTime; /***< The time between frames, default set to DEFAULT_FRAME_TIME*/
 
 	/**
 	* Constructor, takes in vector containing all frames
-	* @param std::vector<SpriteUV>
+	* @param std::vector<UV>
 	*/
-	Animation(std::vector<SpriteUV> frames);
+	Animation(std::vector<UV> frames);
 
 	/**
 	* Return the next frame coordinates
-	* @return SpriteUV
+	* @return UV
 	*/
-	SpriteUV NextFrame();
+	UV NextFrame();
 
 	/**
 	* Return the previous frame coordinates
-	* @return SpriteUV
+	* @return UV
 	*/
-	SpriteUV PreviousFrame();
+	UV PreviousFrame();
 
 	/**
 	* Returns the current frame coordinates
-	* @return SpriteUV
+	* @return UV
 	*/
-	SpriteUV CurrentFrame();
+	UV CurrentFrame();
 	
 };
 
