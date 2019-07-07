@@ -32,12 +32,12 @@ void Renderer::DrawSprite(Sprite* sprite, Vec2 position, Vec2 size) {
 
 	//Sub-Buffer data
 	float vertices[] = {
-		1.0f,  1.0f, 0.0f, sprite->uv.rightUp.x, sprite->uv.rightUp.y,
-		1.0f, 0.0f, 0.0f, sprite->uv.rightDown.x, sprite->uv.rightDown.y,
-		0.0f,  1.0f, 0.0f, sprite->uv.leftUp.x, sprite->uv.leftUp.y,
-		1.0f, 0.0f, 0.0f, sprite->uv.rightDown.x, sprite->uv.rightDown.y,
-		0.0f, 0.0f, 0.0f, sprite->uv.leftDown.x, sprite->uv.leftDown.y,
-		0.0f,  1.0f, 0.0f, sprite->uv.leftUp.x, sprite->uv.leftUp.y
+		1.0f,  1.0f, sprite->uv.rightUp.x, sprite->uv.rightUp.y,
+		1.0f, 0.0f, sprite->uv.rightDown.x, sprite->uv.rightDown.y,
+		0.0f,  1.0f, sprite->uv.leftUp.x, sprite->uv.leftUp.y,
+		1.0f, 0.0f, sprite->uv.rightDown.x, sprite->uv.rightDown.y,
+		0.0f, 0.0f, sprite->uv.leftDown.x, sprite->uv.leftDown.y,
+		0.0f,  1.0f, sprite->uv.leftUp.x, sprite->uv.leftUp.y
 	};
 
 	glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(vertices), vertices);
@@ -177,12 +177,12 @@ int Renderer::Initialize(int width, int height, const char* title) {
 
 	//Setup quad VBO and VAO
 	float vertices[] = {
-		1.0f,  1.0f, 0.0f, 1.0f, 1.0f,
-		1.0f, 0.0f, 0.0f, 1.0f, 0.0f,
-		0.0f,  1.0f, 0.0f, 0.0f, 1.0f,
-		1.0f, 0.0f, 0.0f, 1.0f, 0.0f,
-		0.0f, 0.0f, 0.0f, 0.0f, 0.0f,
-		0.0f,  1.0f, 0.0f, 0.0f, 1.0f
+		1.0f,  1.0f, 1.0f, 1.0f,
+		1.0f, 0.0f, 1.0f, 0.0f,
+		0.0f,  1.0f, 0.0f, 1.0f,
+		1.0f, 0.0f, 1.0f, 0.0f,
+		0.0f, 0.0f, 0.0f, 0.0f,
+		0.0f,  1.0f, 0.0f, 1.0f
 	};
 
 	//Create quad VBO and VAO
@@ -194,10 +194,10 @@ int Renderer::Initialize(int width, int height, const char* title) {
 	glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_DYNAMIC_DRAW);
 	
 	//Setup vertex attribute pointer
-	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)0);
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 4 * sizeof(float), (void*)0);
 	glEnableVertexAttribArray(0);
 
-	glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)(3 * sizeof(float)));
+	glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 4 * sizeof(float), (void*)(2 * sizeof(float)));
 	glEnableVertexAttribArray(1);
 	glBindVertexArray(0);
 
