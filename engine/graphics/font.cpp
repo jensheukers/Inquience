@@ -109,6 +109,9 @@ Text::Text(Font* font, std::string text, glm::vec3 color) {
 	this->text = text;
 	this->color = color;
 	this->size = 1;
+
+	//Add instance to renderer
+	Core::GetRendererInstance()->RegisterText(this);
 }
 
 void Text::SetText(std::string text) {
@@ -137,4 +140,9 @@ float Text::GetSize() {
 
 Font* Text::GetFont() {
 	return this->font;
+}
+
+Text::~Text() {
+	//Remove instance from renderer
+	Core::GetRendererInstance()->RemoveText(this);
 }

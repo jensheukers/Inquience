@@ -32,8 +32,8 @@ void window_size_callback(GLFWwindow* window, int width, int height)
 	glViewport(0, 0, (GLsizei)width, (GLsizei)height);
 
 	//Update renderer scale
-	scale_ptr->x = width;
-	scale_ptr->y = height;
+	scale_ptr->x = (float)width;
+	scale_ptr->y = (float)height;
 }
 
 void Renderer::DrawSprite(Sprite* sprite, Vec2 position, Vec2 scale) {
@@ -290,7 +290,7 @@ void Renderer::RenderFrame() {
 
 	//Now we got everything sorted so we can render the frame
 	for (Sprite* s : sortedRenderList) {
-		this->DrawSprite(s, s->GetOwner()->GetPosition(), s->GetScale() / s->slices);
+		this->DrawSprite(s, s->GetOwner()->GetPosition(), s->GetScale() / (float)s->slices);
 	}
 
 	//Render text

@@ -100,6 +100,11 @@ public:
 	* @return UV
 	*/
 	UV Split(int pixelsPerTile, int index);
+
+	/**
+	* Destructor
+	*/
+	~Sprite();
 };
 
 #endif // !SPRITE_H

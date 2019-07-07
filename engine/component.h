@@ -1,11 +1,11 @@
 // Header file for component class.
 //
-// Version: 5/4/2019
+// Version: 7/7/2019
 //
 // Copyright (C) Jens Heukers - All Rights Reserved
 // Unauthorized copying of this file, via any medium is strictly prohibited
 // Proprietary and confidential
-// Written by Jens Heukers, May 2019
+// Written by Jens Heukers, July 2019
 #ifndef COMPONENT_H
 #define COMPONENT_H
 
@@ -34,6 +34,11 @@ public:
 	* @return void
 	*/
 	virtual void Update() {};
+
+	/**
+	* Destructor
+	*/
+	virtual ~Component() {};
 };
 
 #endif // !COMPONENT_H

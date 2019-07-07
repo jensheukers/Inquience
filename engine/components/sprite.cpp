@@ -55,7 +55,7 @@ Vec2 Sprite::GetScale() {
 }
 
 Vec2 Sprite::GetCenter() {
-	return ((Vec2((float)texture->textureData->width, texture->textureData->height) * scale) / slices) / 2;
+	return ((Vec2((float)texture->textureData->width, (float)texture->textureData->height) * scale) / (float)slices) / 2;
 }
 
 UV Sprite::Split(int pixelsPerTile, int index) {
@@ -88,4 +88,9 @@ UV Sprite::Split(int pixelsPerTile, int index) {
 	}
 
 	return uv;
+}
+
+Sprite::~Sprite() {
+	//Remove from renderer
+	Core::GetRendererInstance()->RemoveSprite(this);
 }
