@@ -39,6 +39,11 @@ public:
 	* Overwritten update method
 	*/
 	void Update() override;
+
+	/**
+	* Destructor
+	*/
+	virtual ~UIElement() {};
 };
 
 #endif // !UI_H

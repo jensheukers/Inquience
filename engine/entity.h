@@ -187,7 +187,7 @@ public:
 	/**
 	* Destructor
 	*/
-	~Entity();
+	virtual ~Entity();
 };
 
 #endif // !ENTITY_H

@@ -83,5 +83,23 @@ Editor::Editor() {
 }
 
 void Editor::Update() {
+	ImGui::BeginMainMenuBar();
+	if (ImGui::BeginMenu("File")) {
+		if (ImGui::MenuItem("New")) { 
+			//Create a new scene and unload current scene from memory, also add a camera 
+			delete SceneManager::GetActiveScene();
+			SceneManager::SetActiveScene(new Scene());
+			SceneManager::GetActiveScene()->SetActiveCamera(new Camera());
+		}
+		if (ImGui::MenuItem("Load")) { }
+		if (ImGui::MenuItem("Save")) { }
+		ImGui::EndMenu();
+	}
 
+	if (ImGui::BeginMenu("Edit")) {
+		if (ImGui::MenuItem("Level Editor")) {}
+		ImGui::EndMenu();
+	}
+
+	ImGui::EndMainMenuBar();
 }
