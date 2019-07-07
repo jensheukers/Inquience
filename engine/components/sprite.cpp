@@ -9,6 +9,9 @@
 #include "sprite.h"
 #include "../debug.h"
 
+//Include core so we can get renderer instance
+#include "../core.h"
+
 UV::UV() {
 	this->leftUp = Vec2(0, 0); // 0, 1
 	this->rightUp = Vec2(1, 0); // 1, 1
@@ -21,6 +24,9 @@ Sprite::Sprite() {
 	this->scale = Vec2(1, 1);
 	this->slices = 1;
 	this->texture = nullptr;
+
+	//Register to renderer
+	Core::GetRendererInstance()->RegisterSprite(this);
 }
 
 Texture* Sprite::SetTexture(Texture* texture) {

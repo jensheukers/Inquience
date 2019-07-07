@@ -1,6 +1,6 @@
-// Header file for renderer class.
+// Header file for Renderer class.
 //
-// Version: 4/7/2019
+// Version: 7/7/2019
 //
 // Copyright (C) Jens Heukers - All Rights Reserved
 // Unauthorized copying of this file, via any medium is strictly prohibited
@@ -8,88 +8,102 @@
 // Written by Jens Heukers, July 2019
 #ifndef RENDERER_H
 #define RENDERER_H
+
+//Include glew.h and glfw3.h
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
+
+//Include vector
 #include <vector>
-#include "graphics/shader.h"
-#include "graphics/font.h"
-#include "components/sprite.h"
+
+//Include vec2.h
 #include "math/vec2.h"
 
-class Entity; // Forward declartion of entity
+//Include graphics
+#include "graphics/font.h"
+#include "graphics/shader.h"
 
-//Renderer is not to be availble outside of core.
+//Include sprite.h
+#include "components/sprite.h"
+
+//Pointer to 
+
 class Renderer {
 private:
-	GLFWwindow* window; /***< The glfw window to render to*/
-	Shader* defaultShader; /***< The default shader program*/
-	Shader* textShader; /***< The text shader program*/
+	GLFWwindow* window; /***< Pointer to the GLFWWindow instance */
 
-	//Local members
-	Vec2 screenResolution; /***< The resolution of the window*/
+	//Shaders
+	Shader* defaultShader; /***< The default shader used to draw sprites*/
+	Shader* textShader; /***< The shader used to draw texts*/
 
-	//Default VBO and VAO
-	unsigned int vbo; /***< The default Vertex Buffer Object*/
-	unsigned int vao; /***< The default Vertex Array Object*/
+	//Local variables
+	Vec2 resolution; /***< The resolution where the game is displayed in*/
+	Vec2 scale; /***< The scale of the window*/
 
-	//Text VBO and VAO
-	unsigned int textVbo; /***< The text vbo*/
-	unsigned int textVao; /***< The text vao*/
+	glm::mat4 projection; /***< The projection matrix*/
 
-	//Lists
-	std::vector<Entity*> renderList; /***< List of entities to render*/
-	std::vector<Text*> textList; /***< List of text to render*/
+	unsigned int vbo; /***< The vertex buffer object used to draw sprites*/
+	unsigned int vao; /***< The vertex array object*/
+
+	unsigned int textVbo; /***< The vertex buffer object used to draw text*/
+	unsigned int textVao; /***< The text vertex array object*/
+
+	//Vectors
+	std::vector<Sprite*> registeredSprites; /***< The sprites registered and ready for rendering*/
+	std::vector<Text*> registeredTexts; /***< The texts registered and ready for rendering*/
 
 	/**
-	* Renders a sprite
-	* @return void
+	* Renders a sprite to the screen, modifies the existing vertex buffer object and reinserts correct vertex data.
+	* @param Sprite* the sprite to render
+	* @param Vec2 position
+	* @param Vec2 scale
 	*/
-	void DrawSprite(Sprite* sprite, Vec2 position, Vec2 scale);
+	void DrawSprite(Sprite* sprite, Vec2 position, Vec2 scale = Vec2(1, 1));
 
 	/**
 	* Draws text to the screen
+	* @param Font* the pointer to the font used in the text
+	* @param std::string the content of the text that is to be drawn
+	* @param Vec2 position
+	* @param float scale
+	* @param glm::vec3 color
 	*/
-	void DrawText(Font* font, std::string text, GLfloat x, GLfloat y, GLfloat scale, glm::vec3 color);
-
+	void DrawText(Font* font, std::string text, Vec2 position, float scale, glm::vec3 color);
 public:
 	/**
-	* Initializes GLFW and GLEW, also creates basic shader programs + vbo's
-	* returns 0 if succes
-	* @return int
+	* Constructor
+	* @param Vec2 resolution
+	* @param Vec2 scale of the window
+	* @param const char* titleName
 	*/
-	int Initialize(int width, int height, const char* title);
+	Renderer(Vec2 resolution, Vec2 scale, const char* title);
 
 	/**
-	* Adds a entity to the render list
-	* @param Entity*
-	* @return void
+	* Adds a sprite to the registeredSprites vector
+	* @param Sprite*
 	*/
-	void RegisterEntity(Entity* entity);
+	void RegisterSprite(Sprite* sprite);
 
 	/**
-	* Removes a entity from the render list
-	* @param Entity*
-	* @return void
+	* Removes a sprite from the registeredSprites vector
+	* @param Sprite*
 	*/
-	void RemoveEntity(Entity* entity);
+	void RemoveSprite(Sprite* sprite);
 
 	/**
-	* Adds a text to the render list
+	* Adds a text to the registeredTexts vector
 	* @param Text*
-	* @return void
 	*/
-	void RegisterText(Text* entity);
+	void RegisterText(Text* text);
 
 	/**
-	* Removes a text from the render list
+	* Removes a text to the registeredTexts vector
 	* @param Text*
-	* @return void
 	*/
-	void RemoveText(Text* entity);
+	void RemoveText(Text* text);
 
 	/**
-	* Renders the current frame, Filters out all entities that are not in camera view, and does a z-index test
-	* @return void
+	* Renders the current frame, filters out all entities that are not in camera view and does a z-index test.
 	*/
 	void RenderFrame();
 
@@ -121,9 +135,10 @@ public:
 	Vec2 GetResolution();
 
 	/**
-	* local window size callback method
+	* Returns the window scale as a Vec2
+	* @return Vec2
 	*/
-	void WindowSizeCallback(GLFWwindow* window, int width, int height);
+	Vec2 GetScale();
 
 	/**
 	* Destructor

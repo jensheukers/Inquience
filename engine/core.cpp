@@ -34,8 +34,7 @@ void Core::Initialize(int argc, char* argv[]) {
 	instance->executableDirectoryPath.append("\\"); // Append a slash to return the absolute directory
 
 	//Create renderer
-	instance->renderer = new Renderer();
-	instance->renderer->Initialize(1280, 720, "Dustville");
+	instance->renderer = new Renderer(Vec2(1280, 720), Vec2(1280, 720), "Dustville");
 
 	//Create Editor
 	instance->editor = new Editor();
