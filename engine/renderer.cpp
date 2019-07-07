@@ -40,6 +40,7 @@ void Renderer::DrawSprite(Sprite* sprite, Vec2 position, Vec2 size) {
 		0.0f,  1.0f, sprite->uv.leftUp.x, sprite->uv.leftUp.y
 	};
 
+	glBindBuffer(GL_ARRAY_BUFFER, vbo);
 	glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(vertices), vertices);
 
 	//Calculate the position with camera position
