@@ -13,6 +13,12 @@
 #include "../external/imgui/imgui.h"
 
 class Editor {
+private:
+	//Bools
+	bool loadMenuActive;
+	bool saveMenuActive;
+
+	bool levelEditorActive;
 public:
 	/**
 	* Constructor

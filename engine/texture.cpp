@@ -66,7 +66,6 @@ Texture* TextureLoader::LoadTarga(char* filepath) {
 	//Check if texture has been loaded before
 	for (std::map<std::string, Texture*>::reverse_iterator it = GetLoadedTextures().rbegin(); it != GetLoadedTextures().rend(); ++it) {
 		if (it->first == filepath) {
-			Debug::Log("Returning already loaded texture: " + std::string(filepath));
 			return it->second;
 		}
 	}

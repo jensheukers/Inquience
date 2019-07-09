@@ -80,6 +80,11 @@ Editor::Editor() {
 	style->TabBorderSize = 1.0f;
 	style->TabRounding = 0.0f;
 	style->WindowRounding = 4.0f;
+
+	//Initialize bools
+	loadMenuActive = false;
+	saveMenuActive = false;
+	levelEditorActive = false;
 }
 
 void Editor::Update() {
@@ -91,15 +96,82 @@ void Editor::Update() {
 			SceneManager::SetActiveScene(new Scene());
 			SceneManager::GetActiveScene()->SetActiveCamera(new Camera());
 		}
-		if (ImGui::MenuItem("Load")) { }
-		if (ImGui::MenuItem("Save")) { }
+		if (ImGui::MenuItem("Load")) { loadMenuActive = true; }
+		if (ImGui::MenuItem("Save")) { saveMenuActive = true; }
 		ImGui::EndMenu();
 	}
 
 	if (ImGui::BeginMenu("Edit")) {
-		if (ImGui::MenuItem("Level Editor")) {}
+		if (ImGui::MenuItem("Level Editor")) { levelEditorActive = true; }
 		ImGui::EndMenu();
 	}
 
 	ImGui::EndMainMenuBar();
+
+	if (levelEditorActive) {
+		ImGui::Begin("Level Editor", &levelEditorActive);
+		ImGui::BeginTabBar("");
+		if (ImGui::BeginTabItem("Tile Edit")) {
+			//Get the position of the tilesetImage
+			ImVec2 tilesetImagePos = ImGui::GetCursorScreenPos();
+
+			float imageSize;
+
+			unsigned glTexId = TextureLoader::LoadTarga("res/terrain_tiles.tga")->_glTexture;
+			ImGui::Image((void*)(intptr_t)glTexId, ImVec2(imageSize, imageSize), ImVec2(0, 1), ImVec2(1, 0));
+
+			//UvCoordinate Holder
+			static UV uv;
+
+			// draw grid
+			ImDrawList* draw_list = ImGui::GetWindowDrawList();
+
+			int tileSize = 32;
+			int xTiles = 8;
+			int yTiles = 8;
+
+			// draw horizontal lines
+			for (int x = 0; x < xTiles + 1; ++x) {
+				draw_list->AddLine(ImVec2(tilesetImagePos.x + x * tileSize, tilesetImagePos.y),
+					ImVec2(tilesetImagePos.x + x * tileSize, tilesetImagePos.y + yTiles * tileSize),
+					ImColor(255, 255, 255));
+			}
+
+			// draw vertical lines
+			for (int y = 0; y < yTiles + 1; ++y) {
+				draw_list->AddLine(ImVec2(tilesetImagePos.x, tilesetImagePos.y + y * tileSize),
+					ImVec2(tilesetImagePos.x + xTiles * tileSize, tilesetImagePos.y + y * tileSize),
+					ImColor(255, 255, 255));
+			}
+
+			//Input selection
+			if (ImGui::IsItemHovered()) {
+				if (Input::GetButtonDown(BUTTONCODE_LEFT)) {
+					Vec2 relMousePos = Vec2(ImGui::GetMousePos().x - tilesetImagePos.x, ImGui::GetMousePos().y - tilesetImagePos.y);
+
+					//Get the right uv coordinates.
+					
+					int _i = 0; // Tile index
+					//Iterate through image
+					for (int y = 0; y <= imageSize; y += tileSize) {
+						for (int x = 0; x <= imageSize; y += tileSize) {
+							/*//Iterate through every pixel
+							for (int py = 0; py <= imageSize; py++) {
+								for (int px = 0; px <= imageSize; px++) {
+									if ((x + px) == relMousePos.x && (y + py) == relMousePos.y) {
+										Debug::Log("test");
+									}
+								}
+							}
+							_i++;*/
+						}
+					}
+				}
+			}
+
+			ImGui::EndTabItem();
+		}
+		ImGui::EndTabBar();
+		ImGui::End();
+	}
 }
