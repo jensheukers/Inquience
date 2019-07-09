@@ -1,15 +1,16 @@
 // Header file for Input class.
 //
-// Version: 5/4/2019
+// Version: 9/7/2019
 //
 // Copyright (C) Jens Heukers - All Rights Reserved
 // Unauthorized copying of this file, via any medium is strictly prohibited
 // Proprietary and confidential
-// Written by Jens Heukers, May 2019
+// Written by Jens Heukers, July 2019
 
+//Forward declare
+struct GLFWwindow;
 
 //Define Button macros
-#include <GLFW/glfw3.h>
 
 #define		BUTTONCODE_LEFT		0
 #define		BUTTONCODE_RIGHT	1

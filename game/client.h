@@ -10,7 +10,14 @@
 #ifndef CLIENT_H
 #define CLIENT_H
 
-class Scene; //Forward declare
+//Defines
+#define UNIT_SELECT_RANGE 32
+
+//Include vector
+#include <vector>
+
+class Scene; // Forward declare
+class Unit; // Forward declare
 
 //Singleton instance
 class Client {
@@ -20,6 +27,12 @@ private:
 	//Scenes
 	Scene* mainMenu; /***< The main menu scene pointer*/
 
+	//Bools
+	bool inSession; /***< Should be true if the player is in a session, the player will now be able to select units and move them.*/
+
+	//Vectors
+	std::vector<Unit*> units; /***< All the units in the scene*/
+	std::vector<Unit*> selectedUnits; /***< List containing all selected units*/
 public:
 	/***
 	* Constructor, if instance pointer is already set then we destroy the newly created instance 

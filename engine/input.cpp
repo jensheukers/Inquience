@@ -1,13 +1,15 @@
 // Source file for Input class.
 //
-// Version: 5/4/2019
+// Version: 9/7/2019
 //
 // Copyright (C) Jens Heukers - All Rights Reserved
 // Unauthorized copying of this file, via any medium is strictly prohibited
 // Proprietary and confidential
-// Written by Jens Heukers, May 2019
+// Written by Jens Heukers, July 2019
 
+//Include input.h and glfw3.h
 #include "input.h"
+#include "GLFW/glfw3.h"
 
 void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods) {
 	switch (action) {
