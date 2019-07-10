@@ -273,7 +273,7 @@ void Renderer::RenderFrame() {
 	//First determine highest z-index
 	int highest = 0;
 	for (Sprite* s : registeredSprites) {
-		if (!s->GetTexture()) continue;
+		if (s->GetTexture() == nullptr) continue;
 		if (s->GetZIndex() > highest) {
 			highest = s->GetZIndex();
 		}
@@ -282,6 +282,7 @@ void Renderer::RenderFrame() {
 	//Now go through all "Layers"
 	for (int i = 0; i <= highest; i++) {
 		for (Sprite* s : registeredSprites) {
+			if (!SceneManager::GetActiveScene()->HasChild(s->GetOwner())) continue; // Check if owner of sprite has been added to the scene
 			if (s->GetZIndex() == i) {
 				sortedRenderList.push_back(s);
 			}

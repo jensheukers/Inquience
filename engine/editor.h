@@ -9,8 +9,43 @@
 #ifndef EDITOR_H
 #define EDITOR_H
 
-//Include imgui.h & entity.h
+#define DEFAULT_TILEMAP_SIZE 256
+#define DEFAULT_TILE_SIZE 32
+
+//Include vector
+#include <vector>
+
+//Include entity.h & vec2.h
 #include "../external/imgui/imgui.h"
+#include "../engine/math/vec2.h"
+
+//Forward declare
+class Entity;
+
+//Grid structure
+struct GridTile {
+	bool occupied; /***< True if a tile is occupied*/
+	Vec2 position; /***< Position of the gridTile*/
+	Entity* tileEntity; /***< The entity that is occupying the tile*/
+};
+
+struct Grid {
+	Vec2 scale; /***< The scale of the grid*/
+	Vec2 tileScale; /*** The scale of one tile*/
+	std::vector<GridTile> gridTiles; /***< Vector containing all gridTiles*/
+
+	/**
+	* Constructs the grid, fills gridTiles vector
+	*/
+	void Construct();
+
+	/**
+	* Returns the Tile nearest to position
+	* @param Vec2
+	* @return GridTile
+	*/
+	GridTile* GetTilePosition(Vec2 position);
+};
 
 class Editor {
 private:
@@ -19,6 +54,10 @@ private:
 	bool saveMenuActive;
 
 	bool levelEditorActive;
+
+	//References
+	Entity* selectionEntity; /***< The entity used as a reference, will be copied when placed*/
+	Grid* grid; /***< Reference to the grid instance*/
 public:
 	/**
 	* Constructor

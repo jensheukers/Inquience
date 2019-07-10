@@ -80,6 +80,7 @@ UV Sprite::Split(int pixelsPerTile, int index) {
 
 				//We can use width since width and height should always equal
 				slices = texture->textureData->width / pixelsPerTile;
+				tileMapIndex = index;
 
 				return uv;
 			}

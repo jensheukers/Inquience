@@ -28,7 +28,7 @@ int main(int argc, char * argv[]) {
 		Core::Update(); // Handle updates for engine
 		Client::Update(); // Update for game
 
-		if (Input::GetKeyDown(KEYCODE_KP_ENTER)) {
+		if (Input::GetKeyDown(KEYCODE_GRAVE_ACCENT)) {
 			if (!editorActive) {
 				Core::EnableEditor(true);
 				editorActive = true;

@@ -40,6 +40,7 @@ private:
 public:
 	UV uv; /***< The UV Coordinates of the sprite*/
 	int slices; /*** Amount of devides used if uv coordinates have been modified (Allows for scaling in Renderer). */
+	int tileMapIndex; /***< The tile map index if the sprite has been split, else returns 0*/
 
 	/**
 	* Constructor

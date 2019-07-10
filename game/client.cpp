@@ -44,17 +44,6 @@ void Client::Start() {
 	Scene* scene = new Scene();
 	scene->SetActiveCamera(new Camera());
 	SceneManager::SetActiveScene(scene);
-
-	Unit* unit = new Unit();
-	Unit* unit2 = new Unit();
-
-	unit2->localPosition = Vec2(500, 300);
-
-	scene->AddChild(unit);
-	scene->AddChild(unit2);
-
-	instance->units.push_back(unit);
-	instance->units.push_back(unit2);
 }
 
 void Client::Update() {
