@@ -1,11 +1,11 @@
 // Source file for Editor class.
 //
-// Version: 4/5/2019
+// Version: 10/7/2019
 //
 // Copyright (C) Jens Heukers - All Rights Reserved
 // Unauthorized copying of this file, via any medium is strictly prohibited
 // Proprietary and confidential
-// Written by Jens Heukers, May 2019
+// Written by Jens Heukers, July 2019
 #include "editor.h"
 
 //Include core.h and scenemanager.h and input.h and physics
@@ -148,6 +148,33 @@ void Editor::Update() {
 		if (ImGui::MenuItem("Load")) { loadMenuActive = true; }
 		if (ImGui::MenuItem("Save")) { saveMenuActive = true; }
 		ImGui::EndMenu();
+	}
+
+	if (loadMenuActive) {
+		ImGui::Begin("Load", &loadMenuActive);
+		static char buffer[128]; // Allocate buffer
+		ImGui::InputText("Path", buffer, sizeof(buffer));
+		ImGui::SameLine();
+		if (ImGui::Button("Load")) {
+			//Create a new scene and unload current scene from memory, also add a camera then load data
+			delete SceneManager::GetActiveScene();
+			SceneManager::SetActiveScene(new Scene());
+			SceneManager::GetActiveScene()->SetActiveCamera(new Camera());
+			SceneManager::GetActiveScene()->Load(buffer);
+		}
+		ImGui::End();
+	}
+
+	if (saveMenuActive) {
+		ImGui::Begin("Save", &saveMenuActive);
+		static char buffer[128]; // Allocate buffer
+		ImGui::InputText("Path", buffer, sizeof(buffer));
+		ImGui::SameLine();
+		if (ImGui::Button("Save")) {
+			//Save
+			SceneManager::GetActiveScene()->Save(buffer);
+		}
+		ImGui::End();
 	}
 
 	if (ImGui::BeginMenu("Edit")) {
