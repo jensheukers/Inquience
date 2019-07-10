@@ -91,6 +91,35 @@ UV Sprite::Split(int pixelsPerTile, int index) {
 	return uv;
 }
 
+UV Sprite::Split(Texture* texture, int pixelsPerTile, int index) {
+	UV uv;
+	if (!texture) {
+		Debug::Log("Cannot split sprite - No texture present");
+		return uv;
+	}
+
+	if (texture->textureData->width != texture->textureData->height) {
+		Debug::Log("Cannot split sprite - Texture width != height");
+		return uv;
+	}
+
+	int _cur = 0;
+	for (int y = 0; y < (int)texture->textureData->height; y += pixelsPerTile) {
+		for (int x = 0; x < (int)texture->textureData->width; x += pixelsPerTile) {
+			if (_cur == index) {
+				uv.leftUp = Vec2((float)x / texture->textureData->width, (float)y / texture->textureData->height);
+				uv.rightUp = Vec2((float)x / texture->textureData->width + (float)pixelsPerTile / texture->textureData->width, (float)y / texture->textureData->height);
+				uv.leftDown = Vec2((float)x / texture->textureData->width, (float)y / texture->textureData->height + (float)pixelsPerTile / texture->textureData->height);
+				uv.rightDown = Vec2((float)x / texture->textureData->width + (float)pixelsPerTile / texture->textureData->width, (float)y / texture->textureData->height + (float)pixelsPerTile / texture->textureData->height);
+				return uv;
+			}
+			_cur++;
+		}
+	}
+
+	return uv;
+}
+
 Sprite::~Sprite() {
 	//Remove from renderer
 	Core::GetRendererInstance()->RemoveSprite(this);

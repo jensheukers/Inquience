@@ -124,9 +124,35 @@ Editor::Editor() {
 	//Initialize reference
 	selectionEntity = new Entity();
 	selectionEntity->AddComponent<Sprite>(); // Add sprite component
+
+	//Camera
+	this->editorCamera = new Camera();
 }
 
+#include <iostream>
+
 void Editor::Update() {
+	//Set active camera to editor camera
+	if (SceneManager::GetActiveScene()->GetActiveCamera() != this->editorCamera) {
+		SceneManager::GetActiveScene()->SetActiveCamera(this->editorCamera);
+	}
+
+	//Camera controlls
+	if (Input::GetKey(KEYCODE_KP_4)) {
+		this->editorCamera->SetPosition(this->editorCamera->GetPosition() + Vec2(-Core::GetDeltaTime() * 100, 0));
+	}
+
+	if (Input::GetKey(KEYCODE_KP_6)) {
+		this->editorCamera->SetPosition(this->editorCamera->GetPosition() + Vec2(Core::GetDeltaTime() * 100, 0));
+	}
+
+	if (Input::GetKey(KEYCODE_KP_8)) {
+		this->editorCamera->SetPosition(this->editorCamera->GetPosition() + Vec2(0, -Core::GetDeltaTime() * 100));
+	}
+
+	if (Input::GetKey(KEYCODE_KP_2)) {
+		this->editorCamera->SetPosition(this->editorCamera->GetPosition() + Vec2(0, Core::GetDeltaTime() * 100));
+	}
 
 	//Handle events
 	ImGuiIO& io = ImGui::GetIO();
@@ -161,6 +187,15 @@ void Editor::Update() {
 			SceneManager::SetActiveScene(new Scene());
 			SceneManager::GetActiveScene()->SetActiveCamera(new Camera());
 			SceneManager::GetActiveScene()->Load(buffer);
+
+			for (int i = 0; i < SceneManager::GetActiveScene()->GetChildren().size(); i++) {
+				Vec2 pos = SceneManager::GetActiveScene()->GetChildren()[i]->localPosition;
+
+				//Get the tile from positions + 1 (add 1 unit to get the proper tile)
+				GridTile* tile = grid->GetTilePosition(pos + 1);
+				tile->occupied = true;
+				tile->tileEntity = SceneManager::GetActiveScene()->GetChildren()[i];
+			}
 		}
 		ImGui::End();
 	}
@@ -270,7 +305,7 @@ void Editor::Update() {
 
 			//Placement
 			if (Input::GetKey(KEYCODE_LEFT_CONTROL) && Input::GetButton(BUTTONCODE_LEFT) && selectionEntity->GetComponent<Sprite>()->GetTexture()) {
-				GridTile* tile = grid->GetTilePosition(Input::GetMousePosition());
+				GridTile* tile = grid->GetTilePosition(Input::GetMousePosition() + SceneManager::GetActiveScene()->GetActiveCamera()->GetPosition());
 				if (tile != nullptr && !tile->occupied) {
 					Sprite* sprite = selectionEntity->GetComponent<Sprite>();
 
@@ -294,8 +329,8 @@ void Editor::Update() {
 			}
 
 			//Tile removal
-			if (Input::GetButtonDown(BUTTONCODE_RIGHT) && Input::GetKey(KEYCODE_LEFT_CONTROL)) {
-				GridTile* tile = grid->GetTilePosition(Input::GetMousePosition());
+			if (Input::GetKey(KEYCODE_LEFT_CONTROL) && Input::GetButton(BUTTONCODE_RIGHT)) {
+				GridTile* tile = grid->GetTilePosition(Input::GetMousePosition() + SceneManager::GetActiveScene()->GetActiveCamera()->GetPosition());
 
 				if (tile != nullptr && tile->occupied) {
 					Entity* entity = tile->tileEntity;

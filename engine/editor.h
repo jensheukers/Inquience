@@ -21,6 +21,7 @@
 
 //Forward declare
 class Entity;
+class Camera;
 
 //Grid structure
 struct GridTile {
@@ -58,6 +59,8 @@ private:
 	//References
 	Entity* selectionEntity; /***< The entity used as a reference, will be copied when placed*/
 	Grid* grid; /***< Reference to the grid instance*/
+
+	Camera* editorCamera; /***< The editor camera instance, will be set active whenever editor is active*/
 public:
 	/**
 	* Constructor

@@ -103,6 +103,15 @@ public:
 	UV Split(int pixelsPerTile, int index);
 
 	/**
+	* Splits the texture, texture needs to be provided, UV coordinates of split are returned
+	* @param Texture*, pointer to texture
+	* @param int, amount of pixels per tile
+	* @param int, index for selected tile
+	* @return UV
+	*/
+	static UV Split(Texture* texture, int pixelsPerTile, int index);
+
+	/**
 	* Destructor
 	*/
 	~Sprite();
