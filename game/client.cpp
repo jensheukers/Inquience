@@ -21,6 +21,8 @@
 //Derived -- Note we dont include SceneManager because mainmenu.h already knows about it
 #include "derived/mainmenu.h"
 
+#include "../engine/components/animator.h"
+
 Client* Client::instance; // Declare instance
 
 Client::Client() {
@@ -44,6 +46,20 @@ void Client::Start() {
 	Scene* scene = new Scene();
 	scene->SetActiveCamera(new Camera());
 	SceneManager::SetActiveScene(scene);
+
+	std::vector<UV> frames;
+	frames.push_back(Sprite::Split(TextureLoader::LoadTarga("res/terrain_tiles.tga"), 32, 56));
+	frames.push_back(Sprite::Split(TextureLoader::LoadTarga("res/terrain_tiles.tga"), 32, 57));
+	frames.push_back(Sprite::Split(TextureLoader::LoadTarga("res/terrain_tiles.tga"), 32, 58));
+
+	Entity* ent = new Entity();
+	ent->AddComponent<Sprite>()->SetTexture(TextureLoader::LoadTarga("res/terrain_tiles.tga"));
+	ent->AddComponent<Animator>();
+
+	ent->GetComponent<Animator>()->AddAnimation(new Animation(frames));
+	ent->GetComponent<Animator>()->SetActiveAnimation(0);
+
+	scene->AddChild(ent);
 }
 
 void Client::Update() {

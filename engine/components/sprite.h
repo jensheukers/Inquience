@@ -25,6 +25,9 @@ struct UV {
 	Vec2 rightUp; /***< The rightUp texture coordinate*/
 	Vec2 leftDown; /***< The leftDown texture coordinate*/
 	Vec2 rightDown; /***< The rightDown texture coordinate*/
+	
+	//We want to hold slices, so we can always get the amount of slices done (for sprite size)
+	int slices; /***< Amount of slices of the tilemap done in a row*/
 
 	/**
 	* Constructor
@@ -32,6 +35,7 @@ struct UV {
 	UV();
 };
 
+//Define default slice sizes
 class Sprite : public Component {
 private:
 	Texture* texture; /***< The texture the sprite uses*/

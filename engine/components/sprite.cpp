@@ -82,6 +82,9 @@ UV Sprite::Split(int pixelsPerTile, int index) {
 				slices = texture->textureData->width / pixelsPerTile;
 				tileMapIndex = index;
 
+				//Set uv slices
+				uv.slices = slices;
+
 				return uv;
 			}
 			_cur++;
@@ -111,6 +114,10 @@ UV Sprite::Split(Texture* texture, int pixelsPerTile, int index) {
 				uv.rightUp = Vec2((float)x / texture->textureData->width + (float)pixelsPerTile / texture->textureData->width, (float)y / texture->textureData->height);
 				uv.leftDown = Vec2((float)x / texture->textureData->width, (float)y / texture->textureData->height + (float)pixelsPerTile / texture->textureData->height);
 				uv.rightDown = Vec2((float)x / texture->textureData->width + (float)pixelsPerTile / texture->textureData->width, (float)y / texture->textureData->height + (float)pixelsPerTile / texture->textureData->height);
+
+				//Set uv slices
+				uv.slices = texture->textureData->width / pixelsPerTile;
+
 				return uv;
 			}
 			_cur++;
