@@ -1,14 +1,17 @@
 // Main menu source file, derives from Scene
 //
-// Version: 2/7/2019
+// Version: 6/8/2019
 //
 // Copyright (C) Jens Heukers - All Rights Reserved
 // Unauthorized copying of this file, via any medium is strictly prohibited
 // Proprietary and confidential
-// Written by Jens Heukers, July 2019
+// Written by Jens Heukers, August 2019
 
 //Include mainmenu header
 #include "mainmenu.h"
+
+//Include client.h for reference
+#include "../client.h"
 
 //Include core to receive resolution
 #include "../../engine/core.h"
@@ -37,6 +40,11 @@ void StartButton::OnLeave() {
 }
 
 void StartButton::OnStay() {
+	//Start gameplay
+	if (Input::GetButtonDown(BUTTONCODE_LEFT)) {
+		GameSettings settings = GameSettings("res/default.scn", 250, 100, 50);
+		Client::StartGame(settings);
+	}
 }
 
 OptionButton::OptionButton() {

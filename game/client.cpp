@@ -1,12 +1,12 @@
 // Source file for client class, client handles / supervises all gameplay
 // Client is a singleton instance, and should never be destroyed during gameplay
 //
-// Version: 2/7/2019
+// Version: 6/8/2019
 //
 // Copyright (C) Jens Heukers - All Rights Reserved
 // Unauthorized copying of this file, via any medium is strictly prohibited
 // Proprietary and confidential
-// Written by Jens Heukers, July 2019
+// Written by Jens Heukers, August 2019
 
 //Include client header
 #include "client.h"
@@ -14,6 +14,7 @@
 //Include engine related headers
 #include "../engine/debug.h"
 #include "../engine/input.h"
+#include "../engine/core.h"
 
 //Include game related headers
 #include "unit.h"
@@ -22,6 +23,16 @@
 #include "derived/mainmenu.h"
 
 #include "../engine/components/animator.h"
+
+
+//GameSettings constructor
+GameSettings::GameSettings(std::string worldSceneFile, int start_wood, int start_stones, int start_materials) {
+	//Set values
+	this->worldSceneFile = worldSceneFile;
+	this->start_wood = start_wood;
+	this->start_stones = start_stones;
+	this->start_materials = start_materials;
+}
 
 Client* Client::instance; // Declare instance
 
@@ -38,28 +49,13 @@ Client::Client() {
 
 void Client::Start() {
 	//Load the main menu first
-	//instance->mainMenu = new MainMenu();
+	instance->mainMenu = new MainMenu();
 	
 	//Set active
-	//SceneManager::SetActiveScene(instance->mainMenu);
+	SceneManager::SetActiveScene(instance->mainMenu);
 
-	Scene* scene = new Scene();
-	scene->SetActiveCamera(new Camera());
-	SceneManager::SetActiveScene(scene);
-
-	std::vector<UV> frames;
-	frames.push_back(Sprite::Split(TextureLoader::LoadTarga("res/terrain_tiles.tga"), 32, 56));
-	frames.push_back(Sprite::Split(TextureLoader::LoadTarga("res/terrain_tiles.tga"), 32, 57));
-	frames.push_back(Sprite::Split(TextureLoader::LoadTarga("res/terrain_tiles.tga"), 32, 58));
-
-	Entity* ent = new Entity();
-	ent->AddComponent<Sprite>()->SetTexture(TextureLoader::LoadTarga("res/terrain_tiles.tga"));
-	ent->AddComponent<Animator>();
-
-	ent->GetComponent<Animator>()->AddAnimation(new Animation(frames));
-	ent->GetComponent<Animator>()->SetActiveAnimation(0);
-
-	scene->AddChild(ent);
+	//Set default boolean states
+	instance->inSession = false;
 }
 
 void Client::Update() {
@@ -99,4 +95,20 @@ void Client::Update() {
 			u->SetDestination(Input::GetMousePosition() + SceneManager::GetActiveScene()->GetActiveCamera()->GetPosition());
 		}
 	}
+}
+
+void Client::StartGame(GameSettings settings) {
+	//Load Scene using SceneManager
+	Scene* scene = new Scene();
+	scene->Load((char*)settings.worldSceneFile.c_str());
+	scene->SetActiveCamera(new Camera());
+	Core::SwitchScene(scene);
+
+	//Set client resources
+	instance->wood = settings.start_wood;
+	instance->stones = settings.start_stones;
+	instance->materials = settings.start_materials;
+
+	//Set state
+	instance->inSession = true;
 }

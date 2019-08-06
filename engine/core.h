@@ -2,12 +2,12 @@
 // Core class handles all main functionality of the engine.
 // Core class is a singleton instance, meaning it can be accessed from anywhere in the program
 //
-// Version: 3/7/2019
+// Version: 6/8/2019
 //
 // Copyright (C) Jens Heukers - All Rights Reserved
 // Unauthorized copying of this file, via any medium is strictly prohibited
 // Proprietary and confidential
-// Written by Jens Heukers, July 2019
+// Written by Jens Heukers, August 2019
 #ifndef CORE_H
 #define CORE_H
 #include <string>
@@ -17,6 +17,9 @@
 
 //Include editor.h
 #include "editor.h"
+
+//Forward declare
+class Scene;
 
 class Core {
 private:
@@ -35,6 +38,9 @@ private:
 	float deltaTime; /***< The amount of seconds between frames*/
 	float fps; /***< The amount of frames per second*/
 	float timeElapsed; /***< The time in seconds since the program started*/
+
+	//Core scene management
+	Scene* sceneToBeLoaded; /***< Scene to be loaded at beginning of next frame, nullptr if there is no scene to be loaded*/
 public:
 	/**
 	* Initalizes the Core of the engine
@@ -95,6 +101,11 @@ public:
 	* @param bool
 	*/
 	static void EnableEditor(bool state);
+
+	/**
+	* Safely finsishes frame then removes the active scene from memory and sets the new scene active
+	*/
+	static void SwitchScene(Scene* scene);
 
 	/**
 	* Disables the core, settings isActive to false

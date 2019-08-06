@@ -1,12 +1,12 @@
 // Header file for client class, client handles / supervises all gameplay
 // Client is a singleton instance, and should never be destroyed during gameplay
 //
-// Version: 2/7/2019
+// Version: 6/8/2019
 //
 // Copyright (C) Jens Heukers - All Rights Reserved
 // Unauthorized copying of this file, via any medium is strictly prohibited
 // Proprietary and confidential
-// Written by Jens Heukers, July 2019
+// Written by Jens Heukers, August 2019
 #ifndef CLIENT_H
 #define CLIENT_H
 
@@ -18,6 +18,27 @@
 
 class Scene; // Forward declare
 class Unit; // Forward declare
+
+// Struct containing game settings, instance of gameSettings should be parsed whenever a game is started
+// Game settings can also be loaded from an external source.
+struct GameSettings {
+	//World settings
+	std::string worldSceneFile; /***< File of the scene to be loaded as world*/
+
+	//Resources
+	int start_wood; /***< The amount of wood the client starts with*/
+	int start_stones; /***< The amount of stones the client starts with*/
+	int start_materials; /***< The amount of materials the client starts with*/
+
+	/**
+	* Constructor
+	* @param std::string worldSceneFile
+	* @param int start_wood
+	* @param int start_stones
+	* @param int start_materials
+	*/
+	GameSettings(std::string worldSceneFile, int start_wood, int start_stones, int start_materials);
+};
 
 //Singleton instance
 class Client {
@@ -33,6 +54,11 @@ private:
 	//Vectors
 	std::vector<Unit*> units; /***< All the units in the scene*/
 	std::vector<Unit*> selectedUnits; /***< List containing all selected units*/
+
+	//Resources
+	int wood; /***< Amount of wood the client has */
+	int stones; /***< Amount of stones the client has*/
+	int materials; /***< Amount of materials the player has*/
 public:
 	/***
 	* Constructor, if instance pointer is already set then we destroy the newly created instance 
@@ -48,6 +74,12 @@ public:
 	* Update gets called by main every frame
 	*/
 	static void Update();
+
+	/**
+	* Starts the game using a GameSettings instance as reference, loads the world and sets default settings then plays the game.
+	* @param GameSettings
+	*/
+	static void StartGame(GameSettings settings);
 };
 
 
