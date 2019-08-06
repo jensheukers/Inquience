@@ -1,11 +1,11 @@
 // Source file for entity class.
 //
-// Version: 7/7/2019
+// Version: 6/8/2019
 //
 // Copyright (C) Jens Heukers - All Rights Reserved
 // Unauthorized copying of this file, via any medium is strictly prohibited
 // Proprietary and confidential
-// Written by Jens Heukers, July 2019
+// Written by Jens Heukers, August 2019
 #include "entity.h"
 #include "core.h"
 #include "renderer.h"
@@ -42,6 +42,9 @@ Entity::Entity() {
 	this->parent = nullptr; // Set parent to nullptr
 	this->position = Vec2(0,0);
 	this->scale = Vec2(1, 1);
+
+	//Add to global entity list
+	Core::GetGlobalEntityList().push_back(this);
 }
 
 Entity* Entity::AddChild(Entity* entity) {
@@ -118,12 +121,18 @@ Vec2 Entity::GetPosition() {
 }
 
 Entity::~Entity() {
-	for (int i = 0; i < (int)children.size(); i++) {
+	for (size_t i = 0; i < (int)children.size(); i++) {
 		delete children[i];
 	}
 
 	//Delete all components
-	for (int i = 0; i < (int)components.size(); i++) {
+	for (size_t i = 0; i < (int)components.size(); i++) {
 		delete components[i];
+	}
+
+	for (size_t i = 0; i < Core::GetGlobalEntityList().size(); i++) {
+		if (Core::GetGlobalEntityList()[i] == this) {
+			Core::GetGlobalEntityList().erase(Core::GetGlobalEntityList().begin() + i);
+		}
 	}
 }

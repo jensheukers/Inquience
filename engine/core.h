@@ -77,6 +77,9 @@ private:
 
 	//Core scene management
 	Scene* sceneToBeLoaded; /***< Scene to be loaded at beginning of next frame, nullptr if there is no scene to be loaded*/
+
+	//Global entity list
+	std::vector<Entity*> globalEntityList; /***< The global entity list, every entity that gets created will automaticly be added, even if entity is not added to scene*/
 public:
 	/**
 	* Initalizes the Core of the engine
@@ -148,6 +151,13 @@ public:
 	* @return Grid*
 	*/
 	static Grid* GetGrid();
+
+	/**
+	* Returns the global entity list
+	* @return std::vector<Entity*>
+	*/
+	static std::vector<Entity*> GetGlobalEntityList();
+
 
 	/**
 	* Disables the core, settings isActive to false

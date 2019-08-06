@@ -200,6 +200,11 @@ Grid* Core::GetGrid() {
 	return instance->grid;
 }
 
+std::vector<Entity*> Core::GetGlobalEntityList()
+{
+	return instance->globalEntityList;
+}
+
 void Core::Terminate() {
 	instance->isActive = false;
 }

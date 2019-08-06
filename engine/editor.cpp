@@ -205,13 +205,13 @@ void Editor::Update() {
 				}
 				else {
 					texture = t;
-					imageSize = texture->textureData->width;
+					imageSize = (float)texture->textureData->width;
 				}
 			}
 
 			ImGui::InputInt("Tile Size", &tileSize);
 
-			int tiles = imageSize / tileSize;
+			int tiles = (int)imageSize / tileSize;
 
 			//tileSetImagePosition
 			ImVec2 tilesetImagePos = ImGui::GetCursorScreenPos();
@@ -247,7 +247,7 @@ void Editor::Update() {
 					
 					int _i = 0; // Tile index
 					//Iterate through image
-					for (int y = imageSize - tileSize; y > -1; y -= tileSize) {
+					for (int y = (int)imageSize - tileSize; y > -1; y -= tileSize) {
 						for (int x = 0; x < imageSize; x += tileSize) {
 							//Iterate through every pixel
 							for (int py = 0; py <= tileSize; py++) {
