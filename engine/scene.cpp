@@ -32,6 +32,8 @@ Camera* Scene::GetActiveCamera() {
 }
 
 void Scene::Load(char* filePath) {
+	Core::GetGrid()->Clear(); // Clear the grid
+
 	std::string line;
 	std::ifstream file = std::ifstream(Core::GetExecutableDirectoryPath().append(filePath));
 
@@ -105,7 +107,17 @@ void Scene::Load(char* filePath) {
 			}
 		}
 		file.close();
-		Debug::Log("Scene " + std::string(filePath) + "Loaded!");
+
+		for (size_t i = 0; i < GetChildren().size(); i++) {
+			Vec2 pos = GetChildren()[i]->localPosition;
+
+			//Get the tile from positions + 1 (add 1 unit to get the proper tile)
+			GridTile* tile = Core::GetGrid()->GetTilePosition(pos + 1);
+			tile->occupied = true;
+			tile->tileEntity = GetChildren()[i];
+		}
+
+		Debug::Log("Scene " + std::string(filePath) + " Loaded!");
 	}
 }
 
@@ -132,5 +144,5 @@ void Scene::Save(char* filePath) {
 	}
 
 	file.close();
-	Debug::Log("Scene " + std::string(filePath) + "Saved!");
+	Debug::Log("Scene " + std::string(filePath) + " Saved!");
 }

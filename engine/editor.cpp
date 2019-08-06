@@ -1,48 +1,20 @@
 // Source file for Editor class.
 //
-// Version: 10/7/2019
+// Version: 6/8/2019
 //
 // Copyright (C) Jens Heukers - All Rights Reserved
 // Unauthorized copying of this file, via any medium is strictly prohibited
 // Proprietary and confidential
-// Written by Jens Heukers, July 2019
+// Written by Jens Heukers, August 2019
 #include "editor.h"
 
 //Include core.h and scenemanager.h and input.h and physics
 #include "core.h"
 #include "scenemanager.h"
 #include "input.h"
-#include "math/physics.h"
 
 //Include GLM
 #include <glm/glm.hpp>
-
-void Grid::Construct() {
-	//Empty the gridtiles list, if already filled
-	for (int i = 0; i < (int)gridTiles.size(); i++) {
-		gridTiles.erase(gridTiles.begin(), gridTiles.begin() + i);
-	}
-
-	for (int x = 0; x <= scale.x * tileScale.x; x += (int)tileScale.x) {
-		for (int y = 0; y <= scale.y * tileScale.y; y += (int)tileScale.y) {
-			GridTile tile;
-			tile.position = Vec2((float)x, (float)y);
-			tile.occupied = false;
-			gridTiles.push_back(tile);
-		}
-	}
-}
-
-GridTile* Grid::GetTilePosition(Vec2 position) {
-	for (int i = 0; i < (int)gridTiles.size(); i++) {
-		if (Physics::InBounds(position, gridTiles[i].position, gridTiles[i].position + tileScale)) {
-			return &gridTiles[i];
-		}
-	}
-
-	return nullptr;
-}
-
 
 Editor::Editor() {
 	ImGuiStyle* style = &ImGui::GetStyle();
@@ -113,13 +85,8 @@ Editor::Editor() {
 	saveMenuActive = false;
 	levelEditorActive = false;
 
-	//Create Grid
-	grid = new Grid();
-
-	//Set default values
-	grid->scale = Vec2(100, 100);
-	grid->tileScale = Vec2(32, 32);
-	grid->Construct();
+	//Set grid pointer
+	grid = Core::GetGrid();
 
 	//Initialize reference
 	selectionEntity = new Entity();
@@ -170,6 +137,9 @@ void Editor::Update() {
 			delete SceneManager::GetActiveScene();
 			SceneManager::SetActiveScene(new Scene());
 			SceneManager::GetActiveScene()->SetActiveCamera(new Camera());
+
+			//Clear the grid
+			Core::GetGrid()->Clear();
 		}
 		if (ImGui::MenuItem("Load")) { loadMenuActive = true; }
 		if (ImGui::MenuItem("Save")) { saveMenuActive = true; }
@@ -187,15 +157,6 @@ void Editor::Update() {
 			SceneManager::SetActiveScene(new Scene());
 			SceneManager::GetActiveScene()->SetActiveCamera(new Camera());
 			SceneManager::GetActiveScene()->Load(buffer);
-
-			for (int i = 0; i < SceneManager::GetActiveScene()->GetChildren().size(); i++) {
-				Vec2 pos = SceneManager::GetActiveScene()->GetChildren()[i]->localPosition;
-
-				//Get the tile from positions + 1 (add 1 unit to get the proper tile)
-				GridTile* tile = grid->GetTilePosition(pos + 1);
-				tile->occupied = true;
-				tile->tileEntity = SceneManager::GetActiveScene()->GetChildren()[i];
-			}
 		}
 		ImGui::End();
 	}
