@@ -156,7 +156,7 @@ public:
 	* Returns the global entity list
 	* @return std::vector<Entity*>
 	*/
-	static std::vector<Entity*> GetGlobalEntityList();
+	static std::vector<Entity*>& GetGlobalEntityList();
 
 
 	/**

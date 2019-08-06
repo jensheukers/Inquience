@@ -200,7 +200,7 @@ Grid* Core::GetGrid() {
 	return instance->grid;
 }
 
-std::vector<Entity*> Core::GetGlobalEntityList()
+std::vector<Entity*>& Core::GetGlobalEntityList()
 {
 	return instance->globalEntityList;
 }

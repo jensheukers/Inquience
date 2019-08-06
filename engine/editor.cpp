@@ -130,6 +130,28 @@ void Editor::Update() {
 	io.KeysDown[KEYCODE_LEFT] = Input::GetKeyDown(KEYCODE_LEFT);
 	io.KeysDown[KEYCODE_RIGHT] = Input::GetKeyDown(KEYCODE_RIGHT);
 
+	//Console
+	ImGui::Begin("Console");
+	ImGui::BeginTabBar("CONSOLE_TAB_BAR");
+	if (ImGui::BeginTabItem("Command Line")) {
+		ImGui::EndTabItem();
+	}
+
+	if (ImGui::BeginTabItem("Info")) {
+
+		//Display info
+		std::string fps = "Frames per Second: " + std::to_string(Core::GetFramesPerSecond());
+		ImGui::Text(fps.c_str());
+
+		std::string amountEntities = "Amount of entities: " + std::to_string(Core::GetGlobalEntityList().size());
+		ImGui::Text(amountEntities.c_str());
+
+
+		ImGui::EndTabItem();
+	}
+	ImGui::EndTabBar();
+	ImGui::End();
+
 	ImGui::BeginMainMenuBar();
 	if (ImGui::BeginMenu("File")) {
 		if (ImGui::MenuItem("New")) { 
