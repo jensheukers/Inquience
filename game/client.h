@@ -18,6 +18,8 @@
 
 class Scene; // Forward declare
 class Unit; // Forward declare
+class UIElement; // Forward declare
+class Text; // Forward declare
 
 // Struct containing game settings, instance of gameSettings should be parsed whenever a game is started
 // Game settings can also be loaded from an external source.
@@ -59,6 +61,23 @@ private:
 	int wood; /***< Amount of wood the client has */
 	int stones; /***< Amount of stones the client has*/
 	int materials; /***< Amount of materials the player has*/
+
+	//Hud elements
+	//Backgrounds
+	UIElement* wood_bg;
+	UIElement* stones_bg;
+	UIElement* materials_bg;
+
+	//Images
+	UIElement* wood_hud;
+	UIElement* stones_hud;
+	UIElement* materials_hud;
+
+	//Texts for hud
+	Text* wood_hud_text;
+	Text* stones_hud_text;
+	Text* materials_hud_text;
+
 public:
 	/***
 	* Constructor, if instance pointer is already set then we destroy the newly created instance 

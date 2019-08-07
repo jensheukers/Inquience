@@ -260,6 +260,8 @@ void Editor::Update() {
 					ImColor(255, 255, 255));
 			}
 
+			static int tileMapIndex = 0;
+
 			//Input selection
 			if (ImGui::IsItemHovered()) {
 				if (Input::GetButtonDown(BUTTONCODE_LEFT)) {
@@ -275,8 +277,9 @@ void Editor::Update() {
 							for (int py = 0; py <= tileSize; py++) {
 								for (int px = 0; px <= tileSize; px++) {
 									if ((x + px) == relMousePos.x && (y + py) == relMousePos.y) {
-										selectionEntity->GetComponent<Sprite>()->SetTexture(TextureLoader::LoadTarga("res/terrain_tiles.tga"));
+										selectionEntity->GetComponent<Sprite>()->SetTexture(TextureLoader::LoadTarga(buffer));
 										selectionEntity->GetComponent<Sprite>()->Split(tileSize, _i);
+										tileMapIndex = _i;
 									}
 								}
 							}
@@ -284,6 +287,9 @@ void Editor::Update() {
 						}
 					}
 				}
+
+				std::string tileMapIndexText = "Tile Index: " + std::to_string(tileMapIndex);
+				ImGui::Text((char*)tileMapIndexText.c_str());
 			}
 
 			//Placement

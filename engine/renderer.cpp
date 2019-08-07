@@ -291,6 +291,13 @@ void Renderer::RenderFrame() {
 
 	//Now we got everything sorted so we can render the frame
 	for (Sprite* s : sortedRenderList) {
+		//Ui element draw, check if parent can be cast to a UIElement*
+		if (dynamic_cast<UIElement*>(s->GetOwner())) {
+			this->DrawSprite(s, s->GetOwner()->GetPosition() + SceneManager::GetActiveScene()->GetActiveCamera()->GetPosition(), s->GetScale() / (float)s->slices);
+			continue; // Continue 
+		}
+
+		//Normal sprite drawing
 		this->DrawSprite(s, s->GetOwner()->GetPosition(), s->GetScale() / (float)s->slices);
 	}
 

@@ -22,6 +22,7 @@
 //Derived -- Note we dont include SceneManager because mainmenu.h already knows about it
 #include "derived/mainmenu.h"
 
+//Include components
 #include "../engine/components/animator.h"
 
 
@@ -63,6 +64,11 @@ void Client::Update() {
 
 	//In-Game Updates
 	if (!instance->inSession) return; // If user is not playing a session we will return here
+
+	//Hud updates
+	instance->wood_hud_text->SetText(std::to_string(instance->wood));
+	instance->stones_hud_text->SetText(std::to_string(instance->stones));
+	instance->materials_hud_text->SetText(std::to_string(instance->materials));
 
 	//If Right Mouse Button is clicked, units within X pixels of the click location, will be added to selectedUnits vector
 	//If there are no units found, we will unselect all units
@@ -111,4 +117,81 @@ void Client::StartGame(GameSettings settings) {
 
 	//Set state
 	instance->inSession = true;
+
+	//Create hud (Display amount of wood, stones and materials)
+
+	//Wood
+	instance->wood_bg = new UIElement();
+	instance->wood_bg->AddComponent<Sprite>()->SetTexture(TextureLoader::LoadTarga("res/hud/bg_elements.tga"));
+	instance->wood_bg->GetComponent<Sprite>()->Split(32, 56);
+	instance->wood_bg->GetComponent<Sprite>()->SetScale(Vec2(2.5f, 1));
+	instance->wood_bg->GetComponent<Sprite>()->SetZIndex(1);
+
+	instance->wood_hud = new UIElement();
+	instance->wood_hud->AddComponent<Sprite>()->SetTexture(TextureLoader::LoadTarga("res/hud/bg_elements.tga"));
+	instance->wood_hud->GetComponent<Sprite>()->Split(32, 48);
+	instance->wood_hud->GetComponent<Sprite>()->SetScale(Vec2(1, 1));
+	instance->wood_hud->GetComponent<Sprite>()->SetZIndex(1);
+
+	instance->wood_hud_text = new Text(FontLoader::LoadFont("res/yoster.ttf"), "0");
+	instance->wood_hud_text->SetSize(0.75f);
+
+	//Stones
+	instance->stones_bg = new UIElement();
+	instance->stones_bg->AddComponent<Sprite>()->SetTexture(TextureLoader::LoadTarga("res/hud/bg_elements.tga"));
+	instance->stones_bg->GetComponent<Sprite>()->Split(32, 56);
+	instance->stones_bg->GetComponent<Sprite>()->SetScale(Vec2(2.5f, 1));
+	instance->stones_bg->GetComponent<Sprite>()->SetZIndex(1);
+
+	instance->stones_hud = new UIElement();
+	instance->stones_hud->AddComponent<Sprite>()->SetTexture(TextureLoader::LoadTarga("res/hud/bg_elements.tga"));
+	instance->stones_hud->GetComponent<Sprite>()->Split(32, 49);
+	instance->stones_hud->GetComponent<Sprite>()->SetScale(Vec2(1, 1));
+	instance->stones_hud->GetComponent<Sprite>()->SetZIndex(1);
+
+	instance->stones_hud_text = new Text(FontLoader::LoadFont("res/yoster.ttf"), "0");
+	instance->stones_hud_text->SetSize(0.75f);
+
+	//Materials
+	instance->materials_bg = new UIElement();
+	instance->materials_bg->AddComponent<Sprite>()->SetTexture(TextureLoader::LoadTarga("res/hud/bg_elements.tga"));
+	instance->materials_bg->GetComponent<Sprite>()->Split(32, 56);
+	instance->materials_bg->GetComponent<Sprite>()->SetScale(Vec2(2.5f, 1));
+	instance->materials_bg->GetComponent<Sprite>()->SetZIndex(1);
+
+	instance->materials_hud = new UIElement();
+	instance->materials_hud->AddComponent<Sprite>()->SetTexture(TextureLoader::LoadTarga("res/hud/bg_elements.tga"));
+	instance->materials_hud->GetComponent<Sprite>()->Split(32, 50);
+	instance->materials_hud->GetComponent<Sprite>()->SetScale(Vec2(1, 1));
+	instance->materials_hud->GetComponent<Sprite>()->SetZIndex(1);
+
+	instance->materials_hud_text = new Text(FontLoader::LoadFont("res/yoster.ttf"), "0");
+	instance->materials_hud_text->SetSize(0.75f);
+
+	//Positions
+	instance->wood_bg->localPosition = Vec2(20, 10);
+	instance->wood_hud->localPosition = instance->wood_bg->localPosition;
+	instance->wood_hud_text->localPosition = instance->wood_bg->localPosition + Vec2(32, 29);
+
+	instance->stones_bg->localPosition = Vec2(120, 10);
+	instance->stones_hud->localPosition = instance->stones_bg->localPosition;
+	instance->stones_hud_text->localPosition = instance->stones_bg->localPosition + Vec2(32, 29);
+
+	instance->materials_bg->localPosition = Vec2(220, 10);
+	instance->materials_hud->localPosition = instance->materials_bg->localPosition;
+	instance->materials_hud_text->localPosition = instance->materials_bg->localPosition + Vec2(32, 29);
+
+	//Add to scene
+	scene->AddChild(instance->wood_bg);
+	scene->AddChild(instance->wood_hud);
+	scene->AddChild(instance->wood_hud_text);
+
+	scene->AddChild(instance->stones_bg);
+	scene->AddChild(instance->stones_hud);
+	scene->AddChild(instance->stones_hud_text);
+
+	scene->AddChild(instance->materials_bg);
+	scene->AddChild(instance->materials_hud);
+	scene->AddChild(instance->materials_hud_text);
 }
+
