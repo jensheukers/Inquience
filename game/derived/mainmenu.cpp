@@ -25,7 +25,7 @@ StartButton::StartButton() {
 	this->GetComponent<Sprite>()->Split(64, 12);
 	this->GetComponent<Sprite>()->SetScale(Vec2(3, 3));
 
-	Font* font = FontLoader::LoadFont("res/yoster.ttf");
+	Font* font = FontLoader::LoadFont("res/font/pixelplay.ttf");
 	text = new Text(font, "Play");
 	text->localPosition = Vec2(35, 110);
 	this->AddChild(text);
@@ -53,7 +53,7 @@ OptionButton::OptionButton() {
 	this->GetComponent<Sprite>()->Split(64, 12);
 	this->GetComponent<Sprite>()->SetScale(Vec2(3, 3));
 
-	Font* font = FontLoader::LoadFont("res/yoster.ttf");
+	Font* font = FontLoader::LoadFont("res/font/pixelplay.ttf");
 	text = new Text(font, "Options");
 	text->SetSize(0.8f);
 	text->localPosition = Vec2(15, 110);
@@ -78,7 +78,7 @@ QuitButton::QuitButton() {
 	this->GetComponent<Sprite>()->Split(64, 12);
 	this->GetComponent<Sprite>()->SetScale(Vec2(3, 3));
 
-	Font* font = FontLoader::LoadFont("res/yoster.ttf");
+	Font* font = FontLoader::LoadFont("res/font/pixelplay.ttf");
 	text = new Text(font, "Quit");
 	text->localPosition = Vec2(35, 110);
 	this->AddChild(text);

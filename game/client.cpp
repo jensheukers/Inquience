@@ -1,7 +1,7 @@
 // Source file for client class, client handles / supervises all gameplay
 // Client is a singleton instance, and should never be destroyed during gameplay
 //
-// Version: 6/8/2019
+// Version: 7/8/2019
 //
 // Copyright (C) Jens Heukers - All Rights Reserved
 // Unauthorized copying of this file, via any medium is strictly prohibited
@@ -133,7 +133,7 @@ void Client::StartGame(GameSettings settings) {
 	instance->wood_hud->GetComponent<Sprite>()->SetScale(Vec2(1, 1));
 	instance->wood_hud->GetComponent<Sprite>()->SetZIndex(1);
 
-	instance->wood_hud_text = new Text(FontLoader::LoadFont("res/yoster.ttf"), "0");
+	instance->wood_hud_text = new Text(FontLoader::LoadFont("res/font/pixelplay.ttf"), "0");
 	instance->wood_hud_text->SetSize(0.75f);
 
 	//Stones
@@ -149,7 +149,7 @@ void Client::StartGame(GameSettings settings) {
 	instance->stones_hud->GetComponent<Sprite>()->SetScale(Vec2(1, 1));
 	instance->stones_hud->GetComponent<Sprite>()->SetZIndex(1);
 
-	instance->stones_hud_text = new Text(FontLoader::LoadFont("res/yoster.ttf"), "0");
+	instance->stones_hud_text = new Text(FontLoader::LoadFont("res/font/pixelplay.ttf"), "0");
 	instance->stones_hud_text->SetSize(0.75f);
 
 	//Materials
@@ -165,7 +165,7 @@ void Client::StartGame(GameSettings settings) {
 	instance->materials_hud->GetComponent<Sprite>()->SetScale(Vec2(1, 1));
 	instance->materials_hud->GetComponent<Sprite>()->SetZIndex(1);
 
-	instance->materials_hud_text = new Text(FontLoader::LoadFont("res/yoster.ttf"), "0");
+	instance->materials_hud_text = new Text(FontLoader::LoadFont("res/font/pixelplay.ttf"), "0");
 	instance->materials_hud_text->SetSize(0.75f);
 
 	//Positions
@@ -194,4 +194,3 @@ void Client::StartGame(GameSettings settings) {
 	scene->AddChild(instance->materials_hud);
 	scene->AddChild(instance->materials_hud_text);
 }
-
