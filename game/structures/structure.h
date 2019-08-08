@@ -5,6 +5,8 @@
 // Unauthorized copying of this file, via any medium is strictly prohibited
 // Proprietary and confidential
 // Written by Jens Heukers, August 2019
+#ifndef STRUCTURE_H
+#define STRUCTURE_H
 
 //Include entity.h
 #include "../../engine/entity.h"
@@ -75,3 +77,5 @@ public:
 	*/
 	WoodCutterHut();
 };
+
+#endif // !STRUCTURE_H

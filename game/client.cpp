@@ -1,7 +1,7 @@
 // Source file for client class, client handles / supervises all gameplay
 // Client is a singleton instance, and should never be destroyed during gameplay
 //
-// Version: 7/8/2019
+// Version: 8/8/2019
 //
 // Copyright (C) Jens Heukers - All Rights Reserved
 // Unauthorized copying of this file, via any medium is strictly prohibited
@@ -19,6 +19,7 @@
 //Include game related headers
 #include "unit.h"
 #include "structures/structure.h"
+#include "derived/hud.h"
 
 //Derived -- Note we dont include SceneManager because mainmenu.h already knows about it
 #include "derived/mainmenu.h"
@@ -65,9 +66,9 @@ void Client::Update() {
 	if (!instance->inSession) return; // If user is not playing a session we will return here
 
 	//Hud updates -- NOTE: We expect the text child to be the second child in the child array
-	dynamic_cast<Text*>(instance->wood_bg->GetChild(1))->SetText(std::to_string(instance->wood));
-	dynamic_cast<Text*>(instance->stones_bg->GetChild(1))->SetText(std::to_string(instance->stones));
-	dynamic_cast<Text*>(instance->materials_bg->GetChild(1))->SetText(std::to_string(instance->materials));
+	dynamic_cast<Text*>(instance->hud->wood_bg->GetChild(1))->SetText(std::to_string(instance->wood));
+	dynamic_cast<Text*>(instance->hud->stones_bg->GetChild(1))->SetText(std::to_string(instance->stones));
+	dynamic_cast<Text*>(instance->hud->materials_bg->GetChild(1))->SetText(std::to_string(instance->materials));
 
 	//Camera movement
 	Camera* camera = SceneManager::GetActiveScene()->GetActiveCamera();
@@ -137,77 +138,9 @@ void Client::StartGame(GameSettings settings) {
 	//Set state
 	instance->inSession = true;
 
-	// Create hud (Display amount of wood, stones and materials)
-	//Wood
-	instance->wood_bg = new UIElement();
-	instance->wood_bg->AddComponent<Sprite>()->SetTexture(TextureLoader::LoadTarga("res/hud/bg_elements.tga"));
-	instance->wood_bg->GetComponent<Sprite>()->Split(32, 56);
-	instance->wood_bg->GetComponent<Sprite>()->SetScale(Vec2(2.5f, 1));
-	instance->wood_bg->GetComponent<Sprite>()->SetZIndex(1);
-
-	UIElement* wood_hud = new UIElement();
-	wood_hud->AddComponent<Sprite>()->SetTexture(TextureLoader::LoadTarga("res/hud/bg_elements.tga"));
-	wood_hud->GetComponent<Sprite>()->Split(32, 48);
-	wood_hud->GetComponent<Sprite>()->SetScale(Vec2(1, 1));
-	wood_hud->GetComponent<Sprite>()->SetZIndex(1);
-
-	Text* wood_hud_text = new Text(FontLoader::LoadFont("res/font/pixelplay.ttf"), "0");
-	wood_hud_text->SetSize(0.75f);
-
-	//Stones
-	instance->stones_bg = new UIElement();
-	instance->stones_bg->AddComponent<Sprite>()->SetTexture(TextureLoader::LoadTarga("res/hud/bg_elements.tga"));
-	instance->stones_bg->GetComponent<Sprite>()->Split(32, 56);
-	instance->stones_bg->GetComponent<Sprite>()->SetScale(Vec2(2.5f, 1));
-	instance->stones_bg->GetComponent<Sprite>()->SetZIndex(1);
-
-	UIElement* stones_hud = new UIElement();
-	stones_hud->AddComponent<Sprite>()->SetTexture(TextureLoader::LoadTarga("res/hud/bg_elements.tga"));
-	stones_hud->GetComponent<Sprite>()->Split(32, 49);
-	stones_hud->GetComponent<Sprite>()->SetScale(Vec2(1, 1));
-	stones_hud->GetComponent<Sprite>()->SetZIndex(1);
-
-	Text* stones_hud_text = new Text(FontLoader::LoadFont("res/font/pixelplay.ttf"), "0");
-	stones_hud_text->SetSize(0.75f);
-
-	//Materials
-	instance->materials_bg = new UIElement();
-	instance->materials_bg->AddComponent<Sprite>()->SetTexture(TextureLoader::LoadTarga("res/hud/bg_elements.tga"));
-	instance->materials_bg->GetComponent<Sprite>()->Split(32, 56);
-	instance->materials_bg->GetComponent<Sprite>()->SetScale(Vec2(2.5f, 1));
-	instance->materials_bg->GetComponent<Sprite>()->SetZIndex(1);
-
-	UIElement* materials_hud = new UIElement();
-	materials_hud->AddComponent<Sprite>()->SetTexture(TextureLoader::LoadTarga("res/hud/bg_elements.tga"));
-	materials_hud->GetComponent<Sprite>()->Split(32, 50);
-	materials_hud->GetComponent<Sprite>()->SetScale(Vec2(1, 1));
-	materials_hud->GetComponent<Sprite>()->SetZIndex(1);
-
-	Text* materials_hud_text = new Text(FontLoader::LoadFont("res/font/pixelplay.ttf"), "0");
-	materials_hud_text->SetSize(0.75f);
-
-	//Positions
-	instance->wood_bg->localPosition = Vec2(20, 10);
-	wood_hud_text->localPosition = Vec2(32, 29);
-
-	instance->stones_bg->localPosition = Vec2(120, 10);
-	stones_hud_text->localPosition = Vec2(32, 29);
-
-	instance->materials_bg->localPosition = Vec2(220, 10);
-	materials_hud_text->localPosition = Vec2(32, 29);
-
-	//Add to scene
-	instance->scene->AddChild(instance->wood_bg);
-	instance->wood_bg->AddChild(wood_hud);
-	instance->wood_bg->AddChild(wood_hud_text);
-
-	instance->scene->AddChild(instance->stones_bg);
-	instance->stones_bg->AddChild(stones_hud);
-	instance->stones_bg->AddChild(stones_hud_text);
-
-	instance->scene->AddChild(instance->materials_bg);
-	instance->materials_bg->AddChild(materials_hud);
-	instance->materials_bg->AddChild(materials_hud_text);
+	//Create hud instance, and add is as a child to the scene
+	instance->hud = new Hud();
+	instance->scene->AddChild(instance->hud); 
 }
 
 void Client::BuildStructure(StructureType type, Vec2 position) {

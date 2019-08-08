@@ -29,9 +29,8 @@ enum StructureType {
 
 class Scene; // Forward declare
 class Unit; // Forward declare
-class UIElement; // Forward declare
-class Text; // Forward declare
 class Structure; // Forward declare
+class Hud; // Forward declare
 
 // Struct containing game settings, instance of gameSettings should be parsed whenever a game is started
 // Game settings can also be loaded from an external source.
@@ -80,15 +79,8 @@ private:
 	int stones; /***< Amount of stones the client has*/
 	int materials; /***< Amount of materials the player has*/
 
-	//Hud elements
-	//Backgrounds
-	UIElement* wood_bg;
-	UIElement* stones_bg;
-	UIElement* materials_bg;
-
-	//Building tab
-
-
+	//Hud
+	Hud* hud; /***< Pointer to hud instance, hud instance will be created whenever a game is started, when a game ends it will be deleted*/
 public:
 	/***
 	* Constructor, if instance pointer is already set then we destroy the newly created instance 
