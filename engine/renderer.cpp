@@ -284,7 +284,7 @@ void Renderer::RenderFrame() {
 		for (Sprite* s : registeredSprites) {
 			//Todo: add test to check if owner has any relation with scene entity
 			if (!s->GetOwner()) continue; // Check if sprite has a owner
-			if (!s->GetOwner()->active) continue; // Check if owner is active
+			if (!s->GetOwner()->Active()) continue; // Check if owner is active
 			if (!s->GetTexture()) continue; // Check if sprite has a texture
 			if (s->GetZIndex() == i) {
 				sortedRenderList.push_back(s);

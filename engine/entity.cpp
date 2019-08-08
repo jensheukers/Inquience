@@ -26,11 +26,13 @@ void Entity::HandleParentTransformations() {
 
 void Entity::UpdateChildren() {
 	for (Entity* child : children) {
-		if (!child->active) continue; // Continue if child is not active
-		child->HandleParentTransformations(); // Handle the parent transformations
+		if (child->active) {
+			child->HandleParentTransformations(); // Handle the parent transformations
+			child->Update(); // Update child
+			child->UpdateComponents(); // Update components
+		}
+
 		child->UpdateChildren(); // Update their children
-		child->Update(); // Update child
-		child->UpdateComponents(); // Update components
 	}
 }
 
@@ -50,6 +52,18 @@ Entity::Entity() {
 
 	//Add to global entity list
 	Core::GetGlobalEntityList().push_back(this);
+}
+
+void Entity::SetActive(bool state) {
+	this->active = state;
+
+	for each (Entity* child in children) {
+		child->SetActive(state);
+	}
+}
+
+bool Entity::Active() {
+	return this->active;
 }
 
 Entity* Entity::AddChild(Entity* entity) {

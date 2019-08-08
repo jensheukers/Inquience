@@ -10,11 +10,105 @@
 //Include hud.h
 #include "hud.h"
 
-//Include font.h for text
+//engine related headers
 #include "../../engine/graphics/font.h"
+#include "../../engine/input.h"
 
 //Include client.h we want the hud to know about client
 #include "../client.h"
+
+CatalogueItem::CatalogueItem(const char* tilemapTexture, int index, int pixelsPerTile) {
+	this->AddComponent<Sprite>()->SetTexture(TextureLoader::LoadTarga((char*)tilemapTexture));
+	this->GetComponent<Sprite>()->Split(pixelsPerTile, index);
+}
+
+Catalogue::Catalogue() {
+	this->AddComponent<Sprite>()->SetTexture(TextureLoader::LoadTarga("res/placeholder.tga"));
+	this->GetComponent<Sprite>()->SetScale(Vec2(5.0f, 1.0f));
+}
+
+void Catalogue::AddCatalogueItem(CatalogueItem * item) {
+	static float xOffset = 0;
+
+	//Set position
+	item->localPosition = Vec2(xOffset, 0);
+	xOffset += 32; //Increment
+
+	//Add to children
+	this->AddChild(item);
+	catalogueItems.push_back(item);
+
+	//Disable item for now
+	item->SetActive(false);
+}
+
+SideBarButton::SideBarButton(const char* tilemapTexture, int index, int pixelsPerTile) {
+	this->AddComponent<Sprite>()->SetTexture(TextureLoader::LoadTarga((char*)tilemapTexture));
+	this->GetComponent<Sprite>()->Split(pixelsPerTile, index);
+
+	//set catalogue to nullptr
+	this->catalogue = nullptr;
+}
+
+void SideBarButton::OnStay() {
+	//If clicked
+	if (Input::GetButtonDown(BUTTONCODE_LEFT)) {
+		//Open catalogue if not open yet & if instance is present
+		if (this->catalogue) {
+			if (!catalogue->Active()) {
+				catalogue->SetActive(true);
+			}
+			else {
+				catalogue->SetActive(false);
+			}
+		}
+	}
+}
+
+void SideBarButton::SetCatalogue(Catalogue* catalogue) {
+	//If we already have a catalogue, remove it from children
+	if (this->catalogue) {
+		this->RemoveChild(this->catalogue);
+	}
+
+	//Set pointer
+	this->catalogue = catalogue;
+
+	//Set catalogue not active
+	this->catalogue->SetActive(false);
+	this->AddChild(this->catalogue);
+
+	//Set position correct
+	this->catalogue->localPosition = Vec2(32, 0);
+}
+
+Catalogue* SideBarButton::GetCatalogue() {
+	return this->catalogue;
+}
+
+SideBar::SideBar() {
+	//First construct the background of the sidebar 
+	this->AddComponent<Sprite>()->SetTexture(TextureLoader::LoadTarga("res/placeholder.tga"));
+	this->GetComponent<Sprite>()->SetScale(Vec2(1.0f, 12.5f));
+
+	SideBarButton* structureShop = AddSideBarButton(new SideBarButton("res/hud/bg_elements.tga", 50));
+	structureShop->SetCatalogue(new Catalogue());
+	structureShop->GetCatalogue()->AddCatalogueItem(new CatalogueItem("res/hud/bg_elements.tga", 50));
+	structureShop->GetCatalogue()->AddCatalogueItem(new CatalogueItem("res/hud/bg_elements.tga", 50));
+}
+
+SideBarButton* SideBar::AddSideBarButton(SideBarButton* button) {
+	static float yOffset = 0; 
+
+	//Set position
+	button->localPosition = Vec2(0, yOffset);
+	yOffset += 32; // Increment
+
+	//Add to children
+	this->AddChild(button);
+	this->buttons.push_back(button);
+	return button;
+}
 
 Hud::Hud() {
 	// Create hud (Display amount of wood, stones and materials)
@@ -88,4 +182,13 @@ Hud::Hud() {
 	this->AddChild(this->materials_bg);
 	this->materials_bg->AddChild(materials_hud);
 	this->materials_bg->AddChild(materials_hud_text);
+
+	//Add the sidebar
+	SideBar* sidebar = new SideBar();
+
+	//Set position
+	sidebar->localPosition = Vec2(0, 150);
+
+	//Add child
+	this->AddChild(sidebar);
 }

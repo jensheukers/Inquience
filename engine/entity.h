@@ -34,6 +34,8 @@ private:
 	//Transformations
 	Vec2 position; /***< The global position (Parent transformations included)*/
 	Vec2 scale; /***< The global scale (Parent transformations included)*/
+
+	bool active; /***< Determines wheter the entity is active or not, if entity is not active no updates will be performed*/
 protected:
 	/**
 	* Handles transformation with parent entity
@@ -56,7 +58,6 @@ protected:
 	*/
 	virtual void Update() {};
 public:
-	bool active; /***< Determines wheter the entity is active or not, if entity is not active no updates will be performed*/
 	Vec2 localPosition; /***< The local position of the Entity*/
 	Vec2 localScale; /***< The local scale of the Entity*/
 
@@ -64,6 +65,17 @@ public:
 	* Constructor
 	*/
 	Entity();
+
+	/**
+	* Sets a entity active or not, also updates children automaticly
+	* @param bool
+	*/
+	void SetActive(bool state);
+
+	/**
+	* Returns true if the entity is active
+	*/
+	bool Active();
 
 	/**
 	* Adds a child to the children vector
