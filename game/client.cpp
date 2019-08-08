@@ -61,8 +61,6 @@ void Client::Start() {
 }
 
 void Client::Update() {
-	//Updates
-
 	//In-Game Updates
 	if (!instance->inSession) return; // If user is not playing a session we will return here
 
@@ -70,6 +68,25 @@ void Client::Update() {
 	dynamic_cast<Text*>(instance->wood_bg->GetChild(1))->SetText(std::to_string(instance->wood));
 	dynamic_cast<Text*>(instance->stones_bg->GetChild(1))->SetText(std::to_string(instance->stones));
 	dynamic_cast<Text*>(instance->materials_bg->GetChild(1))->SetText(std::to_string(instance->materials));
+
+	//Camera movement
+	Camera* camera = SceneManager::GetActiveScene()->GetActiveCamera();
+
+	if (Input::GetKey(KEYCODE_W)) {
+		camera->SetPosition(camera->GetPosition() - Vec2(0, Core::GetDeltaTime() * instance->cameraMovementSpeed));
+	}
+
+	if (Input::GetKey(KEYCODE_A)) {
+		camera->SetPosition(camera->GetPosition() - Vec2(Core::GetDeltaTime() * instance->cameraMovementSpeed, 0));
+	}
+
+	if (Input::GetKey(KEYCODE_S)) {
+		camera->SetPosition(camera->GetPosition() + Vec2(0, Core::GetDeltaTime() * instance->cameraMovementSpeed));
+	}
+
+	if (Input::GetKey(KEYCODE_D)) {
+		camera->SetPosition(camera->GetPosition() + Vec2(Core::GetDeltaTime() * instance->cameraMovementSpeed, 0));
+	}
 
 	//If Right Mouse Button is clicked, units within X pixels of the click location, will be added to selectedUnits vector
 	//If there are no units found, we will unselect all units
@@ -108,7 +125,7 @@ void Client::Update() {
 void Client::StartGame(GameSettings settings) {
 	//Load Scene using SceneManager
 	instance->scene = new Scene();
-	//instance->scene->Load((char*)settings.worldSceneFile.c_str());
+	instance->scene->Load((char*)settings.worldSceneFile.c_str());
 	instance->scene->SetActiveCamera(new Camera());
 	Core::SwitchScene(instance->scene);
 

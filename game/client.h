@@ -72,6 +72,9 @@ private:
 
 	std::vector<Structure*> structures; /***< All our structures in the scene*/
 
+	//Camera movement speed
+	float cameraMovementSpeed = 150;
+
 	//Resources
 	int wood; /***< Amount of wood the client has */
 	int stones; /***< Amount of stones the client has*/
@@ -82,6 +85,10 @@ private:
 	UIElement* wood_bg;
 	UIElement* stones_bg;
 	UIElement* materials_bg;
+
+	//Building tab
+
+
 public:
 	/***
 	* Constructor, if instance pointer is already set then we destroy the newly created instance 
