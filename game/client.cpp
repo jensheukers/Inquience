@@ -191,8 +191,6 @@ void Client::StartGame(GameSettings settings) {
 	instance->scene->AddChild(instance->materials_bg);
 	instance->materials_bg->AddChild(materials_hud);
 	instance->materials_bg->AddChild(materials_hud_text);
-
-	BuildStructure(StructureType::STRUCTURE_WOODCUTTER_HUT, Vec2(50, 0));
 }
 
 void Client::BuildStructure(StructureType type, Vec2 position) {

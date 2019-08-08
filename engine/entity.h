@@ -1,11 +1,11 @@
 // Header file for entity class.
 //
-// Version: 4/5/2019
+// Version: 8/8/2019
 //
 // Copyright (C) Jens Heukers - All Rights Reserved
 // Unauthorized copying of this file, via any medium is strictly prohibited
 // Proprietary and confidential
-// Written by Jens Heukers, May 2019
+// Written by Jens Heukers, August 2019
 #ifndef ENTITY_H
 #define ENTITY_H
 
@@ -56,6 +56,7 @@ protected:
 	*/
 	virtual void Update() {};
 public:
+	bool active; /***< Determines wheter the entity is active or not, if entity is not active no updates will be performed*/
 	Vec2 localPosition; /***< The local position of the Entity*/
 	Vec2 localScale; /***< The local scale of the Entity*/
 

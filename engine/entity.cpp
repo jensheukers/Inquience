@@ -1,6 +1,6 @@
 // Source file for entity class.
 //
-// Version: 6/8/2019
+// Version: 8/8/2019
 //
 // Copyright (C) Jens Heukers - All Rights Reserved
 // Unauthorized copying of this file, via any medium is strictly prohibited
@@ -26,6 +26,7 @@ void Entity::HandleParentTransformations() {
 
 void Entity::UpdateChildren() {
 	for (Entity* child : children) {
+		if (!child->active) continue; // Continue if child is not active
 		child->HandleParentTransformations(); // Handle the parent transformations
 		child->UpdateChildren(); // Update their children
 		child->Update(); // Update child
@@ -43,6 +44,9 @@ Entity::Entity() {
 	this->parent = nullptr; // Set parent to nullptr
 	this->position = Vec2(0,0);
 	this->scale = Vec2(1, 1);
+
+	//Set entity active
+	this->active = true;
 
 	//Add to global entity list
 	Core::GetGlobalEntityList().push_back(this);
