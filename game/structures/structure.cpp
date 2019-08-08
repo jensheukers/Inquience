@@ -23,6 +23,7 @@ void Structure::MasterUpdate() {
 Structure::Structure() {
 	//Set properties
 	this->health = 100; // Set health to 100%
+	this->capacity = STRUCTURE_DEFAULT_CAPACITY;
 
 	//Add sprite component
 	this->AddComponent<Sprite>();
@@ -38,4 +39,26 @@ void Structure::Damage(int amount) {
 
 void Structure::Heal(int amount) {
 	this->health += amount;
+}
+
+bool Structure::Store(int amount) {
+	if (capacity + amount > maxCapacity) return false;
+	capacity += amount;
+	return true;
+}
+
+bool Structure::Withdraw(int amount) {
+	if (capacity - amount < 0) return false;
+	capacity -= amount;
+	return true;
+}
+
+WoodCutterHut::WoodCutterHut() {
+	//Set sprite to right texture
+	this->GetComponent<Sprite>()->SetTexture(TextureLoader::LoadTarga("res/placeholder.tga"));
+
+	//Set costs
+	cost[0] = WOODCUTTERHUT_COST_WOOD;
+	cost[1] = WOODCUTTERHUT_COST_STONES;
+	cost[2] = WOODCUTTERHUT_COST_MATERIALS;
 }

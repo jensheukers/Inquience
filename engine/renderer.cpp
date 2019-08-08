@@ -282,7 +282,9 @@ void Renderer::RenderFrame() {
 	//Now go through all "Layers"
 	for (int i = 0; i <= highest; i++) {
 		for (Sprite* s : registeredSprites) {
-			if (!SceneManager::GetActiveScene()->HasChild(s->GetOwner())) continue; // Check if owner of sprite has been added to the scene
+			//Todo: add test to check if owner has any relation with scene entity
+			if (!s->GetOwner()) continue; // Check if sprite has a owner
+			if (!s->GetTexture()) continue; // Check if sprite has a texture
 			if (s->GetZIndex() == i) {
 				sortedRenderList.push_back(s);
 			}

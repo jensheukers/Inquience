@@ -9,18 +9,22 @@
 //Include entity.h
 #include "../../engine/entity.h"
 
+#define STRUCTURE_DEFAULT_CAPACITY 3;
+
 class Structure : public Entity {
 private:
-	//Properties
-	int cost[3]; /***< The cost of the structure to be build (wood, stones, materials)*/
-
 	int health; /***< The health of the structure, if health is 0 structure will be deleted*/
+	int maxCapacity; /***< The amount of capacity the Structure can hold*/
+	int capacity; /***< The capacity of the structure */
 protected:
 	/**
 	* Master update method, should be called from within Update
 	*/
 	void MasterUpdate();
 public:
+	//Properties
+	int cost[3]; /***< The cost of the structure to be build (wood, stones, materials)*/
+
 	/**
 	* Constructor
 	*/
@@ -29,7 +33,7 @@ public:
 	/**
 	* Update method
 	*/
-	void Update() override;
+	virtual void Update() override;
 
 	/**
 	* Damages the structure, taking amount from health
@@ -42,4 +46,32 @@ public:
 	* @param int amount
 	*/
 	void Heal(int amount);
+
+	/**
+	* Stores amount in the capacity, will return true if success
+	* @param int amount
+	* @return bool
+	*/
+	bool Store(int amount);
+
+	/**
+	* withdraws amount from the capacity, returns true if success
+	* @param int amount
+	* @return bool
+	*/
+	bool Withdraw(int amount);
+};
+
+//Define costs so it can be easily modified
+#define WOODCUTTERHUT_COST_WOOD 100 
+#define WOODCUTTERHUT_COST_STONES 50
+#define WOODCUTTERHUT_COST_MATERIALS 0
+
+//Structures
+class WoodCutterHut : public Structure {
+public:
+	/**
+	* Constructor
+	*/
+	WoodCutterHut();
 };

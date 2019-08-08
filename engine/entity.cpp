@@ -11,6 +11,7 @@
 #include "renderer.h"
 
 //Include font.h to check if child is text when added
+#include <iostream>
 
 void Entity::HandleParentTransformations() {
 	if (!this->parent) { // If we have no parent

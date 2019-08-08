@@ -13,13 +13,25 @@
 //Defines
 #define UNIT_SELECT_RANGE 32
 
+//Enum structuretypes
+
+enum StructureType {
+	STRUCTURE_WOODCUTTER_HUT = 0,
+	STRUCTURE_STONE_MINE_HUT,
+	STRUCTURE_MATERIAL_MINE_HUT
+};
+
 //Include vector
 #include <vector>
+
+//Include vec2.h
+#include "../engine/math/vec2.h"
 
 class Scene; // Forward declare
 class Unit; // Forward declare
 class UIElement; // Forward declare
 class Text; // Forward declare
+class Structure; // Forward declare
 
 // Struct containing game settings, instance of gameSettings should be parsed whenever a game is started
 // Game settings can also be loaded from an external source.
@@ -49,13 +61,16 @@ private:
 
 	//Scenes
 	Scene* mainMenu; /***< The main menu scene pointer*/
+	Scene* scene; /*** Reference to the current scene*/
 
 	//Bools
 	bool inSession; /***< Should be true if the player is in a session, the player will now be able to select units and move them.*/
 
 	//Vectors
-	std::vector<Unit*> units; /***< All the units in the scene*/
+	std::vector<Unit*> units; /***< All our units in the scene*/
 	std::vector<Unit*> selectedUnits; /***< List containing all selected units*/
+
+	std::vector<Structure*> structures; /***< All our structures in the scene*/
 
 	//Resources
 	int wood; /***< Amount of wood the client has */
@@ -67,17 +82,6 @@ private:
 	UIElement* wood_bg;
 	UIElement* stones_bg;
 	UIElement* materials_bg;
-
-	//Images
-	UIElement* wood_hud;
-	UIElement* stones_hud;
-	UIElement* materials_hud;
-
-	//Texts for hud
-	Text* wood_hud_text;
-	Text* stones_hud_text;
-	Text* materials_hud_text;
-
 public:
 	/***
 	* Constructor, if instance pointer is already set then we destroy the newly created instance 
@@ -99,6 +103,13 @@ public:
 	* @param GameSettings
 	*/
 	static void StartGame(GameSettings settings);
+
+	/**
+	* Builds a structure
+	* @param StructureType*
+	* @param Vec2 position
+	*/
+	static void BuildStructure(StructureType type, Vec2 position);
 };
 
 
