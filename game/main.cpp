@@ -1,6 +1,6 @@
 // Main entry point for Dustville.
 //
-// Version: 1/8/2019
+// Version: 8/8/2019
 //
 // Copyright (C) Jens Heukers - All Rights Reserved
 // Unauthorized copying of this file, via any medium is strictly prohibited
@@ -26,7 +26,11 @@ int main(int argc, char * argv[]) {
 
 	while (Core::IsActive()) {
 		Core::Update(); // Handle updates for engine
-		Client::Update(); // Update for game
+
+		//If the editor is not active we can update the game 
+		if (!editorActive) {
+			Client::Update(); // Update for game
+		}
 
 		if (Input::GetKeyDown(KEYCODE_GRAVE_ACCENT)) {
 			if (!editorActive) {
