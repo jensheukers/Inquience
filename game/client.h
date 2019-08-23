@@ -1,7 +1,7 @@
 // Header file for client class, client handles / supervises all gameplay
 // Client is a singleton instance, and should never be destroyed during gameplay
 //
-// Version: 6/8/2019
+// Version: 23/8/2019
 //
 // Copyright (C) Jens Heukers - All Rights Reserved
 // Unauthorized copying of this file, via any medium is strictly prohibited
@@ -82,6 +82,11 @@ private:
 	//Hud
 	Hud* hud; /***< Pointer to hud instance, hud instance will be created whenever a game is started, when a game ends it will be deleted*/
 public:
+	//BuildMode, when actived user can place structure on the grid, there is a active building type.
+	//Both types are static
+	static bool buildMode; /***< When true, buildmode is activated*/
+	static StructureType structureType; /***< Type of strucutre to be placed*/
+
 	/***
 	* Constructor, if instance pointer is already set then we destroy the newly created instance 
 	*/

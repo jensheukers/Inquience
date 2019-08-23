@@ -1,7 +1,7 @@
 // Source file for client class, client handles / supervises all gameplay
 // Client is a singleton instance, and should never be destroyed during gameplay
 //
-// Version: 8/8/2019
+// Version: 23/8/2019
 //
 // Copyright (C) Jens Heukers - All Rights Reserved
 // Unauthorized copying of this file, via any medium is strictly prohibited
@@ -37,7 +37,10 @@ GameSettings::GameSettings(std::string worldSceneFile, int start_wood, int start
 	this->start_materials = start_materials;
 }
 
-Client* Client::instance; // Declare instance
+//Declare instances
+Client* Client::instance;
+bool Client::buildMode;
+StructureType Client::structureType;
 
 Client::Client() {
 	if (!instance) {
@@ -87,6 +90,14 @@ void Client::Update() {
 
 	if (Input::GetKey(KEYCODE_D)) {
 		camera->SetPosition(camera->GetPosition() + Vec2(Core::GetDeltaTime() * instance->cameraMovementSpeed, 0));
+	}
+
+	//When buildmode is activated, return out of function when if statement is finished
+	if (buildMode) {
+		if (Input::GetButtonDown(BUTTONCODE_LEFT)) {
+			BuildStructure(structureType, Input::GetMousePosition() + camera->GetPosition());
+		}
+		return;
 	}
 
 	//If Right Mouse Button is clicked, units within X pixels of the click location, will be added to selectedUnits vector

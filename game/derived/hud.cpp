@@ -1,6 +1,6 @@
 // Source file for Head up display class, this class will handle every HUD event (Pause Menu, buttons, building tab ect...)
 //
-// Version: 8/8/2019
+// Version: 23/8/2019
 //
 // Copyright (C) Jens Heukers - All Rights Reserved
 // Unauthorized copying of this file, via any medium is strictly prohibited
@@ -22,6 +22,17 @@ CatalogueItem::CatalogueItem(const char* tilemapTexture, int index, int pixelsPe
 	this->GetComponent<Sprite>()->Split(pixelsPerTile, index);
 }
 
+//Catalogue Items
+WoodCutterItem::WoodCutterItem(const char* tilemapTexture, int index, int pixelsPerTile) : CatalogueItem(tilemapTexture, index, pixelsPerTile) {};
+
+void WoodCutterItem::OnStay() {
+	if (Input::GetButtonDown(BUTTONCODE_LEFT)) {
+		Client::structureType = StructureType::STRUCTURE_WOODCUTTER_HUT;
+		Client::buildMode = true;
+	}
+}
+
+//Cataloges
 Catalogue::Catalogue() {
 	this->AddComponent<Sprite>()->SetTexture(TextureLoader::LoadTarga("res/placeholder.tga"));
 	this->GetComponent<Sprite>()->SetScale(Vec2(5.0f, 1.0f));
@@ -94,7 +105,7 @@ SideBar::SideBar() {
 	SideBarButton* structureShop = AddSideBarButton(new SideBarButton("res/hud/bg_elements.tga", 50));
 	structureShop->SetCatalogue(new Catalogue());
 	structureShop->GetCatalogue()->AddCatalogueItem(new CatalogueItem("res/hud/bg_elements.tga", 50));
-	structureShop->GetCatalogue()->AddCatalogueItem(new CatalogueItem("res/hud/bg_elements.tga", 50));
+	structureShop->GetCatalogue()->AddCatalogueItem(new WoodCutterItem("res/hud/bg_elements.tga", 49));
 }
 
 SideBarButton* SideBar::AddSideBarButton(SideBarButton* button) {

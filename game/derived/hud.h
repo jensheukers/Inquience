@@ -1,6 +1,6 @@
 // Header file for Head up display class, this class will handle every HUD event (Pause Menu, buttons, building tab ect...)
 //
-// Version: 8/8/2019
+// Version: 23/8/2019
 //
 // Copyright (C) Jens Heukers - All Rights Reserved
 // Unauthorized copying of this file, via any medium is strictly prohibited
@@ -24,6 +24,20 @@ public:
 	* @param int pixelsPerTile
 	*/
 	CatalogueItem(const char* tilemapTexture, int index, int pixelsPerTile = 32);
+};
+
+//All catalogue Items are listed down here
+class WoodCutterItem : public CatalogueItem {
+public:
+	/*
+	* Constructor
+	*/
+	WoodCutterItem(const char* tilemapTexture, int index, int pixelPerTile = 32);
+
+	/**
+	* Overwritten method
+	*/
+	void OnStay() override;
 };
 
 //Catalogue holds Items
