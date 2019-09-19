@@ -1,4 +1,4 @@
-// Main entry point for Dustville.
+// Main entry point.
 //
 // Version: 8/8/2019
 //
@@ -9,17 +9,11 @@
 #include "../engine/core.h"
 #include "../engine/input.h"
 
-//Include client
-#include "client.h"
-
 //Define default tilemap scale
 #define DEFAULT_TILEMAP_TILE_SCALE 32 
 
 int main(int argc, char * argv[]) {
 	Core::Initialize(argc, argv);
-
-	//Create the client
-	new Client();
 
 	//Editor
 	bool editorActive = false;
@@ -29,7 +23,6 @@ int main(int argc, char * argv[]) {
 
 		//If the editor is not active we can update the game 
 		if (!editorActive) {
-			Client::Update(); // Update for game
 		}
 
 		if (Input::GetKeyDown(KEYCODE_GRAVE_ACCENT)) {
