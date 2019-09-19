@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 2.8.9)
 
 set(CMAKE_SUPPRESS_REGENERATION true) 
 
-project (Dustville)
+project (FoundryFactoryEngine)
 
 # Main engine files
 file(GLOB MAIN "engine/*.cpp" "engine/*.h" )
@@ -25,53 +25,53 @@ link_directories(${GLFW_DIR}/lib-vc2015 ${GLEW_DIR}/lib/Win32 ${STEAM_DIR}/lib $
 
 # Add Executable
 
-add_executable(Dustville ${MAIN} ${GRAPHICS} ${GAME} ${COMPONENTS} ${MATH} ${IMGUI})
+add_executable(FoundryFactoryEngine ${MAIN} ${GRAPHICS} ${GAME} ${COMPONENTS} ${MATH} ${IMGUI})
 
 set(CMAKE_CXX_FLAGS_RELEASE "/MD")
 set(CMAKE_CXX_FLAGS_DEBUG "/MD")
 
 # Link libraries
-target_link_libraries(Dustville glfw3.lib glfw3dll.lib opengl32.lib glew32.lib glew32s.lib sdkencryptedappticket.lib steam_api.lib freetype.lib)
+target_link_libraries(FoundryFactoryEngine glfw3.lib glfw3dll.lib opengl32.lib glew32.lib glew32s.lib sdkencryptedappticket.lib steam_api.lib freetype.lib)
 SET (CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} /SAFESEH:NO")
 SET (CMAKE_SHARED_LINKER_FLAGS "${CMAKE_SHARED_LINKER_FLAGS} /SAFESEH:NO")
 SET (CMAKE_MODULE_LINKER_FLAGS "${CMAKE_MODULE_LINKER_FLAGS} /SAFESEH:NO")
 
 # TODO: Set Commands
-add_custom_command(TARGET Dustville POST_BUILD 
+add_custom_command(TARGET FoundryFactoryEngine POST_BUILD 
 					COMMAND ${CMAKE_COMMAND} -E copy
-						${CMAKE_SOURCE_DIR}/external/glfw/lib-vc2015/glfw3.dll $<TARGET_FILE_DIR:Dustville>)
+						${CMAKE_SOURCE_DIR}/external/glfw/lib-vc2015/glfw3.dll $<TARGET_FILE_DIR:FoundryFactoryEngine>)
 
-add_custom_command(TARGET Dustville POST_BUILD 
+add_custom_command(TARGET FoundryFactoryEngine POST_BUILD 
 					COMMAND ${CMAKE_COMMAND} -E copy
-						${CMAKE_SOURCE_DIR}/external/glew/bin/Win32/glew32.dll $<TARGET_FILE_DIR:Dustville>)
+						${CMAKE_SOURCE_DIR}/external/glew/bin/Win32/glew32.dll $<TARGET_FILE_DIR:FoundryFactoryEngine>)
 
-add_custom_command(TARGET Dustville POST_BUILD 
+add_custom_command(TARGET FoundryFactoryEngine POST_BUILD 
 					COMMAND ${CMAKE_COMMAND} -E copy
-						${CMAKE_SOURCE_DIR}/external/steam/lib/sdkencryptedappticket.dll $<TARGET_FILE_DIR:Dustville>)
+						${CMAKE_SOURCE_DIR}/external/steam/lib/sdkencryptedappticket.dll $<TARGET_FILE_DIR:FoundryFactoryEngine>)
 	
-add_custom_command(TARGET Dustville POST_BUILD 
+add_custom_command(TARGET FoundryFactoryEngine POST_BUILD 
 					COMMAND ${CMAKE_COMMAND} -E copy
-						${CMAKE_SOURCE_DIR}/external/steam/lib/steam_api.dll $<TARGET_FILE_DIR:Dustville>)
+						${CMAKE_SOURCE_DIR}/external/steam/lib/steam_api.dll $<TARGET_FILE_DIR:FoundryFactoryEngine>)
 						
-add_custom_command(TARGET Dustville POST_BUILD 
+add_custom_command(TARGET FoundryFactoryEngine POST_BUILD 
 					COMMAND ${CMAKE_COMMAND} -E copy
-						${CMAKE_SOURCE_DIR}/external/freetype/win32/freetype.dll $<TARGET_FILE_DIR:Dustville>)						
+						${CMAKE_SOURCE_DIR}/external/freetype/win32/freetype.dll $<TARGET_FILE_DIR:FoundryFactoryEngine>)						
 	
-add_custom_command(TARGET Dustville POST_BUILD 
+add_custom_command(TARGET FoundryFactoryEngine POST_BUILD 
 					COMMAND ${CMAKE_COMMAND} -E make_directory
-						$<TARGET_FILE_DIR:Dustville>/shaders)
+						$<TARGET_FILE_DIR:FoundryFactoryEngine>/shaders)
 
-add_custom_command(TARGET Dustville POST_BUILD 
+add_custom_command(TARGET FoundryFactoryEngine POST_BUILD 
 					COMMAND ${CMAKE_COMMAND} -E copy_directory
-						${CMAKE_SOURCE_DIR}/engine/shaders $<TARGET_FILE_DIR:Dustville>/shaders)
+						${CMAKE_SOURCE_DIR}/engine/shaders $<TARGET_FILE_DIR:FoundryFactoryEngine>/shaders)
 						
-add_custom_command(TARGET Dustville POST_BUILD 
+add_custom_command(TARGET FoundryFactoryEngine POST_BUILD 
 					COMMAND ${CMAKE_COMMAND} -E make_directory
-						$<TARGET_FILE_DIR:Dustville>/res)
+						$<TARGET_FILE_DIR:FoundryFactoryEngine>/res)
 
-add_custom_command(TARGET Dustville POST_BUILD 
+add_custom_command(TARGET FoundryFactoryEngine POST_BUILD 
 					COMMAND ${CMAKE_COMMAND} -E copy_directory
-						${CMAKE_SOURCE_DIR}/game/res $<TARGET_FILE_DIR:Dustville>/res)
+						${CMAKE_SOURCE_DIR}/game/res $<TARGET_FILE_DIR:FoundryFactoryEngine>/res)
 # Filter groups
 source_group("engine" FILES ${MAIN})
 source_group("graphics" FILES ${GRAPHICS})
