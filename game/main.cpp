@@ -15,29 +15,9 @@
 int main(int argc, char * argv[]) {
 	Core::Initialize(argc, argv);
 
-	//Editor
-	bool editorActive = false;
-
 	while (Core::IsActive()) {
 		Core::Update(); // Handle updates for engine
-
-		//If the editor is not active we can update the game 
-		if (!editorActive) {
-		}
-
-		if (Input::GetKeyDown(KEYCODE_GRAVE_ACCENT)) {
-			if (!editorActive) {
-				Core::EnableEditor(true);
-				editorActive = true;
-			}
-			else {
-				Core::EnableEditor(false);
-				editorActive = false;
-			}
-
-		}
 	}
 
-	Core::Destroy();
 	return 0; // return succes
 }

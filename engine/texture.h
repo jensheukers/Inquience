@@ -12,6 +12,7 @@
 
 //Include map so we can store pointers to loaded textures
 #include <map>
+#include <string>
 
 //Include glm and glew
 #include "glm/glm.hpp"

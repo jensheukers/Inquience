@@ -17,38 +17,6 @@
 #include <steam_api.h>
 #include <steam_gameserver.h>
 
-void Grid::Construct() {
-	//Empty the gridtiles list, if already filled
-	for (int i = 0; i < (int)gridTiles.size(); i++) {
-		gridTiles.erase(gridTiles.begin(), gridTiles.begin() + i);
-	}
-
-	for (int x = 0; x <= scale.x * tileScale.x; x += (int)tileScale.x) {
-		for (int y = 0; y <= scale.y * tileScale.y; y += (int)tileScale.y) {
-			GridTile tile;
-			tile.position = Vec2((float)x, (float)y);
-			tile.occupied = false;
-			gridTiles.push_back(tile);
-		}
-	}
-}
-
-GridTile* Grid::GetTilePosition(Vec2 position) {
-	for (int i = 0; i < (int)gridTiles.size(); i++) {
-		if (Physics::InBounds(position, gridTiles[i].position, gridTiles[i].position + tileScale)) {
-			return &gridTiles[i];
-		}
-	}
-
-	return nullptr;
-}
-
-void Grid::Clear() {
-	for (size_t i = 0; i < gridTiles.size(); i++) {
-		gridTiles[i].occupied = false;
-		gridTiles[i].tileEntity = nullptr;
-	}
-}
 
 Core* Core::instance; // The singleton instance
 
@@ -70,24 +38,11 @@ void Core::Initialize(int argc, char* argv[]) {
 	//Create renderer
 	instance->renderer = new Renderer(Vec2(1280, 720), Vec2(1280, 720), "Dustville");
 
-	//Create Grid
-	instance->grid = new Grid();
-
-	//Create Editor
-	instance->editor = new Editor();
-
 	//Set sceneToBeLoaded to a nullptr value
 	instance->sceneToBeLoaded = nullptr;
 
 	//Initialize Input
 	Input::Init(instance->renderer->GetWindow());
-
-	instance->isActive = true;
-
-	//Set default values
-	instance->grid->scale = Vec2(DEFAULT_TILE_SIZE, DEFAULT_TILE_SIZE);
-	instance->grid->tileScale = Vec2(DEFAULT_TILE_SIZE, DEFAULT_TILE_SIZE);
-	instance->grid->Construct();
 
 	//Initialize Steamworks API
 	if (SteamAPI_Init()) {
@@ -120,11 +75,6 @@ void Core::Update() {
 
 	//Update Entities
 	if (SceneManager::GetActiveScene()) {
-		//Update editor if active
-		if (instance->editorActive) {
-			instance->editor->Update();
-		}
-
 		//Update Scene
 		SceneManager::GetActiveScene()->Update();
 		instance->renderer->RenderFrame();
@@ -149,7 +99,7 @@ void Core::Update() {
 		instance->renderer->Clear();
 	}
 	else {
-		instance->isActive = false;
+		Core::Destroy();
 	}
 
 	//Increment frames
@@ -157,10 +107,12 @@ void Core::Update() {
 }
 
 bool Core::IsActive() {
-	return instance->isActive;
+	return (instance != nullptr) ? true : false;
 }
 
 void Core::Destroy() {
+	if (!IsActive()) return; // Instance already destroyed
+
 	//Terminate TextureLoader
 	TextureLoader::Terminate();
 
@@ -170,7 +122,9 @@ void Core::Destroy() {
 	//Delete scenemanager
 	SceneManager::Terminate();
 
-	delete instance; // Delete instance
+	// Delete instance and set instance to nullptr
+	delete instance; 
+	instance = nullptr;
 }
 
 std::string Core::GetExecutableDirectoryPath() {
@@ -181,32 +135,13 @@ Renderer* Core::GetRendererInstance() {
 	return instance->renderer;
 }
 
-void Core::EnableEditor(bool state) {
-	instance->editorActive = state;
-
-	if (state) {
-		Debug::Log("Editor enabled");
-	}
-	else {
-		Debug::Log("Editor disabled");
-	}
-}
-
 void Core::SwitchScene(Scene* scene) {
 	instance->sceneToBeLoaded = scene;
-}
-
-Grid* Core::GetGrid() {
-	return instance->grid;
 }
 
 std::vector<Entity*>& Core::GetGlobalEntityList()
 {
 	return instance->globalEntityList;
-}
-
-void Core::Terminate() {
-	instance->isActive = false;
 }
 
 float Core::CalculateDeltaTime() {

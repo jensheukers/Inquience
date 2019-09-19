@@ -15,60 +15,18 @@
 //Include renderer.h
 #include "renderer.h"
 
-//Include editor.h
-#include "editor.h"
-
 //Forward declare
 class Scene;
-
-//Define tile scale
-#define DEFAULT_TILEMAP_SIZE 256
-#define DEFAULT_TILE_SIZE 32
-#define DEFAULT_GRID_SIZE 100 //Units (x:TILE_SIZE y:TILE_SIZE)
-
-//Grid structure, there is always a grid initialized by default, using the grid we can check if tiles are occupied or not
-struct GridTile {
-	bool occupied; /***< True if a tile is occupied*/
-	Vec2 position; /***< Position of the gridTile*/
-	Entity* tileEntity; /***< The entity that is occupying the tile*/
-};
-
-struct Grid {
-	Vec2 scale; /***< The scale of the grid*/
-	Vec2 tileScale; /*** The scale of one tile*/
-	std::vector<GridTile> gridTiles; /***< Vector containing all gridTiles*/
-
-	/**
-	* Constructs the grid, fills gridTiles vector
-	*/
-	void Construct();
-
-	/**
-	* Returns the Tile nearest to position
-	* @param Vec2
-	* @return GridTile
-	*/
-	GridTile* GetTilePosition(Vec2 position);
-
-	/**
-	* Clears the entire grid, sets all tiles to unoccupied, Note that this does not remove any objects
-	*/
-	void Clear();
-};
 
 class Core {
 private:
 	static Core* instance; /***< The singleton instance*/
 	
 	//References
-	Renderer* renderer; /***< The renderer instance pointer*/
-	Editor* editor; /***< The editor instance pointer*/
-	Grid* grid; /***< The grid instance (Grid is used to find occupied tiles)*/
+	Renderer* renderer = nullptr; /***< The renderer instance pointer*/
 
 	//Local variables
 	std::string executableDirectoryPath; /***< The path to the executable directory*/
-	bool isActive; /***< Determines if the engine is active*/
-	bool editorActive; /***< Determines if the editor is to be shown or not*/
 
 	//Time
 	float deltaTime; /***< The amount of seconds between frames*/
@@ -136,33 +94,15 @@ public:
 	static Renderer* GetRendererInstance();
 
 	/**
-	* Enables or disables the editor
-	* @param bool
-	*/
-	static void EnableEditor(bool state);
-
-	/**
 	* Safely finsishes frame then removes the active scene from memory and sets the new scene active
 	*/
 	static void SwitchScene(Scene* scene);
-
-	/**
-	* Returns the grid instance
-	* @return Grid*
-	*/
-	static Grid* GetGrid();
 
 	/**
 	* Returns the global entity list
 	* @return std::vector<Entity*>
 	*/
 	static std::vector<Entity*>& GetGlobalEntityList();
-
-
-	/**
-	* Disables the core, settings isActive to false
-	*/
-	static void Terminate();
 
 	//Local methods
 
