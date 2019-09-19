@@ -11,6 +11,7 @@
 #include "debug.h"
 #include "scenemanager.h"
 #include "input.h"
+#include "luascript.h"
 #include "math/physics.h"
 
 //Include steamworks api
@@ -50,6 +51,13 @@ void Core::Initialize(int argc, char* argv[]) {
 	}
 
 	Debug::Log("Engine Initialized");
+
+
+	//Implement luascript native functions
+	LuaScript::AddNativeFunction("Log", [](lua_State* state) -> int {
+			Debug::Log(lua_tostring(state, -1));
+			return 0;
+		});
 }
 
 void Core::Update() {
