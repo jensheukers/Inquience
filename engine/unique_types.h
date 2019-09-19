@@ -12,15 +12,16 @@
 
 //Include vector
 #include <vector>
+#include <functional>
 
 struct Delegate {
 private:
-	std::vector<void(*)()> executionList;
+	std::vector<std::function<void()>> executionList;
 public:
 	/**
 	* Adds a lambda to the execution list
 	*/
-	void AddLambda(void(*func)()) {
+	void AddLambda(std::function<void ()> func) {
 		executionList.push_back(func);
 	};
 
