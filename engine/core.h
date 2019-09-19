@@ -79,7 +79,7 @@ public:
 	* Returns the time elapsed since start of the program
 	* @return float
 	*/
-	static float GetTimeElapsed() { return instance->timeElapsed; }
+	static float GetTimeElapsed() { return (instance) ? instance->timeElapsed : 0; }
 
 	/**
 	* Returns the frames per second

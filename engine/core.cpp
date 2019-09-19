@@ -80,13 +80,7 @@ void Core::Update() {
 		instance->renderer->RenderFrame();
 	}
 	else {
-		Debug::Log("No active scene - Press 'Left Control + Left Shift + =' To create empty scene with camera!");
-
-		//Create empty scene with camera, if keys are pressed
-		if (Input::GetKey(KEYCODE_LEFT_CONTROL) && Input::GetKey(KEYCODE_LEFT_SHIFT) && Input::GetKey(KEYCODE_EQUAL)) {
-			SceneManager::SetActiveScene(new Scene());
-			SceneManager::GetActiveScene()->SetActiveCamera(new Camera());
-		}
+		Debug::Log("No active scene");
 	}
 	
 	//Update Input

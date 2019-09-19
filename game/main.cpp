@@ -9,11 +9,18 @@
 #include "../engine/core.h"
 #include "../engine/input.h"
 
+#include "../engine/scenemanager.h"
+
+#include "../engine/luascript.h"
+
 //Define default tilemap scale
 #define DEFAULT_TILEMAP_TILE_SCALE 32 
 
 int main(int argc, char * argv[]) {
 	Core::Initialize(argc, argv);
+
+	SceneManager::SetActiveScene(new Scene());
+	SceneManager::GetActiveScene()->SetActiveCamera(new Camera());
 
 	while (Core::IsActive()) {
 		Core::Update(); // Handle updates for engine
