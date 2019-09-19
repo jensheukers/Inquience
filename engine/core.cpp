@@ -1,12 +1,12 @@
 // Source file for core class.
 // Core class handles all main functionality of the engine.
 //
-// Version: 6/8/2019
+// Version: 19/9/2019
 //
 // Copyright (C) Jens Heukers - All Rights Reserved
 // Unauthorized copying of this file, via any medium is strictly prohibited
 // Proprietary and confidential
-// Written by Jens Heukers, August 2019
+// Written by Jens Heukers, September 2019
 #include "core.h"
 #include "debug.h"
 #include "scenemanager.h"
@@ -137,11 +137,6 @@ Renderer* Core::GetRendererInstance() {
 
 void Core::SwitchScene(Scene* scene) {
 	instance->sceneToBeLoaded = scene;
-}
-
-std::vector<Entity*>& Core::GetGlobalEntityList()
-{
-	return instance->globalEntityList;
 }
 
 float Core::CalculateDeltaTime() {

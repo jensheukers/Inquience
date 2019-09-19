@@ -1,14 +1,13 @@
 // Source file for entity class.
 //
-// Version: 8/8/2019
+// Version: 19/9/2019
 //
 // Copyright (C) Jens Heukers - All Rights Reserved
 // Unauthorized copying of this file, via any medium is strictly prohibited
 // Proprietary and confidential
-// Written by Jens Heukers, August 2019
+// Written by Jens Heukers, September 2019
 #include "entity.h"
 #include "core.h"
-#include "renderer.h"
 
 //Include font.h to check if child is text when added
 #include <iostream>
@@ -49,9 +48,6 @@ Entity::Entity() {
 
 	//Set entity active
 	this->active = true;
-
-	//Add to global entity list
-	Core::GetGlobalEntityList().push_back(this);
 }
 
 void Entity::SetActive(bool state) {
@@ -147,11 +143,5 @@ Entity::~Entity() {
 	//Delete all components
 	for (size_t i = 0; i < (int)components.size(); i++) {
 		delete components[i];
-	}
-
-	for (size_t i = 0; i < Core::GetGlobalEntityList().size(); i++) {
-		if (Core::GetGlobalEntityList()[i] == this) {
-			Core::GetGlobalEntityList().erase(Core::GetGlobalEntityList().begin() + i);
-		}
 	}
 }

@@ -2,12 +2,12 @@
 // Core class handles all main functionality of the engine.
 // Core class is a singleton instance, meaning it can be accessed from anywhere in the program
 //
-// Version: 6/8/2019
+// Version: 19/9/2019
 //
 // Copyright (C) Jens Heukers - All Rights Reserved
 // Unauthorized copying of this file, via any medium is strictly prohibited
 // Proprietary and confidential
-// Written by Jens Heukers, August 2019
+// Written by Jens Heukers, September 2019
 #ifndef CORE_H
 #define CORE_H
 #include <string>
@@ -97,12 +97,6 @@ public:
 	* Safely finsishes frame then removes the active scene from memory and sets the new scene active
 	*/
 	static void SwitchScene(Scene* scene);
-
-	/**
-	* Returns the global entity list
-	* @return std::vector<Entity*>
-	*/
-	static std::vector<Entity*>& GetGlobalEntityList();
 
 	//Local methods
 

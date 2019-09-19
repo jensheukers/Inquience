@@ -9,11 +9,23 @@
 #include "../engine/core.h"
 #include "../engine/input.h"
 
+#include "../engine/scenemanager.h"
+
 //Define default tilemap scale
 #define DEFAULT_TILEMAP_TILE_SCALE 32 
 
 int main(int argc, char * argv[]) {
 	Core::Initialize(argc, argv);
+
+	Entity* entity = new Entity();
+	entity->AddComponent<Sprite>()->SetTexture(TextureLoader::LoadTarga("res/placeholder.tga"));
+
+	Scene* scene = new Scene();
+	scene->SetActiveCamera(new Camera());
+
+	SceneManager::SetActiveScene(scene);
+
+	scene->AddChild(entity);
 
 	while (Core::IsActive()) {
 		Core::Update(); // Handle updates for engine

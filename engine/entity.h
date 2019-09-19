@@ -1,13 +1,16 @@
 // Header file for entity class.
 //
-// Version: 8/8/2019
+// Version: 19/9/2019
 //
 // Copyright (C) Jens Heukers - All Rights Reserved
 // Unauthorized copying of this file, via any medium is strictly prohibited
 // Proprietary and confidential
-// Written by Jens Heukers, August 2019
+// Written by Jens Heukers, September 2019
 #ifndef ENTITY_H
 #define ENTITY_H
+
+//Include typeinfo
+#include <typeinfo>
 
 //Include debug.h
 #include "debug.h"
