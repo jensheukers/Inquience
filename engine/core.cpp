@@ -37,8 +37,9 @@ void Core::Initialize(int argc, char* argv[]) {
 	//Create renderer
 	instance->renderer = new Renderer(Vec2(1280, 720), Vec2(1280, 720), "Dustville");
 
-	//Set sceneToBeLoaded to a nullptr value
+	//Initialize variables
 	instance->sceneToBeLoaded = nullptr;
+	instance->frame = 0;
 
 	//Initialize Input
 	Input::Init(instance->renderer->GetWindow());
@@ -112,6 +113,7 @@ void Core::Update() {
 	static float lastTime = (float)glfwGetTime();
 
 	//Handle Time
+	instance->frame++;
 	instance->deltaTime = instance->CalculateDeltaTime();
 	instance->timeElapsed = (float)glfwGetTime();
 

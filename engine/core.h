@@ -29,6 +29,7 @@ private:
 	//Time
 	float deltaTime; /***< The amount of seconds between frames*/
 	float fps; /***< The amount of frames per second*/
+	float frame; /***< The Current frame*/
 	float timeElapsed; /***< The time in seconds since the program started*/
 
 	//Core scene management
@@ -81,6 +82,12 @@ public:
 	* @return float
 	*/
 	static float GetFramesPerSecond() { return instance->fps; };
+
+	/**
+	* Returns the current frame
+	* @return float
+	*/
+	static float GetCurrentFrame() { return instance->frame; };
 
 	/**
 	* Returns the renderer instance
