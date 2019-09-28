@@ -109,6 +109,26 @@ void Core::Initialize(int argc, char* argv[]) {
 		_curElement->localScale = scale;
 		return 0;
 	});
+
+	//Implement lua native sound functions
+	LuaScript::AddNativeFunction("PlaySound", [](lua_State* state) -> int {
+		Sound* sound = new Sound();
+
+		sound->LoadAudioSource(lua_tostring(state, -3));
+
+		if (!sound->GetAudioSource()) {
+			delete sound;
+			return 0;
+
+		}
+		sound->SetGain((float)lua_tonumber(state, -2));
+		sound->SetPitch((float)lua_tonumber(state, -1));
+
+		SoundManager::AddSound(sound);
+		SoundManager::PlaySound(sound);
+
+		return 0;
+	});
 }
 
 void Core::Update() {
