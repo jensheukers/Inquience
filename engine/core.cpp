@@ -139,10 +139,6 @@ void Core::Update() {
 		SceneManager::GetActiveScene()->Update();
 		instance->renderer->RenderFrame();
 
-		//Update SoundManager
-		if (SceneManager::GetActiveScene()->GetActiveCamera()) {
-			SoundManager::Update(SceneManager::GetActiveScene()->GetActiveCamera()->GetPosition(), Vec2(0, 0), Vec2(0, -1));
-		}
 	}
 	else {
 		Debug::Log("No active scene");
@@ -150,6 +146,9 @@ void Core::Update() {
 	
 	//Update Input
 	Input::HandleUpdates();
+
+	//Update soundmanager
+	SoundManager::Update();
 
 	//If window should not close, we poll events, swap buffers and clear, else we set active to false
 	if (!glfwWindowShouldClose(instance->renderer->GetWindow())) {

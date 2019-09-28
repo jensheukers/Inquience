@@ -18,7 +18,6 @@ SoundManager* SoundManager::GetInstance() {
 }
 
 void SoundManager::Init() {
-	SoundManager::GetInstance()->listener = nullptr;
 	SoundManager::GetInstance()->device = alcOpenDevice(NULL);
 
 	if (!SoundManager::GetInstance()->device) {
@@ -30,24 +29,10 @@ void SoundManager::Init() {
 		Debug::Log("SoundManager: Could not set current audio context");
 	}
 
-	SoundManager::GetInstance()->listener = new Listener(); // Create default listener instance
-	SoundManager::GetInstance()->listener->head = Vec2(0.0f, 0.0f);
-	SoundManager::GetInstance()->listener->up = Vec2(0.0f, -1.0f);
 	Debug::Log("SoundManager: Initialized");
 }
 
-void SoundManager::Update(Vec2 position, Vec2 head, Vec2 up) {
-	Listener* listener = SoundManager::GetInstance()->listener;
-	if (listener == nullptr) return;
-	listener->head = head;
-	listener->up = up;
-	listener->position = position;
-	ALfloat _listenerOrientation[]{ listener->head.x, listener->head.y, 0, 
-									listener->up.x, listener->up.y, 0 };
-	alListener3f(AL_POSITION, listener->position.x, listener->position.y, 0);
-	alListener3f(AL_VELOCITY, listener->velocity.x, listener->velocity.y, 0);
-	alListenerfv(AL_ORIENTATION, _listenerOrientation);
-
+void SoundManager::Update() {
 	//Play sounds
 	for (size_t i = 0; i < SoundManager::GetInstance()->_sounds.size(); i++) {
 		if (SoundManager::GetInstance()->_sounds[i]->GetAudioSource()->state != AL_STOPPED) {

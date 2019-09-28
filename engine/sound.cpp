@@ -22,8 +22,6 @@ Sound::Sound() {
 	this->source = nullptr;
 	this->pitch = 1;
 	this->gain = 1;
-	this->max_distance = 10.0f; // default is 10.0f
-	this->ref_distance = 10.0f; // default is 10.0f;
 }
 
 Sound::~Sound() {
@@ -114,30 +112,11 @@ void Sound::LoadAudioSource(std::string path) {
 
 	//Set default values
 	alDistanceModel(AL_LINEAR_DISTANCE_CLAMPED);
-	this->SetRollofFactor(DEFAULT_ROLLOF_FACTOR);
 	this->SetPitch(DEFAULT_PITCH);
 	this->SetGain(DEFAULT_GAIN);
-	this->SetMaxDistance(DEFAULT_MAX_DIST); // default is 50.0f
-	this->SetMaxReferenceDistance(DEFAULT_MAX_REF_DIST); // default is 1.0f;
-	this->SetPosition(Vec2(0,0));
-	this->SetVelocity(Vec2(0,0));
 	this->Loop(false);
 
 	Debug::Log("Loaded audio source : " + path);
-}
-
-void Sound::SetDistanceModel(ALfloat model) {
-	if (this->source == nullptr) return;
-
-	alDistanceModel((ALenum)model);
-	this->distanceModel = model;
-}
-
-void Sound::SetRollofFactor(float factor) {
-	if (this->source == nullptr) return;
-
-	alSourcef(this->source->sourceID, AL_ROLLOFF_FACTOR, (ALfloat)factor);
-	this->rollof_factor = (ALfloat)factor;
 }
 
 void Sound::SetPitch(float pitch) {
@@ -160,50 +139,6 @@ void Sound::SetGain(float gain) {
 
 ALfloat Sound::GetGain() {
 	return this->gain;
-}
-
-void Sound::SetMaxDistance(float distance) {
-	if (this->source == nullptr) return;
-
-	alSourcef(this->source->sourceID, AL_MAX_DISTANCE, (ALfloat)distance);
-	this->max_distance = (ALfloat)distance;
-}
-
-ALfloat Sound::GetMaxDistance() {
-	return this->max_distance;
-}
-
-void Sound::SetMaxReferenceDistance(float distance) {
-	if (this->source == nullptr) return;
-
-	alSourcef(this->source->sourceID, AL_REFERENCE_DISTANCE, (ALfloat)distance);
-	this->ref_distance = (ALfloat)distance;
-}
-
-ALfloat Sound::GetMaxReferenceDistance() {
-	return this->ref_distance;
-}
-
-void Sound::SetPosition(Vec2 pos) {
-	if (this->source == nullptr) return;
-
-	alSource3f(this->source->sourceID, AL_POSITION, (ALfloat)pos.x, (ALfloat)pos.y, 0);
-	this->position = pos;
-}
-
-Vec2 Sound::GetPosition() {
-	return this->position;
-}
-
-void Sound::SetVelocity(Vec2 vel) {
-	if (this->source == nullptr) return;
-
-	alSource3f(this->source->sourceID, AL_VELOCITY, (ALfloat)vel.x, (ALfloat)vel.y, 0);
-	this->velocity = velocity;
-}
-
-Vec2 Sound::GetVelocity() {
-	return this->velocity;
 }
 
 void Sound::Loop(bool state) {
