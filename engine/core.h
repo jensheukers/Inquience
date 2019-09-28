@@ -2,8 +2,6 @@
 // Core class handles all main functionality of the engine.
 // Core class is a singleton instance, meaning it can be accessed from anywhere in the program
 //
-// Version: 19/9/2019
-//
 // Copyright (C) Jens Heukers - All Rights Reserved
 // Unauthorized copying of this file, via any medium is strictly prohibited
 // Proprietary and confidential
@@ -35,9 +33,6 @@ private:
 
 	//Core scene management
 	Scene* sceneToBeLoaded; /***< Scene to be loaded at beginning of next frame, nullptr if there is no scene to be loaded*/
-
-	//Global entity list
-	std::vector<Entity*> globalEntityList; /***< The global entity list, every entity that gets created will automaticly be added, even if entity is not added to scene*/
 public:
 	/**
 	* Initalizes the Core of the engine

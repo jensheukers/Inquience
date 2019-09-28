@@ -1,6 +1,6 @@
-// Luascript imported from aquarite3d, modified in FoundryFactoryEngine
+// Luascript imported from aquarite3d
 // Copy Version: 7/2/2019
-// Modify Version: 19/9/2019
+// Modify Version: 28/9/2019
 //
 //	© 2019, Jens Heukers
 #ifndef LUASCRIPT_H
@@ -42,7 +42,7 @@ public:
 	* @param function, The function to execute
 	* @return std::string, value as a string type
 	*/
-	static std::string RunFunction(std::string file , std::string function, std::vector<std::string> arguments);
+	static std::string RunFunction(std::string file , std::string function, std::vector<std::string> arguments = std::vector<std::string>());
 
 
 	/**

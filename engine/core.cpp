@@ -1,7 +1,5 @@
 // Source file for core class.
-// Core class handles all main functionality of the engine.
-//
-// Version: 19/9/2019
+// Core class handles all main functionality of the engine
 //
 // Copyright (C) Jens Heukers - All Rights Reserved
 // Unauthorized copying of this file, via any medium is strictly prohibited
@@ -63,7 +61,7 @@ void Core::Initialize(int argc, char* argv[]) {
 	//The pointer to the current element being edited
 	static UIElement* _curElement = nullptr;
 
-	LuaScript::AddNativeFunction("CreateElement", [](lua_State* state) -> int {
+	LuaScript::AddNativeFunction("BeginElement", [](lua_State* state) -> int {
 			//Fetch params
 			std::string path = lua_tostring(state, -1);
 			
@@ -75,41 +73,37 @@ void Core::Initialize(int argc, char* argv[]) {
 			
 			UIElement* element = new UIElement();
 			element->AddComponent<Sprite>()->SetTexture(texture);
-			SceneManager::GetActiveScene()->AddChild(element);
+
+			if (_curElement) {
+				_curElement->AddChild(element);
+			}
+			else {
+				SceneManager::GetActiveScene()->AddChild(element);
+			}
 
 			//Set Current element
 			_curElement = element;
 
 			return 0;
-		});
+	});
 
+	LuaScript::AddNativeFunction("EndElement", [](lua_State* state) -> int {
+		if (_curElement) _curElement = nullptr;
+		return 0;
+	});
+
+	//Position is always local
 	LuaScript::AddNativeFunction("SetPosition", [](lua_State* state) -> int {
-			if (_curElement) {
-				_curElement->localPosition = Vec2(lua_tonumber(state, -2), lua_tonumber(state, -1));
-			};
-			return 0;
-		});
+		Vec2 position = Vec2(lua_tonumber(state, -2), lua_tonumber(state, -1));
+		_curElement->localPosition = position;
+		return 0;
+	});
 
-	//Need fixing
-	LuaScript::AddNativeFunction("OnHover", [](lua_State* state) -> int {
-			int num_returns = -lua_gettop(state);
-
-			std::string fileName = lua_tostring(state, num_returns);
-			std::string funcName = lua_tostring(state, num_returns + 1);
-			std::vector<std::string> args;
-
-			for (int i = num_returns + 2; i < 0; i++) {
-				args.push_back(lua_tostring(state, i));
-			}
-
-			if (_curElement) {
-				_curElement->OnStayDelegate.AddLambda([&]() {
-						LuaScript::RunFunction(fileName, funcName, args);
-					});
-			}
-
-			return 0;
-		});
+	LuaScript::AddNativeFunction("SetScale", [](lua_State* state) -> int {
+		Vec2 scale = Vec2(lua_tonumber(state, -2, lua_tonumber(state, -1)));
+		_curElement->localScale = scale;
+		return 0;
+	});
 }
 
 void Core::Update() {
