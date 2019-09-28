@@ -9,6 +9,7 @@
 #include "debug.h"
 #include "scenemanager.h"
 #include "input.h"
+#include "soundmanager.h"
 #include "luascript.h"
 #include "math/physics.h"
 
@@ -43,6 +44,9 @@ void Core::Initialize(int argc, char* argv[]) {
 
 	//Initialize Input
 	Input::Init(instance->renderer->GetWindow());
+
+	//Initialize SoundManager
+	SoundManager::Init();
 
 	//Initialize Steamworks API
 	if (SteamAPI_Init()) {
@@ -134,6 +138,11 @@ void Core::Update() {
 		//Update Scene
 		SceneManager::GetActiveScene()->Update();
 		instance->renderer->RenderFrame();
+
+		//Update SoundManager
+		if (SceneManager::GetActiveScene()->GetActiveCamera()) {
+			SoundManager::Update(SceneManager::GetActiveScene()->GetActiveCamera()->GetPosition(), Vec2(0, 0), Vec2(0, -1));
+		}
 	}
 	else {
 		Debug::Log("No active scene");

@@ -20,9 +20,11 @@ set(GLM_DIR "external/glm")
 set(STEAM_DIR "external/steam")
 set(FREETYPE_DIR "external/freetype")
 set(LUA_DIR "external/lua")
+set(OPENAL_DIR "external/openal")
+set(OGGVORBIS_DIR "external/oggvorbis")
 
-include_directories(${GLFW_DIR}/include ${GLEW_DIR}/include ${GLM_DIR} ${STEAM_DIR} ${FREETYPE_DIR}/include ${LUA_DIR}/include)
-link_directories(${GLFW_DIR}/lib-vc2015 ${GLEW_DIR}/lib/Win32 ${STEAM_DIR}/lib ${FREETYPE_DIR}/win32 ${LUA_DIR}/lib)
+include_directories(${GLFW_DIR}/include ${GLEW_DIR}/include ${GLM_DIR} ${STEAM_DIR} ${FREETYPE_DIR}/include ${LUA_DIR}/include ${OPENAL_DIR}/include ${OGGVORBIS_DIR}/include)
+link_directories(${GLFW_DIR}/lib-vc2015 ${GLEW_DIR}/lib/Win32 ${STEAM_DIR}/lib ${FREETYPE_DIR}/win32 ${LUA_DIR}/lib ${OPENAL_DIR}/libs/Win32 ${OGGVORBIS_DIR}/lib/Win32)
 
 # Add Executable
 
@@ -32,7 +34,8 @@ set(CMAKE_CXX_FLAGS_RELEASE "/MD")
 set(CMAKE_CXX_FLAGS_DEBUG "/MD")
 
 # Link libraries
-target_link_libraries(Inquience glfw3.lib glfw3dll.lib opengl32.lib glew32.lib glew32s.lib sdkencryptedappticket.lib steam_api.lib freetype.lib LuaLib.lib)
+target_link_libraries(Inquience glfw3.lib glfw3dll.lib opengl32.lib glew32.lib glew32s.lib sdkencryptedappticket.lib steam_api.lib freetype.lib LuaLib.lib
+								OpenAL32.lib libogg.lib libvorbis.lib libvorbisfile.lib)
 SET (CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} /SAFESEH:NO")
 SET (CMAKE_SHARED_LINKER_FLAGS "${CMAKE_SHARED_LINKER_FLAGS} /SAFESEH:NO")
 SET (CMAKE_MODULE_LINKER_FLAGS "${CMAKE_MODULE_LINKER_FLAGS} /SAFESEH:NO")
@@ -57,6 +60,14 @@ add_custom_command(TARGET Inquience POST_BUILD
 add_custom_command(TARGET Inquience POST_BUILD 
 					COMMAND ${CMAKE_COMMAND} -E copy
 						${CMAKE_SOURCE_DIR}/external/freetype/win32/freetype.dll $<TARGET_FILE_DIR:Inquience>)						
+	
+add_custom_command(TARGET Inquience POST_BUILD 
+					COMMAND ${CMAKE_COMMAND} -E copy
+						${CMAKE_SOURCE_DIR}/external/openal/bin/Win32/OpenAL32.dll $<TARGET_FILE_DIR:Inquience>)
+
+add_custom_command(TARGET Inquience POST_BUILD 
+					COMMAND ${CMAKE_COMMAND} -E copy_directory
+						${CMAKE_SOURCE_DIR}/external/oggvorbis/bin $<TARGET_FILE_DIR:Inquience>)
 	
 add_custom_command(TARGET Inquience POST_BUILD 
 					COMMAND ${CMAKE_COMMAND} -E make_directory
