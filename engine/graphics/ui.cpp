@@ -16,8 +16,7 @@ void UIElement::Update() {
 	if (!this->HasComponent<Sprite>()) return;
 	if (!this->GetComponent<Sprite>()->GetTexture()) return;
 
-	Vec2 bounds = Vec2((float)this->GetComponent<Sprite>()->GetTexture()->textureData->width, (float)this->GetComponent<Sprite>()->GetTexture()->textureData->height) * this->GetComponent<Sprite>()->GetScale();
-	if (Physics::InBounds(Input::GetMousePosition(), this->GetPosition(), this->GetPosition() + (bounds / (float)this->GetComponent<Sprite>()->slices))) {
+	if (Physics::InBounds(Input::GetMousePosition(), this->GetPosition(), this->GetPosition() + this->GetScale())) {
 		if (!entered) {
 			OnEnter();
 			entered = true;

@@ -1,11 +1,9 @@
 // Header file for Renderer class.
 //
-// Version: 7/7/2019
-//
 // Copyright (C) Jens Heukers - All Rights Reserved
 // Unauthorized copying of this file, via any medium is strictly prohibited
 // Proprietary and confidential
-// Written by Jens Heukers, July 2019
+// Written by Jens Heukers, September 2019
 #ifndef RENDERER_H
 #define RENDERER_H
 
@@ -25,8 +23,6 @@
 
 //Include sprite.h
 #include "components/sprite.h"
-
-//Pointer to 
 
 class Renderer {
 private:
@@ -48,17 +44,7 @@ private:
 	unsigned int textVbo; /***< The vertex buffer object used to draw text*/
 	unsigned int textVao; /***< The text vertex array object*/
 
-	//Vectors
-	std::vector<Sprite*> registeredSprites; /***< The sprites registered and ready for rendering*/
-	std::vector<Text*> registeredTexts; /***< The texts registered and ready for rendering*/
-
-	/**
-	* Renders a sprite to the screen, modifies the existing vertex buffer object and reinserts correct vertex data.
-	* @param Sprite* the sprite to render
-	* @param Vec2 position
-	* @param Vec2 scale
-	*/
-	void DrawSprite(Sprite* sprite, Vec2 position, Vec2 scale = Vec2(1, 1));
+	void RenderEntity(Entity* entity, class Camera* camera);
 
 	/**
 	* Draws text to the screen
@@ -68,7 +54,7 @@ private:
 	* @param float scale
 	* @param glm::vec3 color
 	*/
-	void DrawText(Font* font, std::string text, Vec2 position, float scale, glm::vec3 color);
+	void RenderText(Font* font, std::string text, Vec2 position, float size, glm::vec3 color);
 public:
 	/**
 	* Constructor
@@ -78,34 +64,7 @@ public:
 	*/
 	Renderer(Vec2 resolution, Vec2 scale, const char* title);
 
-	/**
-	* Adds a sprite to the registeredSprites vector
-	* @param Sprite*
-	*/
-	void RegisterSprite(Sprite* sprite);
-
-	/**
-	* Removes a sprite from the registeredSprites vector
-	* @param Sprite*
-	*/
-	void RemoveSprite(Sprite* sprite);
-
-	/**
-	* Adds a text to the registeredTexts vector
-	* @param Text*
-	*/
-	void RegisterText(Text* text);
-
-	/**
-	* Removes a text to the registeredTexts vector
-	* @param Text*
-	*/
-	void RemoveText(Text* text);
-
-	/**
-	* Renders the current frame, filters out all entities that are not in camera view and does a z-index test.
-	*/
-	void RenderFrame();
+	void RenderScene(class Scene* scene, class Camera* camera);
 
 	/**
 	* Polls all GLFW events

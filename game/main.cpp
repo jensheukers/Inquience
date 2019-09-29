@@ -1,9 +1,18 @@
 // Main entry point.
+<<<<<<< HEAD
+=======
+//
+// Copyright (C) Jens Heukers - All Rights Reserved
+// Unauthorized copying of this file, via any medium is strictly prohibited
+// Proprietary and confidential
+// Written by Jens Heukers, September 2019
+>>>>>>> development
 #include "../engine/core.h"
 #include "../engine/input.h"
 
-//Define default tilemap scale
-#define DEFAULT_TILEMAP_TILE_SCALE 32 
+#include "../engine/scenemanager.h"
+
+#include "../engine/luascript.h"
 
 int main(int argc, char * argv[]) {
 	Core::Initialize(argc, argv);

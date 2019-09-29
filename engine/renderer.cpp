@@ -36,52 +36,66 @@ void window_size_callback(GLFWwindow* window, int width, int height)
 	scale_ptr->y = (float)height;
 }
 
-void Renderer::DrawSprite(Sprite* sprite, Vec2 position, Vec2 scale) {
-	//Bind vertex array
-	glBindVertexArray(vao);
-
-	//Set vertices & uv data for sprite, then sub buffer the data
-	float vertices[] = {
-		1.0f,  1.0f, sprite->uv.rightUp.x, sprite->uv.rightUp.y,
-		1.0f, 0.0f, sprite->uv.rightDown.x, sprite->uv.rightDown.y,
-		0.0f,  1.0f, sprite->uv.leftUp.x, sprite->uv.leftUp.y,
-		1.0f, 0.0f, sprite->uv.rightDown.x, sprite->uv.rightDown.y,
-		0.0f, 0.0f, sprite->uv.leftDown.x, sprite->uv.leftDown.y,
-		0.0f,  1.0f, sprite->uv.leftUp.x, sprite->uv.leftUp.y
-	};
-
-	//bind buffer and insert vertices data
-	glBindBuffer(GL_ARRAY_BUFFER, vbo);
-	glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(vertices), vertices);
-	glBindBuffer(GL_ARRAY_BUFFER, 0); // Unbind
-
+void Renderer::RenderEntity(Entity* entity, Camera* camera) {
 	//Calculate the position with the camera position included
-	Vec2 calculatedPos = Vec2(position.x - SceneManager::GetActiveScene()->GetActiveCamera()->GetPosition().x,
-							  position.y - SceneManager::GetActiveScene()->GetActiveCamera()->GetPosition().y);
+	Vec2 calculatedPos = Vec2(entity->GetPosition().x - camera->GetPosition().x, entity->GetPosition().y - camera->GetPosition().y);
 
-	//Multiply size by texture size
-	Vec2 calculatedSize = Vec2(sprite->GetTexture()->textureData->width * scale.x, sprite->GetTexture()->textureData->height * scale.y);
+	//Try to cast to Text
+	if (Text* text = dynamic_cast<Text*>(entity)) {
+		RenderText(text->GetFont(), text->GetText(), text->GetPosition(), text->GetSize(), text->GetColor());
+	}
+	else {
+		if (dynamic_cast<UIElement*>(entity)) {
+			calculatedPos = entity->GetPosition();
+		}
 
-	//Use default shader program
-	glUseProgram(defaultShader->GetShaderProgram());
+		if (entity->HasComponent<Sprite>() && entity->GetComponent<Sprite>()->GetTexture()) {
+			//Bind vertex array
+			glBindVertexArray(vao);
 
-	//Do transformations
-	glm::mat4 model(1.0);
-	model = glm::translate(model, glm::vec3(calculatedPos.x, calculatedPos.y, 0.0f));  // First translate
-	model = glm::scale(model, glm::vec3(calculatedSize.x, calculatedSize.y, 1.0f)); // Last scale
-	defaultShader->SetMat4("model", model);
+			Sprite* sprite = entity->GetComponent<Sprite>();
+			//Set vertices & uv data for sprite, then sub buffer the data
+			float vertices[] = {
+				1.0f,  1.0f, sprite->uv.rightUp.x, sprite->uv.rightUp.y,
+				1.0f, 0.0f, sprite->uv.rightDown.x, sprite->uv.rightDown.y,
+				0.0f,  1.0f, sprite->uv.leftUp.x, sprite->uv.leftUp.y,
+				1.0f, 0.0f, sprite->uv.rightDown.x, sprite->uv.rightDown.y,
+				0.0f, 0.0f, sprite->uv.leftDown.x, sprite->uv.leftDown.y,
+				0.0f,  1.0f, sprite->uv.leftUp.x, sprite->uv.leftUp.y
+			};
 
-	//Bind texture
-	glActiveTexture(GL_TEXTURE0);
-	glBindTexture(GL_TEXTURE_2D, sprite->GetTexture()->_glTexture);
+			//bind buffer and insert vertices data
+			glBindBuffer(GL_ARRAY_BUFFER, vbo);
+			glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(vertices), vertices);
+			glBindBuffer(GL_ARRAY_BUFFER, 0); // Unbind
 
-	//Draw and unbind
-	glDrawArrays(GL_TRIANGLES, 0, 6);
-	glBindVertexArray(0);
-	glBindTexture(GL_TEXTURE_2D, 0);
+			//Use default shader program
+			glUseProgram(defaultShader->GetShaderProgram());
+
+			//Do transformations
+			glm::mat4 model(1.0);
+			model = glm::translate(model, glm::vec3(calculatedPos.x, calculatedPos.y, 0.0f));  // First translate
+			model = glm::scale(model, glm::vec3(entity->GetScale().x, entity->GetScale().y, 1.0f)); // Last scale
+			defaultShader->SetMat4("model", model);
+
+			//Bind texture
+			glActiveTexture(GL_TEXTURE0);
+			glBindTexture(GL_TEXTURE_2D, sprite->GetTexture()->_glTexture);
+
+			//Draw and unbind
+			glDrawArrays(GL_TRIANGLES, 0, 6);
+			glBindVertexArray(0);
+			glBindTexture(GL_TEXTURE_2D, 0);
+		}
+	}
+
+	//Render children
+	for (unsigned i = 0; i < entity->GetChildren().size(); i++){
+		RenderEntity(entity->GetChild(i), camera);
+	}
 }
 
-void Renderer::DrawText(Font * font, std::string text, Vec2 position, float scale, glm::vec3 color) {
+void Renderer::RenderText(Font* font, std::string text, Vec2 position, float size, glm::vec3 color) {
 	//Bind text VAO
 	glBindVertexArray(textVao);
 
@@ -98,11 +112,11 @@ void Renderer::DrawText(Font * font, std::string text, Vec2 position, float scal
 	{
 		Character ch = font->characters[*c];
 
-		GLfloat xpos = position.x + ch.bearing.x * scale;
-		GLfloat ypos = position.y + (ch.size.y - ch.bearing.y) * scale;
+		GLfloat xpos = position.x + ch.bearing.x * size;
+		GLfloat ypos = position.y + (ch.size.y - ch.bearing.y) * size;
 
-		GLfloat w = ch.size.x * scale;
-		GLfloat h = ch.size.y * scale;
+		GLfloat w = ch.size.x * size;
+		GLfloat h = ch.size.y * size;
 
 		GLfloat vertices[6][4] = {
 			{ xpos,     ypos - h, 0.0, 0.0 },
@@ -125,7 +139,7 @@ void Renderer::DrawText(Font * font, std::string text, Vec2 position, float scal
 		glDrawArrays(GL_TRIANGLES, 0, 6);
 
 		// Now advance cursors for next glyph (note that advance is number of 1/64 pixels)
-		position.x += (ch.advance >> 6) * scale; // Bitshift by 6 to get value in pixels (2^6 = 64 (divide amount of 1/64th pixels by 64 to get amount of pixels))
+		position.x += (ch.advance >> 6) * size; // Bitshift by 6 to get value in pixels (2^6 = 64 (divide amount of 1/64th pixels by 64 to get amount of pixels))
 	}
 
 	//Unbind
@@ -133,7 +147,7 @@ void Renderer::DrawText(Font * font, std::string text, Vec2 position, float scal
 	glBindTexture(GL_TEXTURE_2D, 0);
 }
 
-Renderer::Renderer(Vec2 resolution, Vec2 scale, const char * title) {
+Renderer::Renderer(Vec2 resolution, Vec2 scale, const char* title) {
 	//Initialize GLFW and Glew
 	if (!glfwInit()) {
 		Debug::Log("GLFW Failed to Initialize");
@@ -237,76 +251,10 @@ Renderer::Renderer(Vec2 resolution, Vec2 scale, const char * title) {
 	Debug::Log("Renderer Initialized");
 }
 
-void Renderer::RegisterSprite(Sprite * sprite) {
-	this->registeredSprites.push_back(sprite);
-}
-
-void Renderer::RemoveSprite(Sprite * sprite) {
-	for (unsigned i = 0; i < registeredSprites.size(); i++) {
-		if (registeredSprites[i] == sprite) {
-			registeredSprites.erase(registeredSprites.begin() + i);
-		}
-	}
-}
-
-void Renderer::RegisterText(Text * text) {
-	registeredTexts.push_back(text);
-}
-
-void Renderer::RemoveText(Text * text) {
-	for (unsigned i = 0; i < registeredTexts.size(); i++) {
-		if (registeredTexts[i] == text) {
-			registeredTexts.erase(registeredTexts.begin() + i);
-		}
-	}
-}
-
-void Renderer::RenderFrame() {
-	if (!SceneManager::GetActiveScene()->GetActiveCamera()) {
-		Debug::Log("No camera present for rendering!");
-		return;
-	}
-
-	//First create a new list of entities, and sort entities based on their z-index
-	std::vector<Sprite*> sortedRenderList;
-
-	//First determine highest z-index
-	int highest = 0;
-	for (Sprite* s : registeredSprites) {
-		if (s->GetTexture() == nullptr) continue;
-		if (s->GetZIndex() > highest) {
-			highest = s->GetZIndex();
-		}
-	}
-
-	//Now go through all "Layers"
-	for (int i = 0; i <= highest; i++) {
-		for (Sprite* s : registeredSprites) {
-			//Todo: add test to check if owner has any relation with scene entity
-			if (!s->GetOwner()) continue; // Check if sprite has a owner
-			if (!s->GetOwner()->Active()) continue; // Check if owner is active
-			if (!s->GetTexture()) continue; // Check if sprite has a texture
-			if (s->GetZIndex() == i) {
-				sortedRenderList.push_back(s);
-			}
-		}
-	}
-
-	//Now we got everything sorted so we can render the frame
-	for (Sprite* s : sortedRenderList) {
-		//Ui element draw, check if parent can be cast to a UIElement*
-		if (dynamic_cast<UIElement*>(s->GetOwner())) {
-			this->DrawSprite(s, s->GetOwner()->GetPosition() + SceneManager::GetActiveScene()->GetActiveCamera()->GetPosition(), s->GetScale() / (float)s->slices);
-			continue; // Continue 
-		}
-
-		//Normal sprite drawing
-		this->DrawSprite(s, s->GetOwner()->GetPosition(), s->GetScale() / (float)s->slices);
-	}
-
-	//Render text
-	for (Text* t : registeredTexts) {
-		this->DrawText(t->GetFont(), t->GetText(), t->GetPosition(), t->GetSize(), t->GetColor());
+void Renderer::RenderScene(Scene* scene, Camera* camera) {
+	//Render all scene children as entity
+	for (unsigned i = 0; i < scene->GetChildren().size(); i++) {
+		RenderEntity(scene->GetChild(i), camera);
 	}
 
 	//ImGui render
@@ -332,7 +280,7 @@ void Renderer::Clear() {
 	ImGui::NewFrame();
 }
 
-GLFWwindow * Renderer::GetWindow() {
+GLFWwindow* Renderer::GetWindow() {
 	return window;
 }
 

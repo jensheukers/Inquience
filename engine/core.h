@@ -2,8 +2,6 @@
 // Core class handles all main functionality of the engine.
 // Core class is a singleton instance, meaning it can be accessed from anywhere in the program
 //
-// Version: 19/9/2019
-//
 // Copyright (C) Jens Heukers - All Rights Reserved
 // Unauthorized copying of this file, via any medium is strictly prohibited
 // Proprietary and confidential
@@ -31,13 +29,11 @@ private:
 	//Time
 	float deltaTime; /***< The amount of seconds between frames*/
 	float fps; /***< The amount of frames per second*/
+	float frame; /***< The Current frame*/
 	float timeElapsed; /***< The time in seconds since the program started*/
 
 	//Core scene management
 	Scene* sceneToBeLoaded; /***< Scene to be loaded at beginning of next frame, nullptr if there is no scene to be loaded*/
-
-	//Global entity list
-	std::vector<Entity*> globalEntityList; /***< The global entity list, every entity that gets created will automaticly be added, even if entity is not added to scene*/
 public:
 	/**
 	* Initalizes the Core of the engine
@@ -79,13 +75,19 @@ public:
 	* Returns the time elapsed since start of the program
 	* @return float
 	*/
-	static float GetTimeElapsed() { return instance->timeElapsed; }
+	static float GetTimeElapsed() { return (instance) ? instance->timeElapsed : 0; }
 
 	/**
 	* Returns the frames per second
 	* @return float
 	*/
 	static float GetFramesPerSecond() { return instance->fps; };
+
+	/**
+	* Returns the current frame
+	* @return float
+	*/
+	static float GetCurrentFrame() { return instance->frame; };
 
 	/**
 	* Returns the renderer instance

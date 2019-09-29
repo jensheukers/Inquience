@@ -15,25 +15,32 @@
 //Include sprite
 #include "../components/sprite.h"
 
+//Include unique_types
+#include "../unique_types.h"
+
 //User Interface Element is a entity
 class UIElement : public Entity {
 private:
 	bool entered; /***< True if mouse is inside the uiElement*/
 public:
+	Delegate OnEnterDelegate;
+	Delegate OnLeaveDelegate;
+	Delegate OnStayDelegate;
+
 	/**
 	* Triggered whenever the mouse enters the element
 	*/
-	virtual void OnEnter() {};
+	void OnEnter() { OnEnterDelegate.Execute(); };
 
 	/**
 	* Triggered whenever the mouse leaves the element
 	*/
-	virtual void OnLeave() {};
+	void OnLeave() { OnLeaveDelegate.Execute(); };
 
 	/**
 	* Triggered whenever the mouse is on the element
 	*/
-	virtual void OnStay() {};
+	void OnStay() { OnStayDelegate.Execute(); };
 
 	/**
 	* Overwritten update method

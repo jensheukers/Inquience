@@ -28,16 +28,6 @@ Scene* SceneManager::GetActiveScene() {
 	return GetInstance()->activeScene;
 }
 
-Scene* SceneManager::LoadScene(char* path) {
-	if (instance->activeScene) {
-		delete instance->activeScene;
-	}
-
-	instance->activeScene = new Scene();
-	instance->activeScene->Load(path);
-	return instance->activeScene;
-}
-
 void SceneManager::Terminate() {
 	if (GetActiveScene()) {
 		delete GetActiveScene();
