@@ -245,9 +245,16 @@ void Core::Update() {
 
 	//Update Entities
 	if (SceneManager::GetActiveScene() && SceneManager::GetActiveScene()->GetActiveCamera()) {
+		instance->renderer->RenderScene(SceneManager::GetActiveScene(), SceneManager::GetActiveScene()->GetActiveCamera());
+
+		//Render debug stuff
+		for (size_t i = 0; i < Debug::GetLineDrawList().size(); i++) {
+			Line line = Debug::GetLineDrawList()[i];
+			instance->renderer->DrawLine(line.a, line.b, line.color, SceneManager::GetActiveScene()->GetActiveCamera());
+		}
+
 		//Update Scene
 		SceneManager::GetActiveScene()->Update();
-		instance->renderer->RenderScene(SceneManager::GetActiveScene(), SceneManager::GetActiveScene()->GetActiveCamera());
 	}
 	else {
 		Debug::Log("No active scene or camera present");
@@ -264,6 +271,9 @@ void Core::Update() {
 		instance->renderer->PollEvents();
 		instance->renderer->SwapBuffers();
 		instance->renderer->Clear();
+
+		//Clear debug
+		Debug::Clear();
 	}
 	else {
 		Core::Destroy();

@@ -12,16 +12,48 @@
 //Include iostream
 #include <iostream>
 #include <string>
-  
-#define LOG_PREFIX "FFEngine: "
+#include <vector>
+
+#include "math/vec2.h"
+#include "glm/glm.hpp"
+
+#define LOG_PREFIX "Inquience: "
+
+struct Line {
+	Vec2 a;
+	Vec2 b;
+	glm::vec3 color;
+};
 
 class Debug {
+	static Debug* instance;
+	std::vector<Line> _lineDrawList;
 public:
+	/**
+	* Returns the instance
+	*/
+	static Debug* GetInstance();
+
 	/**
 	* Logs a message to the console
 	* @return void
 	*/
 	static void Log(std::string message);
+
+	/**
+	* Adds a line to the linedrawlist for drawing, note that this list gets cleared every frame
+	*/
+	static void DrawLine(Vec2 a, Vec2 b, glm::vec3 color = glm::vec3(1, 1, 1));
+
+	/**
+	* Returns the line draw list
+	*/
+	static std::vector<Line> GetLineDrawList() { return instance->_lineDrawList; };
+
+	/**
+	* Debug clear operation
+	*/
+	static void Clear();
 };
 
 

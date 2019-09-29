@@ -189,6 +189,7 @@ Renderer::Renderer(Vec2 resolution, Vec2 scale, const char* title) {
 	//Create default shader and text shader
 	defaultShader = new Shader("shaders/default.vs", "shaders/default.fs");
 	textShader = new Shader("shaders/text.vs", "shaders/text.fs");
+	lineShader = new Shader("shaders/line.vs", "shaders/line.fs");
 
 	//Use default shader program, and set uniforms
 	glUseProgram(defaultShader->GetShaderProgram());
@@ -197,6 +198,11 @@ Renderer::Renderer(Vec2 resolution, Vec2 scale, const char* title) {
 	//Text shader set uniforms
 	glUseProgram(textShader->GetShaderProgram());
 	textShader->SetMat4("projection", projection);
+
+	//Text shader set uniforms
+	glUseProgram(lineShader->GetShaderProgram());
+	lineShader->SetMat4("projection", projection);
+
 
 	// Generate buffers for sprite rendering quad
 	glGenVertexArrays(1, &this->vao);
@@ -260,6 +266,31 @@ void Renderer::RenderScene(Scene* scene, Camera* camera) {
 	//ImGui render
 	ImGui::Render();
 	ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
+}
+
+void Renderer::DrawLine(Vec2 a, Vec2 b, glm::vec3 color, Camera* camera) {
+	//Bind vertex array
+	glBindVertexArray(vao);
+
+	//Set vertices & uv data for sprite, then sub buffer the data
+	float vertices[] = {
+		a.x - camera->GetPosition().x,  a.y - camera->GetPosition().y, 0.0f, 0.0f,
+		b.x - camera->GetPosition().x, b.y - camera->GetPosition().y, 0.0f, 0.0f
+	};
+
+	//bind buffer and insert vertices data
+	glBindBuffer(GL_ARRAY_BUFFER, vbo);
+	glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(vertices), vertices);
+	glBindBuffer(GL_ARRAY_BUFFER, 0); // Unbind
+
+	//Use default shader program
+	glUseProgram(lineShader->GetShaderProgram());
+	lineShader->SetVec3("color", color);
+
+	//Draw and unbind
+	glDrawArrays(GL_LINES, 0, 2);
+	glBindVertexArray(0);
+	glBindTexture(GL_TEXTURE_2D, 0);
 }
 
 void Renderer::PollEvents() {

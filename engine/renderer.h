@@ -31,6 +31,7 @@ private:
 	//Shaders
 	Shader* defaultShader; /***< The default shader used to draw sprites*/
 	Shader* textShader; /***< The shader used to draw texts*/
+	Shader* lineShader; /***< The shader used to draw lines*/
 
 	//Local variables
 	Vec2 resolution; /***< The resolution where the game is displayed in*/
@@ -44,6 +45,9 @@ private:
 	unsigned int textVbo; /***< The vertex buffer object used to draw text*/
 	unsigned int textVao; /***< The text vertex array object*/
 
+	/**
+	* Renders a entity to the screen
+	*/
 	void RenderEntity(Entity* entity, class Camera* camera);
 
 	/**
@@ -64,7 +68,15 @@ public:
 	*/
 	Renderer(Vec2 resolution, Vec2 scale, const char* title);
 
+	/**
+	* Renders the scene
+	*/
 	void RenderScene(class Scene* scene, class Camera* camera);
+
+	/**
+	* Draws a line from point a to point b, when camera is provided camera position will be included in calculation
+	*/
+	void DrawLine(Vec2 a, Vec2 b, glm::vec3 color, class Camera* camera);
 
 	/**
 	* Polls all GLFW events
