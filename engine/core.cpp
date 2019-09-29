@@ -63,54 +63,70 @@ void Core::Initialize(int argc, char* argv[]) {
 	//Implement Lua functions for UI Handling
 
 	//The pointer to the current element being edited
-	static UIElement* _curElement = nullptr;
+	static Entity* _curEntity = nullptr;
 
-	LuaScript::AddNativeFunction("BeginElement", [](lua_State* state) -> int {
+	LuaScript::AddNativeFunction("BeginEntity", [](lua_State* state) -> int {
 			//Fetch params
-			std::string path = lua_tostring(state, -1);
+			std::string path = lua_tostring(state, -lua_gettop(state));
 			
 			if (!SceneManager::GetActiveScene())  return 0;
 
 			//Load Texture
 			Texture* texture = TextureLoader::LoadTarga((char*)path.c_str());
 			if (!texture) return 0;
-			
-			UIElement* element = new UIElement();
-			element->AddComponent<Sprite>()->SetTexture(texture);
 
-			if (_curElement) {
-				_curElement->AddChild(element);
+			Entity* entity;
+			if (std::string(lua_tostring(state, -lua_gettop(state) + 1)) == "UI"  ||_curEntity && dynamic_cast<UIElement*>(_curEntity)) {
+				entity = new UIElement();
 			}
 			else {
-				SceneManager::GetActiveScene()->AddChild(element);
+				entity = new Entity();
+			}
+			
+			//When created from lua, a sprite is automaticly added
+			entity->AddComponent<Sprite>()->SetTexture(texture);
+
+			if (_curEntity) {
+				_curEntity->AddChild(entity);
+			}
+			else {
+				SceneManager::GetActiveScene()->AddChild(entity);
 			}
 
 			//Set Current element
-			_curElement = element;
+			_curEntity = entity;
 
 			return 0;
 	});
 
-	LuaScript::AddNativeFunction("EndElement", [](lua_State* state) -> int {
-		if (_curElement) _curElement = nullptr;
+	LuaScript::AddNativeFunction("EndEntity", [](lua_State* state) -> int {
+		if (_curEntity) {
+			if (_curEntity->GetParent()) {
+				_curEntity = _curEntity->GetParent();
+			}
+			else {
+				_curEntity = nullptr;
+			}
+		}
+
 		return 0;
 	});
 
 	//Position is always local
 	LuaScript::AddNativeFunction("SetPosition", [](lua_State* state) -> int {
 		Vec2 position = Vec2((float)lua_tonumber(state, -2), (float)lua_tonumber(state, -1));
-		_curElement->localPosition = position;
+		_curEntity->localPosition = position;
 		return 0;
 	});
 
 	LuaScript::AddNativeFunction("SetScale", [](lua_State* state) -> int {
 		Vec2 scale = Vec2((float)lua_tonumber(state, -2), (float)lua_tonumber(state, -1));
-		_curElement->localScale = scale;
+		_curEntity->localScale = scale;
 		return 0;
 	});
 
 	LuaScript::AddNativeFunction("Split", [](lua_State* state) -> int {
-		_curElement->GetComponent<Sprite>()->Split((int)lua_tonumber(state, -2), (int)lua_tonumber(state, -1));
+		_curEntity->GetComponent<Sprite>()->Split((int)lua_tonumber(state, -2), (int)lua_tonumber(state, -1));
 		return 0;
 	});
 
@@ -125,7 +141,7 @@ void Core::Initialize(int argc, char* argv[]) {
 			params.push_back(lua_tostring(state, i));
 		}
 
-		_curElement->OnEnterDelegate.AddLambda([=]() {
+		dynamic_cast<UIElement*>(_curEntity)->OnEnterDelegate.AddLambda([=]() {
 			LuaScript::RunFunction(filePath, funcName, params);
 		});
 		return 0;
@@ -142,7 +158,7 @@ void Core::Initialize(int argc, char* argv[]) {
 			params.push_back(lua_tostring(state, i));
 		}
 
-		_curElement->OnStayDelegate.AddLambda([=]() {
+		dynamic_cast<UIElement*>(_curEntity)->OnStayDelegate.AddLambda([=]() {
 			LuaScript::RunFunction(filePath, funcName, params);
 		});
 		return 0;
@@ -159,7 +175,7 @@ void Core::Initialize(int argc, char* argv[]) {
 			params.push_back(lua_tostring(state, i));
 		}
 
-		_curElement->OnLeaveDelegate.AddLambda([=]() {
+		dynamic_cast<UIElement*>(_curEntity)->OnLeaveDelegate.AddLambda([=]() {
 			LuaScript::RunFunction(filePath, funcName, params);
 		});
 		return 0;

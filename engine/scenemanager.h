@@ -36,13 +36,6 @@ public:
 	static Scene* GetActiveScene();
 
 	/**
-	* Safely Unloads active scene if there is one, then creates a new scene instance and loads scene from file
-	* @param char*
-	* @return Scene*
-	*/
-	static Scene* LoadScene(char* path);
-
-	/**
 	* Terminates the SceneManager
 	* @return void
 	*/
