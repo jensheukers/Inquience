@@ -51,6 +51,11 @@ public:
 	/**
 	* Removes a sound from the sounds list
 	*/
+	static void RemoveSound(Sound* sound);
+
+	/**
+	* Removes a sound from the sounds list
+	*/
 	static void RemoveSound(int index);
 
 	/**

@@ -40,7 +40,6 @@ void SoundManager::Update() {
 				AL_SOURCE_STATE, &SoundManager::GetInstance()->_sounds[i]->GetAudioSource()->state);
 		}
 	}
-
 }
 
 void SoundManager::AddSound(Sound* sound) {
@@ -49,6 +48,14 @@ void SoundManager::AddSound(Sound* sound) {
 
 Sound* SoundManager::GetSound(int index) {
 	return SoundManager::GetInstance()->_sounds[index];
+}
+
+void SoundManager::RemoveSound(Sound* sound) {
+	for (int i = 0; i < SoundManager::GetInstance()->_sounds.size(); i++) {
+		if (SoundManager::GetInstance()->_sounds[i] == sound) {
+			SoundManager::GetInstance()->_sounds.erase(SoundManager::GetInstance()->_sounds.begin() + i);
+		}
+	}
 }
 
 void SoundManager::RemoveSound(int index) {

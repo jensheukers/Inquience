@@ -200,6 +200,8 @@ void Core::Destroy() {
 	//Delete scenemanager
 	SceneManager::Terminate();
 
+	SoundManager::Destroy();
+
 	// Delete instance and set instance to nullptr
 	delete instance; 
 	instance = nullptr;
