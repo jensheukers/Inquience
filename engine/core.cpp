@@ -109,8 +109,12 @@ void Core::Initialize(int argc, char* argv[]) {
 		return 0;
 	});
 
+	LuaScript::AddNativeFunction("Split", [](lua_State* state) -> int {
+		_curElement->GetComponent<Sprite>()->Split(lua_tonumber(state, -2), lua_tonumber(state, -1));
+		return 0;
+	});
+
 	LuaScript::AddNativeFunction("OnEnter", [](lua_State* state) ->int {
-		if (!_curElement) return 0;
 		int top = -lua_gettop(state);
 
 		std::string filePath = lua_tostring(state, top);
@@ -128,7 +132,6 @@ void Core::Initialize(int argc, char* argv[]) {
 	});
 
 	LuaScript::AddNativeFunction("OnStay", [](lua_State* state) ->int {
-		if (!_curElement) return 0;
 		int top = -lua_gettop(state);
 
 		std::string filePath = lua_tostring(state, top);
@@ -146,7 +149,6 @@ void Core::Initialize(int argc, char* argv[]) {
 	});
 
 	LuaScript::AddNativeFunction("OnLeave", [](lua_State* state) ->int {
-		if (!_curElement) return 0;
 		int top = -lua_gettop(state);
 
 		std::string filePath = lua_tostring(state, top);
