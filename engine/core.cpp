@@ -76,7 +76,7 @@ void Core::Initialize(int argc, char* argv[]) {
 			if (!texture) return 0;
 
 			Entity* entity;
-			if (std::string(lua_tostring(state, -lua_gettop(state) + 1)) == "UI"  ||_curEntity && dynamic_cast<UIElement*>(_curEntity)) {
+			if (std::string(lua_tostring(state, -lua_gettop(state) + 1)) == "UI") {
 				entity = new UIElement();
 			}
 			else {
