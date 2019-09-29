@@ -1,7 +1,5 @@
 // Header file for entity class.
 //
-// Version: 19/9/2019
-//
 // Copyright (C) Jens Heukers - All Rights Reserved
 // Unauthorized copying of this file, via any medium is strictly prohibited
 // Proprietary and confidential
@@ -196,9 +194,14 @@ public:
 	}
 
 	/**
-	* Returns the position of the entity
+	* Returns the global position of the entity
 	*/
 	Vec2 GetPosition();
+
+	/**
+	* Retruns the global scale of the entity
+	*/
+	Vec2 GetScale();
 
 	/**
 	* Destructor

@@ -113,11 +113,6 @@ public:
 	* @return Font*
 	*/
 	Font* GetFont();
-
-	/**
-	* Destructor
-	*/
-	~Text();
 };
 
 #endif // !FONT_H

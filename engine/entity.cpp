@@ -1,7 +1,5 @@
 // Source file for entity class.
 //
-// Version: 19/9/2019
-//
 // Copyright (C) Jens Heukers - All Rights Reserved
 // Unauthorized copying of this file, via any medium is strictly prohibited
 // Proprietary and confidential
@@ -44,7 +42,7 @@ void Entity::UpdateComponents() {
 Entity::Entity() {
 	this->parent = nullptr; // Set parent to nullptr
 	this->position = Vec2(0,0);
-	this->scale = Vec2(1, 1);
+	this->scale = Vec2(0, 0);
 
 	//Set entity active
 	this->active = true;
@@ -133,6 +131,10 @@ void Entity::SetParent(Entity* entity) {
 
 Vec2 Entity::GetPosition() {
 	return this->position;
+}
+
+Vec2 Entity::GetScale() {
+	return this->scale;
 }
 
 Entity::~Entity() {

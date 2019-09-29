@@ -98,9 +98,6 @@ void Scene::Load(char* filePath) {
 					uvData.rightDown.x = std::stof(ampersands[6]);
 					uvData.rightDown.y = std::stof(ampersands[7]);
 					currentEntity->GetComponent<Sprite>()->uv = uvData;
-
-					//Splits
-					currentEntity->GetComponent<Sprite>()->slices = std::stoi(commas[2]);
 				}
 			}
 		}
@@ -128,7 +125,7 @@ void Scene::Save(char* filePath) {
 			file << uvData.leftDown.x << "&" << uvData.leftDown.y << "&";
 			file << uvData.rightDown.x << "&" << uvData.rightDown.y << ",";
 
-			file << GetChild(i)->GetComponent<Sprite>()->slices << "\n";	
+			file << "\n";	
 		}
 	}
 

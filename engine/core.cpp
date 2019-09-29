@@ -154,14 +154,13 @@ void Core::Update() {
 	}
 
 	//Update Entities
-	if (SceneManager::GetActiveScene()) {
+	if (SceneManager::GetActiveScene() && SceneManager::GetActiveScene()->GetActiveCamera()) {
 		//Update Scene
 		SceneManager::GetActiveScene()->Update();
-		instance->renderer->RenderFrame();
-
+		instance->renderer->RenderScene(SceneManager::GetActiveScene(), SceneManager::GetActiveScene()->GetActiveCamera());
 	}
 	else {
-		Debug::Log("No active scene");
+		Debug::Log("No active scene or camera present");
 	}
 	
 	//Update Input

@@ -72,7 +72,6 @@ void Animator::Update() {
 	if (lastPlayTime + currentAnimation->frameTime < Core::GetTimeElapsed()) {
 		//Set uv coordinates
 		this->GetOwner()->GetComponent<Sprite>()->uv = currentAnimation->NextFrame();
-		this->GetOwner()->GetComponent<Sprite>()->slices = currentAnimation->NextFrame().slices;
 
 		//Set last playtime
 		lastPlayTime = Core::GetTimeElapsed();
