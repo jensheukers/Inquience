@@ -118,7 +118,7 @@ void Core::Initialize(int argc, char* argv[]) {
 
 		std::vector<std::string> params;
 		for (int i = top + 2; i < 0; i++) {
-			params.push_back(lua_tostring(state, top - i));
+			params.push_back(lua_tostring(state, i));
 		}
 
 		_curElement->OnEnterDelegate.AddLambda([=]() {
@@ -136,7 +136,7 @@ void Core::Initialize(int argc, char* argv[]) {
 
 		std::vector<std::string> params;
 		for (int i = top + 2; i < 0; i++) {
-			params.push_back(lua_tostring(state, top - i));
+			params.push_back(lua_tostring(state, i));
 		}
 
 		_curElement->OnStayDelegate.AddLambda([=]() {
@@ -154,7 +154,7 @@ void Core::Initialize(int argc, char* argv[]) {
 
 		std::vector<std::string> params;
 		for (int i = top + 2; i < 0; i++) {
-			params.push_back(lua_tostring(state, top - i));
+			params.push_back(lua_tostring(state, i));
 		}
 
 		_curElement->OnLeaveDelegate.AddLambda([=]() {
