@@ -34,7 +34,6 @@ struct UV {
 class Sprite : public Component {
 private:
 	Texture* texture; /***< The texture the sprite uses*/
-	int zIndex; /***< The z-index of the sprite*/
 public:
 	UV uv; /***< The UV Coordinates of the sprite*/
 
@@ -55,19 +54,6 @@ public:
 	* @return Texture*
 	*/
 	Texture* GetTexture();
-
-	/**
-	* Sets the z-Index of the sprite
-	* @param int
-	* @return void
-	*/
-	void SetZIndex(int index);
-
-	/**
-	* Returns the zIndex
-	* @return int
-	*/
-	int GetZIndex();
 
 	/**
 	* Splits the texture, sprite should have a texture assigned and texture width & height should be equal to work

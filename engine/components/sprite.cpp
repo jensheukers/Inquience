@@ -18,7 +18,6 @@ UV::UV() {
 }
 
 Sprite::Sprite() {
-	this->zIndex = 0;
 	this->texture = nullptr;
 }
 
@@ -29,14 +28,6 @@ Texture* Sprite::SetTexture(Texture* texture) {
 
 Texture* Sprite::GetTexture() {
 	return this->texture;
-}
-
-void Sprite::SetZIndex(int index) {
-	this->zIndex = index;
-}
-
-int Sprite::GetZIndex() {
-	return this->zIndex;
 }
 
 UV Sprite::Split(int pixelsPerTile, int index) {
