@@ -14,11 +14,6 @@
 int main(int argc, char * argv[]) {
 	Core::Initialize(argc, argv);
 
-	SceneManager::SetActiveScene(new Scene());
-	SceneManager::GetActiveScene()->SetActiveCamera(new Camera());
-
-	LuaScript::RunFunction("res/example.lua", "Example");
-
 	while (Core::IsActive()) {
 		Core::Update(); // Handle updates for engine
 	}
