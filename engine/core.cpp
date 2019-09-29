@@ -66,42 +66,57 @@ void Core::Initialize(int argc, char* argv[]) {
 	static Entity* _curEntity = nullptr;
 
 	LuaScript::AddNativeFunction("BeginEntity", [](lua_State* state) -> int {
-			//Fetch params
-			std::string path = lua_tostring(state, -lua_gettop(state));
+		//Fetch params
+		std::string path = lua_tostring(state, -lua_gettop(state));
 			
-			if (!SceneManager::GetActiveScene())  return 0;
+		if (!SceneManager::GetActiveScene())  return 0;
 
-			//Load Texture
-			Texture* texture = TextureLoader::LoadTarga((char*)path.c_str());
-			if (!texture) return 0;
+		//Load Texture
+		Texture* texture = TextureLoader::LoadTarga((char*)path.c_str());
+		if (!texture) return 0;
 
-			Entity* entity;
-			if (std::string(lua_tostring(state, -lua_gettop(state) + 1)) == "UI") {
-				entity = new UIElement();
-			}
-			else {
-				entity = new Entity();
-			}
+		Entity* entity;
+		if (std::string(lua_tostring(state, -lua_gettop(state) + 1)) == "UI") {
+			entity = new UIElement();
+		}
+		else {
+			entity = new Entity();
+		}
 			
-			//When created from lua, a sprite is automaticly added
-			entity->AddComponent<Sprite>()->SetTexture(texture);
+		//When created from lua, a sprite is automaticly added
+		entity->AddComponent<Sprite>()->SetTexture(texture);
 
-			if (_curEntity) {
-				_curEntity->AddChild(entity);
-			}
-			else {
-				SceneManager::GetActiveScene()->AddChild(entity);
-			}
+		if (_curEntity) {
+			_curEntity->AddChild(entity);
+		}
+		else {
+			SceneManager::GetActiveScene()->AddChild(entity);
+		}
 
-			//Set Current element
+		//Set Current element
+		_curEntity = entity;
+
+		return 0;
+	});
+
+	LuaScript::AddNativeFunction("BeginExistingEntityByTag", [](lua_State* state) -> int {
+		if (_curEntity != nullptr) { Debug::Log("Lua: Cannot get existing entity if _curEnemy is not nullptr"); return 0; }
+
+		std::string tag = std::string(lua_tostring(state, -1));
+		Entity* entity = SceneManager::GetActiveScene()->GetChildByTag(tag);
+
+		if(!entity) {
+			Debug::Log("Lua: Cannot find entity with tag: " + tag);
+		}
+		else {
 			_curEntity = entity;
-
-			return 0;
+		}
+		return 0;
 	});
 
 	LuaScript::AddNativeFunction("EndEntity", [](lua_State* state) -> int {
 		if (_curEntity) {
-			if (_curEntity->GetParent()) {
+			if (_curEntity->GetParent() && !dynamic_cast<Scene*>(_curEntity->GetParent())) {
 				_curEntity = _curEntity->GetParent();
 			}
 			else {
@@ -110,6 +125,10 @@ void Core::Initialize(int argc, char* argv[]) {
 		}
 
 		return 0;
+	});
+
+	LuaScript::AddNativeFunction("SetTag", [](lua_State* state) -> int {
+		_curEntity->tag = std::string(lua_tostring(state, -1));
 	});
 
 	//Position is always local

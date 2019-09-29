@@ -43,6 +43,7 @@ Entity::Entity() {
 	this->parent = nullptr; // Set parent to nullptr
 	this->position = Vec2(0,0);
 	this->scale = Vec2(0, 0);
+	this->tag = "Entity";
 
 	//Set entity active
 	this->active = true;
@@ -135,6 +136,17 @@ Vec2 Entity::GetPosition() {
 
 Vec2 Entity::GetScale() {
 	return this->scale;
+}
+
+Entity* Entity::GetChildByTag(std::string tag) {
+	if (this->tag == tag) return this;
+
+	Entity* found = nullptr;
+	for (size_t i = 0; i < children.size(); i++) {
+		found = children[i]->GetChildByTag(tag);
+		if (found) return found;
+	}
+	return found;
 }
 
 Entity::~Entity() {

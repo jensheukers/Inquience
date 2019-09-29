@@ -61,6 +61,7 @@ protected:
 public:
 	Vec2 localPosition; /***< The local position of the Entity*/
 	Vec2 localScale; /***< The local scale of the Entity*/
+	std::string tag; /***< Tag of the entity, whenever GetChildByTag() gets called and tag matches it will be returned*/
 
 	/**
 	* Constructor
@@ -202,6 +203,11 @@ public:
 	* Retruns the global scale of the entity
 	*/
 	Vec2 GetScale();
+
+	/**
+	* Returns this if tag == this->tag, else calls this method on children.
+	*/
+	Entity* GetChildByTag(std::string tag);
 
 	/**
 	* Destructor

@@ -3,7 +3,10 @@ function Example()
 	BeginEntity("res/terrain_tiles.tga")
 		SetPosition(300, 200) -- We can set the localPosition
 		SetScale(32, 32) -- We can set scale
-	
+		
+		--We can set a tag on the entity, further down in the function we can get this instance by BeginExistingEntityByTag()
+		SetTag("TaggedEntity")
+		
 		--We can also split the texture, this will update the UV coordinates in Sprite Component
 		Split(32, 52) -- First parameter: Amount of Pixels Per Tile, Second parameter: Index
 	
@@ -29,6 +32,11 @@ function Example()
 		OnStay("res/example.lua", "Event", "You are staying on my element")
 		OnLeave("res/example.lua", "Event", "You have left my entity")
 	--End the entity
+	EndEntity()
+	
+	--We can get the entity we created earlier and change its position
+	BeginExistingEntityByTag("TaggedEntity")
+		SetPosition(700, 50)
 	EndEntity()
 	
 	--We can play sounds in the engine by calling
