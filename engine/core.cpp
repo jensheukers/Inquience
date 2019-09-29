@@ -17,7 +17,6 @@
 #include <steam_api.h>
 #include <steam_gameserver.h>
 
-
 Core* Core::instance; // The singleton instance
 
 void Core::Initialize(int argc, char* argv[]) {
@@ -107,6 +106,60 @@ void Core::Initialize(int argc, char* argv[]) {
 	LuaScript::AddNativeFunction("SetScale", [](lua_State* state) -> int {
 		Vec2 scale = Vec2(lua_tonumber(state, -2, lua_tonumber(state, -1)));
 		_curElement->localScale = scale;
+		return 0;
+	});
+
+	LuaScript::AddNativeFunction("OnEnter", [](lua_State* state) ->int {
+		if (!_curElement) return 0;
+		int top = -lua_gettop(state);
+
+		std::string filePath = lua_tostring(state, top);
+		std::string funcName = lua_tostring(state, top + 1);
+
+		std::vector<std::string> params;
+		for (int i = top + 2; i < 0; i++) {
+			params.push_back(lua_tostring(state, top - i));
+		}
+
+		_curElement->OnEnterDelegate.AddLambda([=]() {
+			LuaScript::RunFunction(filePath, funcName, params);
+		});
+		return 0;
+	});
+
+	LuaScript::AddNativeFunction("OnStay", [](lua_State* state) ->int {
+		if (!_curElement) return 0;
+		int top = -lua_gettop(state);
+
+		std::string filePath = lua_tostring(state, top);
+		std::string funcName = lua_tostring(state, top + 1);
+
+		std::vector<std::string> params;
+		for (int i = top + 2; i < 0; i++) {
+			params.push_back(lua_tostring(state, top - i));
+		}
+
+		_curElement->OnStayDelegate.AddLambda([=]() {
+			LuaScript::RunFunction(filePath, funcName, params);
+		});
+		return 0;
+	});
+
+	LuaScript::AddNativeFunction("OnLeave", [](lua_State* state) ->int {
+		if (!_curElement) return 0;
+		int top = -lua_gettop(state);
+
+		std::string filePath = lua_tostring(state, top);
+		std::string funcName = lua_tostring(state, top + 1);
+
+		std::vector<std::string> params;
+		for (int i = top + 2; i < 0; i++) {
+			params.push_back(lua_tostring(state, top - i));
+		}
+
+		_curElement->OnLeaveDelegate.AddLambda([=]() {
+			LuaScript::RunFunction(filePath, funcName, params);
+		});
 		return 0;
 	});
 
