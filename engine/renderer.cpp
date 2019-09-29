@@ -90,7 +90,7 @@ void Renderer::RenderEntity(Entity* entity, Camera* camera) {
 	}
 
 	//Render children
-	for (int i = 0; i < entity->GetChildren().size(); i++){
+	for (unsigned i = 0; i < entity->GetChildren().size(); i++){
 		RenderEntity(entity->GetChild(i), camera);
 	}
 }
@@ -253,7 +253,7 @@ Renderer::Renderer(Vec2 resolution, Vec2 scale, const char* title) {
 
 void Renderer::RenderScene(Scene* scene, Camera* camera) {
 	//Render all scene children as entity
-	for (int i = 0; i < scene->GetChildren().size(); i++) {
+	for (unsigned i = 0; i < scene->GetChildren().size(); i++) {
 		RenderEntity(scene->GetChild(i), camera);
 	}
 

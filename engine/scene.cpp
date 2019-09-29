@@ -36,7 +36,7 @@ void Scene::Load(char* filePath) {
 	std::ifstream file = std::ifstream(Core::GetExecutableDirectoryPath().append(filePath));
 
 	if (file.is_open()) {
-		Entity* currentEntity; // The current entity being processed
+		Entity* currentEntity = nullptr; // The current entity being processed
 		while (std::getline(file, line))
 		{
 			if (line == " ") continue;

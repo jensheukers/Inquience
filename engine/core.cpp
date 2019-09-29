@@ -98,19 +98,19 @@ void Core::Initialize(int argc, char* argv[]) {
 
 	//Position is always local
 	LuaScript::AddNativeFunction("SetPosition", [](lua_State* state) -> int {
-		Vec2 position = Vec2(lua_tonumber(state, -2), lua_tonumber(state, -1));
+		Vec2 position = Vec2((float)lua_tonumber(state, -2), (float)lua_tonumber(state, -1));
 		_curElement->localPosition = position;
 		return 0;
 	});
 
 	LuaScript::AddNativeFunction("SetScale", [](lua_State* state) -> int {
-		Vec2 scale = Vec2(lua_tonumber(state, -2, lua_tonumber(state, -1)));
+		Vec2 scale = Vec2((float)lua_tonumber(state, -2), (float)lua_tonumber(state, -1));
 		_curElement->localScale = scale;
 		return 0;
 	});
 
 	LuaScript::AddNativeFunction("Split", [](lua_State* state) -> int {
-		_curElement->GetComponent<Sprite>()->Split(lua_tonumber(state, -2), lua_tonumber(state, -1));
+		_curElement->GetComponent<Sprite>()->Split((int)lua_tonumber(state, -2), (int)lua_tonumber(state, -1));
 		return 0;
 	});
 

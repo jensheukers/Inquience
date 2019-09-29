@@ -51,7 +51,7 @@ Sound* SoundManager::GetSound(int index) {
 }
 
 void SoundManager::RemoveSound(Sound* sound) {
-	for (int i = 0; i < SoundManager::GetInstance()->_sounds.size(); i++) {
+	for (unsigned i = 0; i < SoundManager::GetInstance()->_sounds.size(); i++) {
 		if (SoundManager::GetInstance()->_sounds[i] == sound) {
 			SoundManager::GetInstance()->_sounds.erase(SoundManager::GetInstance()->_sounds.begin() + i);
 		}

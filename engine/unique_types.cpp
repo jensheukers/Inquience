@@ -33,7 +33,7 @@ void ThreadContext::Yield() {
 }
  
 void ThreadContext::Sleep(int amount) {
-	int sTime = Core::GetTimeElapsed() + amount;
+	int sTime = (int)Core::GetTimeElapsed() + amount;
 	while (sTime > (int)Core::GetTimeElapsed()) {
 		continue;
 	}
