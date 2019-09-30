@@ -48,7 +48,7 @@ public:
 	/**
 	* Returns the line draw list
 	*/
-	static std::vector<Line> GetLineDrawList() { return instance->_lineDrawList; };
+	static std::vector<Line> GetLineDrawList() { return GetInstance()->_lineDrawList; };
 
 	/**
 	* Debug clear operation
