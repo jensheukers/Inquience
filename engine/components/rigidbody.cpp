@@ -10,9 +10,13 @@
 #include "../entity.h"
 #include "../debug.h"
 
+#include "collider.h"
+
 RigidBody::RigidBody() {
 	this->positionLastFrame = Vec2(0, 0);
 	this->velocity = Vec2(0, 0);
+	this->gravity = Vec2(0, 0.9f);
+	this->isGravityActive = true;
 }
 
 void RigidBody::Update() {
@@ -21,14 +25,18 @@ void RigidBody::Update() {
 		return;
 	}
 
-	//Check for collision
-	if (GetOwner()->GetComponent<Collider>()->collisionEntered) {
-		this->velocity = Physics::Bounce(this->velocity, Physics::CalculateHitPlaneEventType(positionLastFrame, GetOwner()->GetComponent<Collider>()->hitLast));
+	if (isBlockedThisFrame) {
+		GetOwner()->localPosition = positionLastFrame;
+		isBlockedThisFrame = false;
+		return;
+	}
+	positionLastFrame = GetOwner()->localPosition;
+
+	if (isGravityActive) {
+		velocity = velocity + gravity;
 	}
 
-	//Add velocity on position
 	GetOwner()->localPosition = GetOwner()->localPosition + (velocity * Core::GetDeltaTime());
-	positionLastFrame = GetOwner()->localPosition;
 }
 
 void RigidBody::AddForce(Vec2 force) {

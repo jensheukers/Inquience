@@ -8,6 +8,7 @@
 
 #include "../collisionmanager.h"
 #include "../entity.h"
+#include "rigidbody.h"
 
 Collider::Collider() {
 	CollisionManager::RegisterCollider(this);
@@ -20,10 +21,16 @@ void Collider::Update() {
 	collisionExited = false;
 
 	//We will check for every other collider if we are in fact colliding
+	//Note that in order for any object to be passed into the collision check, that object must have a RigidBody component
 	for (size_t i = 0; i < CollisionManager::GetColliders().size(); i++) {
 		if (CollisionManager::GetColliders()[i] == this) continue;
 		bool hit = IsColliding(CollisionManager::GetColliders()[i]);
 		
+		//Check if a rigidbody exists on the other collider's parent, if so we want to block its movement for this frame
+		if (hit && CollisionManager::GetColliders()[i]->GetOwner()->HasComponent<RigidBody>()) {
+			CollisionManager::GetColliders()[i]->GetOwner()->GetComponent<RigidBody>()->isBlockedThisFrame = true;
+		}
+
 		bool hitPreviousFrame = false;
 		int lastHitIndex = 0;
 		for (size_t ii = 0; ii < hits.size(); ii++) {

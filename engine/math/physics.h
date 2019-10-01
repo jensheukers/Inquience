@@ -10,13 +10,6 @@
 //Include vec2.h
 #include "vec2.h"
 
-//Side of hit
-enum PhysicsHitPlaneResponseEventType {
-	Horizontal,
-	Vertical,
-	Edge
-};
-
 class Physics {
 public:
 	/**
@@ -27,23 +20,6 @@ public:
 	* @return bool 
 	*/
 	static bool InBounds(Vec2 position, Vec2 a, Vec2 b);
-
-	/**
-	* Calculates new velocity for given PhysicsHitPlaneEventType, returns new velocity
-	* Basicly inverts x and y for velocity depending on PhysicsHitPlaneResponseEventType
-	* @param Vec2
-	* @param PhysicsHitPlaneEventType
-	* @return Vec2
-	*/
-	static Vec2 Bounce(Vec2 velocity, PhysicsHitPlaneResponseEventType side = PhysicsHitPlaneResponseEventType::Edge);
-
-	/**
-	* Calculates and returns a PhysicsHitPlaneResponseEventType based on position vector and side of given collider.
-	* @param Vec2
-	* @param Collider*
-	* @return PhysicsHitPlaneResponseEventType
-	*/
-	static PhysicsHitPlaneResponseEventType CalculateHitPlaneEventType(Vec2 position, class Collider* collider);
 };
 
 #endif // !PHYSICS_H
