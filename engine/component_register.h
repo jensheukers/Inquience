@@ -20,6 +20,7 @@ private:
 	Component_Register() {
 		components[typeid(Animator).name()] = new Animator();
 		components[typeid(Collider).name()] = new Collider();
+		components[typeid(BoxCollider).name()] = new BoxCollider();
 		components[typeid(RigidBody).name()] = new RigidBody();
 		components[typeid(Sprite).name()] = new Sprite();
 	}

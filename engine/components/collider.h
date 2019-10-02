@@ -12,6 +12,7 @@
 
 #include "../unique_types.h"
 #include "../math/physics.h"
+#include "glm/glm.hpp"
 
 #include <vector>
 
@@ -34,10 +35,18 @@ public:
 
 	Collider* hitLast; /***< The last collider to enter this collider*/
 
+	bool bDrawDebugLines; /***< If true DrawDebugLines will be called*/
+	glm::vec3 debugDrawColor; /***< The color to draw in, default is (0, 1, 0)*/
+
 	/**
-	* Constructor
+	* BeginPlay
 	*/
-	Collider();
+	virtual void BeginPlay() override;
+
+	/**
+	* Update
+	*/
+	virtual void Update() override;
 
 	/**
 	* Is called every frame by collisionmanager
@@ -57,13 +66,26 @@ public:
 	virtual Component* CreateNewInstance() override { return new Collider(); }
 
 	/**
+	* Draws debug lines
+	*/
+	virtual void DrawDebugLines() {};
+
+	/**
 	* Destructor
 	*/
 	~Collider();
 };
 
 class BoxCollider : public Collider {
+private:
+	/**
+	* Override DrawDebugLines
+	*/
+	void DrawDebugLines() override;
+
 public:
+	virtual Component* CreateNewInstance() override { return new BoxCollider(); }
+
 	/**
 	* Override IsColliding to do collision check
 	*/

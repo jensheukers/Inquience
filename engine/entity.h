@@ -155,10 +155,9 @@ public:
 		//Create a new instance of the component, and set the owner
 		T* instance = new T();
 		Component* component = dynamic_cast<Component*>(instance);
-		component->SetOwner(this);
-
-		//Push back and return
 		components.push_back(component);
+		component->SetOwner(this);
+		component->BeginPlay();
 		return instance;
 	}
 
@@ -166,8 +165,9 @@ public:
 	* Adds a already existing component instance to the components vector
 	*/
 	Component* AddExistingComponentInstance(Component* component) {
-		component->SetOwner(this);
 		components.push_back(component);
+		component->SetOwner(this);
+		component->BeginPlay();
 		return component;
 	}
 

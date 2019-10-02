@@ -10,8 +10,21 @@
 #include "../entity.h"
 #include "rigidbody.h"
 
-Collider::Collider() {
+void Collider::BeginPlay() {
 	CollisionManager::RegisterCollider(this);
+	debugDrawColor = glm::vec3(0, 1, 0);
+
+	AddProperty("DrawDebug", [=](std::vector<std::string> args) {
+		bDrawDebugLines = (stoi(args[0]) == 1) ? true : false;
+	});
+
+	AddProperty("Outer", [=](std::vector<std::string> args) {
+		outer = Vec2(std::stof(args[0]), std::stof(args[1]));
+	});
+}
+
+void Collider::Update() {
+	if (bDrawDebugLines) DrawDebugLines();
 }
 
 void Collider::CheckCollision() {
@@ -67,6 +80,13 @@ std::vector<Collider*> Collider::GetHits() {
 
 Collider::~Collider() {
 	CollisionManager::RemoveCollider(this);
+}
+
+void BoxCollider::DrawDebugLines() {
+	Debug::DrawLine(GetOwner()->GetPosition(), GetOwner()->GetPosition() + Vec2(outer.x, 0), debugDrawColor);
+	Debug::DrawLine(GetOwner()->GetPosition() +  Vec2(outer.x, 0), GetOwner()->GetPosition() + outer, debugDrawColor);
+	Debug::DrawLine(GetOwner()->GetPosition() + outer, GetOwner()->GetPosition() + Vec2(0, outer.y), debugDrawColor);
+	Debug::DrawLine(GetOwner()->GetPosition() + Vec2(0, outer.y), GetOwner()->GetPosition(), debugDrawColor);
 }
 
 bool BoxCollider::IsColliding(Collider* other) {

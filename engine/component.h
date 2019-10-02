@@ -44,6 +44,11 @@ public:
 	//Virtual methods
 
 	/**
+	* Gets called after the component has been added through AddComponent
+	*/
+	virtual void BeginPlay() {};
+
+	/**
 	* Update function gets called by owner every frame
 	* @return void
 	*/
