@@ -24,9 +24,9 @@ void Entity::HandleParentTransformations() {
 void Entity::UpdateChildren() {
 	for (Entity* child : children) {
 		if (child->active) {
-			child->HandleParentTransformations(); // Handle the parent transformations
 			child->Update(); // Update child
 			child->UpdateComponents(); // Update components
+			child->HandleParentTransformations(); // Handle the parent transformations
 		}
 
 		child->UpdateChildren(); // Update their children

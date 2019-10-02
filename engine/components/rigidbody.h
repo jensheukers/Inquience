@@ -11,6 +11,7 @@
 
 #include "../math/vec2.h"
 #include "../math/physics.h"
+#include "../unique_types.h"
 
 //Rigidbody has simple physics for "simulation"
 class RigidBody : public Component {
@@ -22,7 +23,9 @@ public:
 	bool isGravityActive; /***< Determines if gravity is active or not*/
 	bool isBlockedThisFrame; /***< If true, the rigidbody is not able to move anymore, note that this variable should not be modified outside of collider functions.
 								   This makes sure that a collider cannot pass through whenever another collider has received a hit from our collider*/
+	Vec2 maxVelocity; /***< The maximum velocity allowed to be reached.*/
 
+	Delegate onBlockedDelegate; /***< Delegate for whenever isBlockedThisFrame is true*/
 	/**
 	* Constructor
 	*/
@@ -34,16 +37,23 @@ public:
 	void Update() override;
 
 	/**
-	* Adds a force to velocity Vec2, NOTE: DeltaTime is automaticly included in rigidbody updates
+	* Adds a force to velocity Vec2
 	* @param Vec2
 	*/
 	void AddForce(Vec2 force);
+
+	/**
+	* Sets the velocity
+	*/
+	void SetVelocity(Vec2 velocity);
 
 	/**
 	* Returns the velocity
 	* @return Vec2
 	*/
 	Vec2 GetVelocity();
+
+	Vec2 GetPositionLastFrame() { return positionLastFrame; }
 };
 
 #endif // !RIGIDBODY_H

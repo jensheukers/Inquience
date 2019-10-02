@@ -30,3 +30,9 @@ void CollisionManager::RemoveCollider(Collider* collider) {
 std::vector<Collider*> CollisionManager::GetColliders() {
 	return GetInstance()->colliders;
 }
+
+void CollisionManager::Update() {
+	for (size_t i = 0; i <  GetColliders().size(); i++) {
+		GetColliders()[i]->CheckCollision();
+	}
+}

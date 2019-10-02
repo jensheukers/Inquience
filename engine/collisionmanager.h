@@ -34,6 +34,11 @@ public:
 	* Returns vector containing all colliders
 	*/
 	static std::vector<Collider*> GetColliders();
+
+	/**
+	* Update is called every frame by core
+	*/
+	static void Update();
 };
 
 #endif // !COLLISIONMANAGER_H

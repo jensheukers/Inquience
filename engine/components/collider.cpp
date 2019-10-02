@@ -14,7 +14,7 @@ Collider::Collider() {
 	CollisionManager::RegisterCollider(this);
 }
 
-void Collider::Update() {
+void Collider::CheckCollision() {
 	//Reset booleans
 	collisionEntered = false;
 	collisionActive = false;

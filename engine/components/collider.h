@@ -40,9 +40,9 @@ public:
 	Collider();
 
 	/**
-	* Update
+	* Is called every frame by collisionmanager
 	*/
-	void Update() override;
+	void CheckCollision();
 
 	/**
 	* The actual collision check, can be overwritten

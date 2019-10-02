@@ -13,9 +13,10 @@
 #include "collider.h"
 
 RigidBody::RigidBody() {
+	this->velocity = Vec2(0, 0.f);
 	this->positionLastFrame = Vec2(0, 0);
-	this->velocity = Vec2(0, 0);
 	this->gravity = Vec2(0, 0.9f);
+	this->maxVelocity = Vec2(500.f, 500.f);
 	this->isGravityActive = true;
 }
 
@@ -28,19 +29,36 @@ void RigidBody::Update() {
 	if (isBlockedThisFrame) {
 		GetOwner()->localPosition = positionLastFrame;
 		isBlockedThisFrame = false;
+		onBlockedDelegate.Execute();
 		return;
 	}
+
 	positionLastFrame = GetOwner()->localPosition;
 
+	//Add gravity
 	if (isGravityActive) {
 		velocity = velocity + gravity;
 	}
 
+	//Check if velocity exeeds maxVelocity
+	if (velocity.x > maxVelocity.x) {
+		velocity.x = maxVelocity.x;
+	}
+
+	if (velocity.y > maxVelocity.y) {
+		velocity.y = maxVelocity.y;
+	}
+
+	//Add velocity to position
 	GetOwner()->localPosition = GetOwner()->localPosition + (velocity * Core::GetDeltaTime());
 }
 
 void RigidBody::AddForce(Vec2 force) {
 	velocity = velocity + force;
+}
+
+void RigidBody::SetVelocity(Vec2 velocity) {
+	this->velocity = velocity;
 }
 
 Vec2 RigidBody::GetVelocity() {

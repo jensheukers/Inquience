@@ -8,6 +8,7 @@
 #include "core.h"
 #include "debug.h"
 #include "scenemanager.h"
+#include "collisionmanager.h"
 #include "input.h"
 #include "soundmanager.h"
 #include "luascript.h"
@@ -255,6 +256,9 @@ void Core::Update() {
 
 		//Update Scene
 		SceneManager::GetActiveScene()->Update();
+
+		//Update collision check for next frame, as transformations should have been done by now
+		CollisionManager::Update();
 	}
 	else {
 		Debug::Log("No active scene or camera present");
