@@ -18,7 +18,8 @@ private:
 	std::map <std::string, std::function<void(std::vector<std::string>)>> properties; /***< Properties map containing function pointers to properties*/
 protected:
 	/**
-	* Adds a property function to the properties list
+	* Adds a property function to the properties list, a component property is nothing more than a function that gets executed whenver SetProperty with right key is called
+	* We can use this to set properties externally without having to recompile, as long as the property is registered in the properties map
 	*/
 	void AddProperty(std::string key, std::function<void(std::vector<std::string>)> value);
 public:

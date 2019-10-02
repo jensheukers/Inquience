@@ -24,6 +24,11 @@ Sprite::Sprite() {
 	AddProperty("Texture", [=](std::vector<std::string> args) {
 		SetTexture(TextureLoader::LoadTarga((char*)args[0].c_str()));
 	});
+	
+	//Property to split
+	AddProperty("Split", [=](std::vector<std::string> args) {
+		Split(std::stoi(args[0]), std::stoi(args[1]));
+	});
 }
 
 Texture* Sprite::SetTexture(Texture* texture) {

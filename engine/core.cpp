@@ -14,6 +14,8 @@
 #include "luascript.h"
 #include "math/physics.h"
 
+#include "component_register.h"
+
 //Include steamworks api
 #include <steam_api.h>
 #include <steam_gameserver.h>
@@ -67,26 +69,9 @@ void Core::Initialize(int argc, char* argv[]) {
 	static Entity* _curEntity = nullptr;
 
 	LuaScript::AddNativeFunction("BeginEntity", [](lua_State* state) -> int {
-		//Fetch params
-		std::string path = lua_tostring(state, -lua_gettop(state));
-			
 		if (!SceneManager::GetActiveScene())  return 0;
 
-		//Load Texture
-		Texture* texture = TextureLoader::LoadTarga((char*)path.c_str());
-		if (!texture) return 0;
-
-		Entity* entity;
-		if (std::string(lua_tostring(state, -lua_gettop(state) + 1)) == "UI") {
-			entity = new UIElement();
-		}
-		else {
-			entity = new Entity();
-		}
-			
-		//When created from lua, a sprite is automaticly added
-		entity->AddComponent<Sprite>()->SetTexture(texture);
-
+		Entity* entity = new Entity();
 		if (_curEntity) {
 			_curEntity->AddChild(entity);
 		}
@@ -99,6 +84,24 @@ void Core::Initialize(int argc, char* argv[]) {
 
 		return 0;
 	});
+
+	LuaScript::AddNativeFunction("BeginEntityUI", [](lua_State* state) -> int {
+		if (!SceneManager::GetActiveScene())  return 0;
+
+		Entity* entity = new UIElement();
+		if (_curEntity) {
+			_curEntity->AddChild(entity);
+		}
+		else {
+			SceneManager::GetActiveScene()->AddChild(entity);
+		}
+
+		//Set Current element
+		_curEntity = entity;
+
+		return 0;
+	});
+
 
 	LuaScript::AddNativeFunction("BeginExistingEntityByTag", [](lua_State* state) -> int {
 		if (_curEntity != nullptr) { Debug::Log("Lua: Cannot get existing entity if _curEnemy is not nullptr"); return 0; }
@@ -142,11 +145,6 @@ void Core::Initialize(int argc, char* argv[]) {
 	LuaScript::AddNativeFunction("SetScale", [](lua_State* state) -> int {
 		Vec2 scale = Vec2((float)lua_tonumber(state, -2), (float)lua_tonumber(state, -1));
 		_curEntity->localScale = scale;
-		return 0;
-	});
-
-	LuaScript::AddNativeFunction("Split", [](lua_State* state) -> int {
-		_curEntity->GetComponent<Sprite>()->Split((int)lua_tonumber(state, -2), (int)lua_tonumber(state, -1));
 		return 0;
 	});
 
@@ -200,6 +198,42 @@ void Core::Initialize(int argc, char* argv[]) {
 		});
 		return 0;
 	});
+
+	//Components for entities
+	static Component* _curComponent;
+	LuaScript::AddNativeFunction("BeginComponent", [](lua_State* state) ->int {
+		if (!_curEntity) {
+			Debug::Log("No active entity, cannot add component");
+			return 0;
+		}
+
+		if (Component* component = Component_Register::GetNewComponentInstance("class " + std::string(lua_tostring(state, -1)))) {
+			_curEntity->AddExistingComponentInstance(component);
+			_curComponent = component;
+		}
+
+		return 0;
+	});
+
+	LuaScript::AddNativeFunction("SetProperty", [](lua_State* state) ->int {
+		if (!_curComponent) return 0;
+		int top = -lua_gettop(state);
+		std::string propertyName = lua_tostring(state, top);
+
+		std::vector<std::string> params;
+		for (int i = top + 1; i < 0; i++) {
+			params.push_back(lua_tostring(state, i));
+		}
+
+		_curComponent->SetProperty(propertyName, params);
+		return 0;
+	});
+
+	LuaScript::AddNativeFunction("EndComponent", [](lua_State* state) ->int {
+		if (_curComponent) _curComponent = nullptr;
+		return 0;
+	});
+
 
 	//Implement lua native sound functions
 	LuaScript::AddNativeFunction("PlaySound", [](lua_State* state) -> int {
