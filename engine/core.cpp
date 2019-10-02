@@ -61,7 +61,44 @@ void Core::Initialize(int argc, char* argv[]) {
 	LuaScript::AddNativeFunction("Log", [](lua_State* state) -> int {
 			Debug::Log(lua_tostring(state, -1));
 			return 0;
-		});
+	});
+
+	//Runs a function from a native lua file from c++
+	LuaScript::AddNativeFunction("RunFunction", [](lua_State* state) -> int {
+		int top = -lua_gettop(state);
+
+		std::string fileName = lua_tostring(state, top);
+		std::string functionName = lua_tostring(state, top + 1);
+
+		std::vector<std::string> params;
+		for (size_t i = top + 2; i < 0; i++) {
+			params.push_back(lua_tostring(state, i));
+		}
+
+		LuaScript::RunFunction(fileName, functionName, params);
+		return 0;
+	});
+
+	//Creates new scene and sets it active, unloads scene if one is already loaded
+	LuaScript::AddNativeFunction("NewScene", [](lua_State* state) -> int {
+		if (SceneManager::GetActiveScene()) {
+			delete SceneManager::GetActiveScene();
+		}
+		SceneManager::SetActiveScene(new Scene());
+		if (lua_toboolean(state, -1)) {
+			if (lua_toboolean(state, -1)) SceneManager::GetActiveScene()->SetActiveCamera(new Camera());
+		}
+
+		return 0;
+	});
+
+	//Sets camera position in scene
+	LuaScript::AddNativeFunction("SetCameraPosition", [](lua_State* state) -> int {
+		if (SceneManager::GetActiveScene() && SceneManager::GetActiveScene()->GetActiveCamera()) {
+			SceneManager::GetActiveScene()->GetActiveCamera()->SetPosition(Vec2((float)lua_tonumber(state, -2), (float)lua_tonumber(state, -1)));
+		}
+		return 0;
+	});
 
 	//Implement Lua functions for UI Handling
 
@@ -279,23 +316,28 @@ void Core::Update() {
 	}
 
 	//Update Entities
-	if (SceneManager::GetActiveScene() && SceneManager::GetActiveScene()->GetActiveCamera()) {
+	if (SceneManager::GetActiveScene()) {
 		//Update Scene
 		SceneManager::GetActiveScene()->Update();
 
 		//Update collision check for next frame, as transformations should have been done by now
 		CollisionManager::Update();
 
-		instance->renderer->RenderScene(SceneManager::GetActiveScene(), SceneManager::GetActiveScene()->GetActiveCamera());
+		if (SceneManager::GetActiveScene()->GetActiveCamera()) {
+			instance->renderer->RenderScene(SceneManager::GetActiveScene(), SceneManager::GetActiveScene()->GetActiveCamera());
 
-		//Render debug stuff
-		for (size_t i = 0; i < Debug::GetLineDrawList().size(); i++) {
-			Line line = Debug::GetLineDrawList()[i];
-			instance->renderer->DrawLine(line.a, line.b, line.color, SceneManager::GetActiveScene()->GetActiveCamera());
+			//Render debug stuff
+			for (size_t i = 0; i < Debug::GetLineDrawList().size(); i++) {
+				Line line = Debug::GetLineDrawList()[i];
+				instance->renderer->DrawLine(line.a, line.b, line.color, SceneManager::GetActiveScene()->GetActiveCamera());
+			}
+		}
+		else {
+			Debug::Log("SceneManager has no active camera");
 		}
 	}
 	else {
-		Debug::Log("No active scene or camera present");
+		Debug::Log("SceneManager has no active scene, cannot update");
 	}
 
 	if (Debug::consoleActive) {

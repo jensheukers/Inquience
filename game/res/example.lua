@@ -1,4 +1,8 @@
 function Example()
+	NewScene(true) -- We can create a new scene by calling NewScene(), parameter describes if a camera should be created or not
+
+	SetCameraPosition(50, 0) -- We can set the camera position
+
 	--To create a Entity or UIElement we can simply call BeginEntity()
 	BeginEntity()
 		SetPosition(300, 200) -- We can set the localPosition
