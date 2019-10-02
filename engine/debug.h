@@ -27,9 +27,11 @@ struct Line {
 };
 
 class Debug {
+private:
 	static Debug* instance;
 	std::vector<Line> _lineDrawList;
 	std::vector<std::string> logs;
+	std::vector<std::string> commands;
 public:
 	static bool consoleActive;
 

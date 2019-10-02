@@ -82,6 +82,8 @@ void Debug::ConstructConsole() {
 			//Run  on lua
 			LuaScript::Run(buffer);
 			
+			GetInstance()->commands.push_back(buffer);
+
 			//Clear buffer
 			for (size_t i = 0; i < 128; i++) {
 				buffer[i] = '\0';
