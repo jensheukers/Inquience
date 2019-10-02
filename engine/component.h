@@ -1,20 +1,18 @@
 // Header file for component class.
 //
-// Version: 7/7/2019
-//
 // Copyright (C) Jens Heukers - All Rights Reserved
 // Unauthorized copying of this file, via any medium is strictly prohibited
 // Proprietary and confidential
-// Written by Jens Heukers, July 2019
+// Written by Jens Heukers, October 2019
 #ifndef COMPONENT_H
 #define COMPONENT_H
 
-//Forward declare entity
-class Entity;
+#include <vector>
+#include <string>
 
 class Component {
 private:
-	Entity* owner; /***< The owner of this component*/
+	class Entity* owner; /***< The owner of this component*/
 public:
 	/**
 	* Sets the owner of this component
@@ -29,11 +27,18 @@ public:
 	*/
 	Entity* GetOwner();
 
+	//Virtual methods
+
 	/**
 	* Update function gets called by owner every frame
 	* @return void
 	*/
 	virtual void Update() {};
+
+	/**
+	* Creates and returns a new instance, This method should be overwritten on derived components to always retrieve right type when using the component register
+	*/
+	virtual Component* CreateNewInstance() { return new Component(); }
 
 	/**
 	* Destructor

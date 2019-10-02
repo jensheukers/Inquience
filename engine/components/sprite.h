@@ -73,6 +73,8 @@ public:
 	* @return UV
 	*/
 	static UV Split(Texture* texture, int pixelsPerTile, int index);
+
+	virtual Component* CreateNewInstance() override { return new Sprite(); }
 };
 
 #endif // !SPRITE_H

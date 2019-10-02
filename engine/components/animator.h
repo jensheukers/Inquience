@@ -100,6 +100,8 @@ public:
 	* Updates are called automaticly by parent, through this method animations can be played
 	*/
 	void Update() override;
+
+	virtual Component* CreateNewInstance() override { return new Animator(); }
 };
 
 #endif // !ANIMATOR_H

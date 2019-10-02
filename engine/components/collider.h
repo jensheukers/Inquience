@@ -54,6 +54,8 @@ public:
 	*/
 	std::vector<Collider*> GetHits();
 
+	virtual Component* CreateNewInstance() override { return new Collider(); }
+
 	/**
 	* Destructor
 	*/
