@@ -7,13 +7,26 @@
 #ifndef COMPONENT_H
 #define COMPONENT_H
 
+#include <map>
 #include <vector>
 #include <string>
+#include <functional>
 
 class Component {
 private:
 	class Entity* owner; /***< The owner of this component*/
+	std::map <std::string, std::function<void(std::vector<std::string>)>> properties; /***< Properties map containing function pointers to properties*/
+protected:
+	/**
+	* Adds a property function to the properties list
+	*/
+	void AddProperty(std::string key, std::function<void(std::vector<std::string>)> value);
 public:
+	/**
+	* Calls key property function with std::vector<std::string> arguments
+	*/
+	void SetProperty(std::string key, std::vector<std::string> args);
+
 	/**
 	* Sets the owner of this component
 	* @param Entity*

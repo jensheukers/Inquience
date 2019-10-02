@@ -19,6 +19,11 @@ UV::UV() {
 
 Sprite::Sprite() {
 	this->texture = nullptr;
+
+	//Property to set texture
+	AddProperty("Texture", [=](std::vector<std::string> args) {
+		SetTexture(TextureLoader::LoadTarga((char*)args[0].c_str()));
+	});
 }
 
 Texture* Sprite::SetTexture(Texture* texture) {

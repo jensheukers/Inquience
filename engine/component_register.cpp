@@ -11,5 +11,10 @@ Component_Register* Component_Register::GetInstance() {
 }
 
 Component* Component_Register::GetNewComponentInstance(std::string key) {
+	if (!GetInstance()->components[key]) {
+		Debug::Log(std::string("Component \'") + key + std::string("\' not found, prehaps register it?"));
+		return nullptr;
+	}
+
 	return GetInstance()->components[key]->CreateNewInstance();
 }
