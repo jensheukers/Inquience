@@ -280,6 +280,12 @@ void Core::Update() {
 
 	//Update Entities
 	if (SceneManager::GetActiveScene() && SceneManager::GetActiveScene()->GetActiveCamera()) {
+		//Update Scene
+		SceneManager::GetActiveScene()->Update();
+
+		//Update collision check for next frame, as transformations should have been done by now
+		CollisionManager::Update();
+
 		instance->renderer->RenderScene(SceneManager::GetActiveScene(), SceneManager::GetActiveScene()->GetActiveCamera());
 
 		//Render debug stuff
@@ -287,22 +293,30 @@ void Core::Update() {
 			Line line = Debug::GetLineDrawList()[i];
 			instance->renderer->DrawLine(line.a, line.b, line.color, SceneManager::GetActiveScene()->GetActiveCamera());
 		}
-
-		//Update Scene
-		SceneManager::GetActiveScene()->Update();
-
-		//Update collision check for next frame, as transformations should have been done by now
-		CollisionManager::Update();
 	}
 	else {
 		Debug::Log("No active scene or camera present");
 	}
+
+	if (Debug::consoleActive) {
+		Debug::ConstructConsole();
+	}
+
+	instance->renderer->RenderImGui();
 	
-	//Update Input
-	Input::HandleUpdates();
+	//Check if we should enable/disable console
+	if (Input::GetKeyDown(KEYCODE_GRAVE_ACCENT)) {
+		if (!Debug::consoleActive)
+			Debug::consoleActive = true;
+		else
+			Debug::consoleActive = false;
+	}
 
 	//Update soundmanager
 	SoundManager::Update();
+
+	//Update Input
+	Input::HandleUpdates();
 
 	//If window should not close, we poll events, swap buffers and clear, else we set active to false
 	if (!glfwWindowShouldClose(instance->renderer->GetWindow())) {

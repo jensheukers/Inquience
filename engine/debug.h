@@ -18,6 +18,7 @@
 #include "glm/glm.hpp"
 
 #define LOG_PREFIX "Inquience: "
+#define MAX_AMOUNT_LOGS_SAVED 100
 
 struct Line {
 	Vec2 a;
@@ -28,7 +29,10 @@ struct Line {
 class Debug {
 	static Debug* instance;
 	std::vector<Line> _lineDrawList;
+	std::vector<std::string> logs;
 public:
+	static bool consoleActive;
+
 	/**
 	* Returns the instance
 	*/
@@ -49,6 +53,11 @@ public:
 	* Returns the line draw list
 	*/
 	static std::vector<Line> GetLineDrawList() { return GetInstance()->_lineDrawList; };
+
+	/**
+	* Constructs the console using ImGui
+	*/
+	static void ConstructConsole();
 
 	/**
 	* Debug clear operation

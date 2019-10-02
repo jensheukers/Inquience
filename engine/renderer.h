@@ -3,7 +3,7 @@
 // Copyright (C) Jens Heukers - All Rights Reserved
 // Unauthorized copying of this file, via any medium is strictly prohibited
 // Proprietary and confidential
-// Written by Jens Heukers, September 2019
+// Written by Jens Heukers, October 2019
 #ifndef RENDERER_H
 #define RENDERER_H
 
@@ -72,6 +72,11 @@ public:
 	* Renders the scene
 	*/
 	void RenderScene(class Scene* scene, class Camera* camera);
+
+	/**
+	* Renders all ImGui related elements
+	*/
+	void RenderImGui();
 
 	/**
 	* Draws a line from point a to point b, when camera is provided camera position will be included in calculation
