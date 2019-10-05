@@ -15,7 +15,7 @@ void Collider::BeginPlay() {
 	debugDrawColor = glm::vec3(0, 1, 0);
 
 	AddProperty("DrawDebug", [=](std::vector<std::string> args) {
-		bDrawDebugLines = (stoi(args[0]) == 1) ? true : false;
+		bDrawDebugLines = (stoi(args[0]) == 1);
 	});
 
 	AddProperty("Outer", [=](std::vector<std::string> args) {
@@ -24,7 +24,9 @@ void Collider::BeginPlay() {
 }
 
 void Collider::Update() {
-	if (bDrawDebugLines) DrawDebugLines();
+	if (bDrawDebugLines) {
+		this->DrawDebugLines();
+	}
 }
 
 void Collider::CheckCollision() {

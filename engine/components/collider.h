@@ -20,6 +20,11 @@
 class Collider : public Component {
 private:
 	std::vector<Collider*> hits;
+protected:
+	/**
+	* Draws debug lines
+	*/
+	virtual void DrawDebugLines() {};
 public:
 	bool isTrigger; /*** Determine's if collider is a trigger or not, this is just a fictional property and has no use in the component itself,
 						 it is just here if it is to be used, RigidBody does use isTrigger*/
@@ -66,18 +71,13 @@ public:
 	virtual Component* CreateNewInstance() override { return new Collider(); }
 
 	/**
-	* Draws debug lines
-	*/
-	virtual void DrawDebugLines() {};
-
-	/**
 	* Destructor
 	*/
 	~Collider();
 };
 
 class BoxCollider : public Collider {
-private:
+protected:
 	/**
 	* Override DrawDebugLines
 	*/

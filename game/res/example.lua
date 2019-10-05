@@ -29,6 +29,14 @@ function Example()
 			BeginComponent("Sprite")
 				SetProperty("Texture", "res/placeholder.tga")
 			EndComponent()
+			
+			--BeginComponent("RigidBody")
+			--EndComponent()
+			
+			BeginComponent("BoxCollider")
+				SetProperty("Outer", 32, 32)
+				SetProperty("DrawDebug", 1)
+			EndComponent()
 		EndEntity()
 		
 	--We have to call EndEntity to set the current Entity focus to nullptr in C++

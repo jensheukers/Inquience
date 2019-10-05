@@ -14,6 +14,8 @@
 int main(int argc, char * argv[]) {
 	Core::Initialize(argc, argv);
 
+	LuaScript::RunFunction("res/example.lua", "Example");
+
 	while (Core::IsActive()) {
 		Core::Update(); // Handle updates for engine
 	}
