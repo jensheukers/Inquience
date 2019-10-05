@@ -16,10 +16,14 @@ void Collider::BeginPlay() {
 
 	AddProperty("DrawDebug", [=](std::vector<std::string> args) {
 		bDrawDebugLines = (stoi(args[0]) == 1);
+	}, [=]() -> StringVector {
+		return { std::to_string(bDrawDebugLines) };
 	});
 
 	AddProperty("Outer", [=](std::vector<std::string> args) {
 		outer = Vec2(std::stof(args[0]), std::stof(args[1]));
+	}, [=]() -> StringVector {
+		return { std::to_string(outer.x), std::to_string(outer.y) };
 	});
 }
 

@@ -9,17 +9,39 @@
 #include "component.h"
 #include "debug.h"
 
-void Component::AddProperty(std::string key, std::function<void(std::vector<std::string>)> value) {
-	properties[key] = value;
+size_t Component::GetPropertyIndex(std::string key) {
+	for (size_t i = 0; i < properties.size(); i++) {
+		if (properties[i]->key == key) {
+			return i;
+		}
+	}
+	return -1;
 }
 
-void Component::SetProperty(std::string key, std::vector<std::string> args) {
-	if (!properties[key]) {
+void Component::AddProperty(std::string key, PropertySetCallback setCallback, PropertyGetCallback getCallback) {
+	ComponentProperty* p = new ComponentProperty();
+	p->key = key;
+	p->setCallback = setCallback;
+	p->getCallback = getCallback;
+	properties.push_back(p);
+}
+
+void Component::SetProperty(std::string key, StringVector args) {
+	if (GetPropertyIndex(key) == -1) {
 		Debug::Log(std::string("\'") + typeid(*this).name() + std::string("\'") + std::string(" does not have a property named: ") + key);
 		return;
 	}
 
-	properties[key](args);
+	properties[GetPropertyIndex(key)]->setCallback(args);
+}
+
+StringVector Component::GetProperty(std::string key) {
+	if (GetPropertyIndex(key) == -1) {
+		Debug::Log(std::string("\'") + typeid(*this).name() + std::string("\'") + std::string(" does not have a property named: ") + key);
+		return StringVector();
+	}
+
+	return properties[GetPropertyIndex(key)]->getCallback();
 }
 
 Entity* Component::SetOwner(Entity* entity) {

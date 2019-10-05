@@ -7,26 +7,45 @@
 #ifndef COMPONENT_H
 #define COMPONENT_H
 
-#include <map>
 #include <vector>
 #include <string>
 #include <functional>
 
+typedef std::vector<std::string> StringVector;
+typedef std::function<void(StringVector)> PropertySetCallback;
+typedef std::function<StringVector()> PropertyGetCallback;
+
+struct ComponentProperty {
+	std::string key;
+	PropertySetCallback setCallback;
+	PropertyGetCallback getCallback;
+};
+
 class Component {
 private:
 	class Entity* owner; /***< The owner of this component*/
-	std::map <std::string, std::function<void(std::vector<std::string>)>> properties; /***< Properties map containing function pointers to properties*/
+	std::vector<ComponentProperty*> properties; /***< Properties vector, contains all property callbacks*/
+
+	/**
+	* Returns the correct component property index for key
+	*/
+	size_t GetPropertyIndex(std::string key);
 protected:
 	/**
 	* Adds a property function to the properties list, a component property is nothing more than a function that gets executed whenver SetProperty with right key is called
 	* We can use this to set properties externally without having to recompile, as long as the property is registered in the properties map
 	*/
-	void AddProperty(std::string key, std::function<void(std::vector<std::string>)> value);
+	void AddProperty(std::string key, PropertySetCallback setCallback, PropertyGetCallback getCallback = []() -> StringVector { return StringVector(); });
 public:
 	/**
 	* Calls key property function with std::vector<std::string> arguments
 	*/
-	void SetProperty(std::string key, std::vector<std::string> args);
+	void SetProperty(std::string key, StringVector args);
+
+	/**
+	* Returns component property values as a StringVector
+ 	*/
+	StringVector GetProperty(std::string key);
 
 	/**
 	* Sets the owner of this component
