@@ -191,6 +191,11 @@ public:
 	}
 
 	/**
+	* Returns the component vector
+	*/
+	std::vector<Component*> GetComponents() { return this->components; }
+
+	/**
 	* Returns true if component is in the components list, else returns false
 	* @return bool
 	*/

@@ -1,11 +1,72 @@
 // Luascript imported from aquarite3d, modified in FoundryFactoryEngine
 // Copy Version: 7/2/2019
-// Modify Version: 19/9/2019
+// Modify Version: 2019
 //
 //	© 2019, Jens Heukers
 #include "luascript.h"
 #include "debug.h"
 #include "core.h"
+
+LuaParsableLine::LuaParsableLine(std::string line, unsigned tabs) {
+	this->line = line;
+	this->tabs = tabs;
+}
+
+void LuaScriptFile::ParseLine(std::string line, unsigned tabs) {
+	if (!this->stream.is_open()) {
+		this->stream = std::ofstream(this->path);
+	}
+	for (unsigned i = 0; i < tabs; i++) {
+		this->stream << "	";
+	}
+
+	this->stream << line << std::endl;
+}
+
+LuaScriptFile::LuaScriptFile(std::string path) {
+	this->path = Core::GetExecutableDirectoryPath() + (path + ".lua");
+
+	//Create new file
+	this->stream = std::ofstream(this->path);
+}
+
+void LuaScriptFile::ParseFunction(std::string name, std::vector<std::string> args, std::vector<LuaParsableLine> lines) {
+	this->stream << "function " << name << "(";
+
+	for (size_t i = 0; i < args.size(); i++) {
+		this->stream << args[i]; 
+		
+		if(i + 1 != args.size()) {
+			this->stream << ",";
+		}
+	}
+	this->stream << ")" << std::endl;
+
+	for (size_t i = 0; i < lines.size(); i++) {
+		this->ParseLine(lines[i].line, lines[i].tabs);
+	}
+
+	this->stream << "end" << std::endl;
+}
+
+std::string LuaScriptFile::CreateLuaFunctionCallString(std::string name, std::vector<std::string> args) {
+	std::string functionCallString = name + "(";
+	for (size_t i = 0; i < args.size(); i++) {
+		functionCallString += args[i];
+
+		if (i + 1 != args.size()) {
+			functionCallString += ",";
+		}
+	}
+	functionCallString += ")";
+	return functionCallString;
+}
+
+LuaScriptFile::~LuaScriptFile() {
+	if (this->stream.is_open()) {
+		this->stream.close();
+	}
+}
 
 LuaScript* LuaScript::instance; // Pointer to instance
 

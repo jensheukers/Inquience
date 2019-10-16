@@ -9,6 +9,8 @@
 //Include core.h for ThreadContext
 #include "core.h"
 
+#include <sstream>
+
 //Delegate
 void Delegate::AddLambda(std::function<void()> func) {
 	executionList.push_back(func);
@@ -41,4 +43,15 @@ void ThreadContext::Sleep(int amount) {
 
 void ThreadContext::Kill() {
 	worker.join();
+}
+
+std::vector<std::string> Essentials::Split(std::string string, char split) {
+	std::vector<std::string> tokens;
+	std::string token;
+	std::istringstream tokenStream(string);
+	while (std::getline(tokenStream, token, split))
+	{
+		tokens.push_back(token);
+	}
+	return tokens;
 }

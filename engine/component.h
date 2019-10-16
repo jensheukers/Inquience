@@ -38,6 +38,10 @@ protected:
 	void AddProperty(std::string key, PropertySetCallback setCallback, PropertyGetCallback getCallback = []() -> StringVector { return StringVector(); });
 public:
 	/**
+	* Returns the name of the component as a string
+	*/
+	std::string GetName() { return typeid(*this).name(); }
+	/**
 	* Calls key property function with std::vector<std::string> arguments
 	*/
 	void SetProperty(std::string key, StringVector args);
@@ -46,6 +50,11 @@ public:
 	* Returns component property values as a StringVector
  	*/
 	StringVector GetProperty(std::string key);
+
+	/**
+	* Returns the component properties vector
+	*/
+	std::vector<ComponentProperty*> GetProperties() { return this->properties; }
 
 	/**
 	* Sets the owner of this component

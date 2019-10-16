@@ -1,14 +1,49 @@
 // Luascript imported from aquarite3d
 // Copy Version: 7/2/2019
-// Modify Version: 28/9/2019
+// Modify Version: 2019
 //
 //	© 2019, Jens Heukers
 #ifndef LUASCRIPT_H
 #define LUASCRIPT_H
 #include <string>
 #include <vector>
+#include <fstream>
 #include <functional>
 #include "lua.hpp"
+
+struct LuaParsableLine {
+	LuaParsableLine(std::string line, unsigned tabs = 0);
+	std::string line;
+	unsigned tabs;
+};
+
+typedef std::vector<LuaParsableLine> LuaParsableLineVector;
+
+struct LuaScriptFile {
+private:
+	std::string path;
+	std::ofstream stream;
+public:
+	LuaScriptFile(std::string path);
+
+	/**
+	* Parses a new line to luascriptfile
+	*/
+	void ParseLine(std::string line, unsigned tabs);
+
+	/**
+	* Parses a new function to luascriptfile using Name, contents inbetween
+	* also can take in parameters
+	*/
+	void ParseFunction(std::string name, std::vector<std::string> args, std::vector<LuaParsableLine> lines);
+
+	/**
+	* Converts parameters into a lua function definition, return string
+	*/
+	static std::string CreateLuaFunctionCallString(std::string name, std::vector<std::string> args = {});
+
+	~LuaScriptFile();
+};
 
 /**
 * LuaScript is a singleton class, it can be called from anywhere in the program, it acts mostly as a "handler"
@@ -72,6 +107,10 @@ public:
 	* @return std::string, The value returned by lua.
 	*/
 	static std::string GetString(std::string variableName);
+
+	/**
+	* Constructs
+	*/
 
 	/**
 	* Destructor

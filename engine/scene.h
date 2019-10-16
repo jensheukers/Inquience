@@ -12,6 +12,11 @@
 class Scene : public Entity {
 private:
 	Camera * activeCamera; /***< The currently active Camera*/
+
+	/**
+	* Returns a vector of LuaParsableLines, containing all child's properties and components
+	*/
+	std::vector<struct LuaParsableLine> GetChildLines(Entity* child, unsigned tabs = 0);
 public:
 	/**
 	* Constructor
@@ -34,6 +39,12 @@ public:
 	* @return Camera*
 	*/
 	Camera* GetActiveCamera();
+
+	/**
+	* Writes the scene to a luascript file instance, including children components and properties
+	* Returns 0 if sucessfull
+	*/
+	int WriteToLuaFile(struct LuaScriptFile& file, std::string funcName);
 
 	/**
 	* Destructor
