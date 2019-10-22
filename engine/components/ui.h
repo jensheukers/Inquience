@@ -19,13 +19,23 @@
 #include "../unique_types.h"
 
 //User Interface Element is a entity
-class UIElement : public Component {
+class UIComponent : public Component {
 private:
 	bool entered; /***< True if mouse is inside the uiElement*/
+
+	//Hold for returning to lua
+	StringVector onEnterReturnVector;
+	StringVector onStayReturnVector;
+	StringVector onLeaveReturnVector;
 public:
 	Delegate OnEnterDelegate;
 	Delegate OnLeaveDelegate;
 	Delegate OnStayDelegate;
+
+	/*
+	* Constructor
+	**/
+	UIComponent();
 
 	/**
 	* Triggered whenever the mouse enters the element
@@ -48,9 +58,14 @@ public:
 	void Update() override;
 
 	/**
+	* Overwrite
+	*/
+	virtual UIComponent* CreateNewInstance() override { return new UIComponent(); }
+
+	/**
 	* Destructor
 	*/
-	virtual ~UIElement() {};
+	virtual ~UIComponent() {};
 };
 
 #endif // !UI_H

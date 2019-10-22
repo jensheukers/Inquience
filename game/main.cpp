@@ -14,7 +14,9 @@
 int main(int argc, char * argv[]) {
 	Core::Initialize(argc, argv);
 
-	LuaScript::RunFunction("res/test.lua", "Example");
+	LuaScript::RunFunction("res/example.lua", "Example");
+
+	SceneManager::GetActiveScene()->WriteToLuaFile(LuaScriptFile("res/test"), "Example");
 
 	//LuaScriptFile test("res/test");
 	//SceneManager::GetActiveScene()->WriteToLuaFile(test, "Example");

@@ -9,6 +9,7 @@
 #include "components/collider.h"
 #include "components/rigidbody.h"
 #include "components/sprite.h"
+#include "components/ui.h"
 
 class Component_Register {
 private:
@@ -23,6 +24,7 @@ private:
 		components[typeid(BoxCollider).name()] = new BoxCollider();
 		components[typeid(RigidBody).name()] = new RigidBody();
 		components[typeid(Sprite).name()] = new Sprite();
+		components[typeid(UIComponent).name()] = new UIComponent();
 	}
 
 	/**

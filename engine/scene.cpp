@@ -19,12 +19,8 @@
 LuaParsableLineVector Scene::GetChildLines(Entity* entity, unsigned tabs) {
 	LuaParsableLineVector returnVector;
 
-	if (dynamic_cast<UIElement*>(entity)) {
-		returnVector.push_back(LuaParsableLine(LuaScriptFile::CreateLuaFunctionCallString("BeginEntityUI"), tabs));
-	}
-	else {
-		returnVector.push_back(LuaParsableLine(LuaScriptFile::CreateLuaFunctionCallString("BeginEntity"), tabs));
-	}
+
+	returnVector.push_back(LuaParsableLine(LuaScriptFile::CreateLuaFunctionCallString("BeginEntity"), tabs));
 
 	//Store position and scale and tag
 	returnVector.push_back(LuaParsableLine(LuaScriptFile::CreateLuaFunctionCallString("SetPosition",

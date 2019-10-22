@@ -45,7 +45,7 @@ void Renderer::RenderEntity(Entity* entity, Camera* camera) {
 		RenderText(text->GetFont(), text->GetText(), entity->GetPosition(), text->GetSize(), text->GetColor());
 	}
 	else {
-		if (dynamic_cast<UIElement*>(entity)) {
+		if (dynamic_cast<UIComponent*>(entity)) {
 			calculatedPos = entity->GetPosition();
 		}
 

@@ -178,7 +178,7 @@ void Core::Initialize(int argc, char* argv[]) {
 			params.push_back(lua_tostring(state, i));
 		}
 
-		dynamic_cast<UIElement*>(_curEntity)->OnEnterDelegate.AddLambda([=]() {
+		_curEntity->GetComponent<UIComponent>()->OnEnterDelegate.AddLambda([=]() {
 			LuaScript::RunFunction(filePath, funcName, params);
 		});
 		return 0;
@@ -195,7 +195,7 @@ void Core::Initialize(int argc, char* argv[]) {
 			params.push_back(lua_tostring(state, i));
 		}
 
-		dynamic_cast<UIElement*>(_curEntity)->OnStayDelegate.AddLambda([=]() {
+		_curEntity->GetComponent<UIComponent>()->OnStayDelegate.AddLambda([=]() {
 			LuaScript::RunFunction(filePath, funcName, params);
 		});
 		return 0;
@@ -212,7 +212,7 @@ void Core::Initialize(int argc, char* argv[]) {
 			params.push_back(lua_tostring(state, i));
 		}
 
-		dynamic_cast<UIElement*>(_curEntity)->OnLeaveDelegate.AddLambda([=]() {
+		_curEntity->GetComponent<UIComponent>()->OnLeaveDelegate.AddLambda([=]() {
 			LuaScript::RunFunction(filePath, funcName, params);
 		});
 		return 0;

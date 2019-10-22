@@ -1,7 +1,7 @@
 function Example()
 	NewScene(true) -- We can create a new scene by calling NewScene(), parameter describes if a camera should be created or not
 
-	SetCameraPosition(50, 0) -- We can set the camera position
+	SetCameraPosition(0, 0) -- We can set the camera position
 
 	--To create a Entity or UIElement we can simply call BeginEntity()
 	BeginEntity()
@@ -15,7 +15,7 @@ function Example()
 		--Note that these components have to be registered in component_register.h, class prefix is automaticly added.
 		BeginComponent("Sprite")
 			--We can set a property within the component by calling SetProperty(KEY, Values, ....) 
-			SetProperty("Texture", "res/terrain_tiles.tga")
+			SetProperty("Texture", "res/placeholder.tga")
 			
 			--Sprite also has a property to split
 			SetProperty("Split", 32, 52) -- First parameter: Amount of Pixels Per Tile, Second parameter: Index
@@ -42,19 +42,20 @@ function Example()
 	--We have to call EndEntity to set the current Entity focus to nullptr in C++
 	EndEntity()
 	
-	--To create a UIElement we can simply do:
-	BeginEntityUI()
+	--To create a UI Element we can simply do:
+	BeginEntity()
 		SetPosition(50, 0)
 		SetScale(32,32)
 		
 		BeginComponent("Sprite")
-				SetProperty("Texture", "res/placeholder.tga")
+			SetProperty("Texture", "res/placeholder.tga")
 		EndComponent()
 		
-		--UIElement have something special, these are 3 methods that allow for functions to be called back in lua
-		OnEnter("res/example.lua", "Event", "You entered my element")
-		OnStay("res/example.lua", "Event", "You are staying on my element")
-		OnLeave("res/example.lua", "Event", "You have left my entity")
+		BeginComponent("UIComponent")
+			SetProperty("OnEnter", "res/example.lua", "Event", "You entered my element")
+			SetProperty("OnStay", "res/example.lua", "Event", "You are staying on my element")
+			SetProperty("OnLeave", "res/example.lua", "Event", "You have left my entity")
+		EndComponent()
 	--End the entity
 	EndEntity()
 	
