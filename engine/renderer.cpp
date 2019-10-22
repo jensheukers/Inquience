@@ -41,8 +41,8 @@ void Renderer::RenderEntity(Entity* entity, Camera* camera) {
 	Vec2 calculatedPos = Vec2(entity->GetPosition().x - camera->GetPosition().x, entity->GetPosition().y - camera->GetPosition().y);
 
 	//Try to cast to Text
-	if (Text* text = dynamic_cast<Text*>(entity)) {
-		RenderText(text->GetFont(), text->GetText(), text->GetPosition(), text->GetSize(), text->GetColor());
+	if (Text* text = entity->GetComponent<Text>()) {
+		RenderText(text->GetFont(), text->GetText(), entity->GetPosition(), text->GetSize(), text->GetColor());
 	}
 	else {
 		if (dynamic_cast<UIElement*>(entity)) {

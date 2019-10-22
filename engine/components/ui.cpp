@@ -12,11 +12,13 @@
 #include "../input.h"
 #include "../math/physics.h"
 
-void UIElement::Update() {
-	if (!this->HasComponent<Sprite>()) return;
-	if (!this->GetComponent<Sprite>()->GetTexture()) return;
+#include "../entity.h"
 
-	if (Physics::InBounds(Input::GetMousePosition(), this->GetPosition(), this->GetPosition() + this->GetScale())) {
+void UIElement::Update() {
+	if (!GetOwner()->HasComponent<Sprite>()) return;
+	if (!GetOwner()->GetComponent<Sprite>()->GetTexture()) return;
+
+	if (Physics::InBounds(Input::GetMousePosition(), GetOwner()->GetPosition(), GetOwner()->GetPosition() + GetOwner()->GetScale())) {
 		if (!entered) {
 			OnEnter();
 			entered = true;

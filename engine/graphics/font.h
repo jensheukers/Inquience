@@ -55,7 +55,7 @@ public:
 };
 
 //Include ui.h for text
-#include "../graphics/ui.h"
+#include "../components/ui.h"
 
 class Text : public UIElement {
 private:

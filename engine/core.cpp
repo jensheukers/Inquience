@@ -122,24 +122,6 @@ void Core::Initialize(int argc, char* argv[]) {
 		return 0;
 	});
 
-	LuaScript::AddNativeFunction("BeginEntityUI", [](lua_State* state) -> int {
-		if (!SceneManager::GetActiveScene())  return 0;
-
-		Entity* entity = new UIElement();
-		if (_curEntity) {
-			_curEntity->AddChild(entity);
-		}
-		else {
-			SceneManager::GetActiveScene()->AddChild(entity);
-		}
-
-		//Set Current element
-		_curEntity = entity;
-
-		return 0;
-	});
-
-
 	LuaScript::AddNativeFunction("BeginExistingEntityByTag", [](lua_State* state) -> int {
 		if (_curEntity != nullptr) { Debug::Log("Lua: Cannot get existing entity if _curEnemy is not nullptr"); return 0; }
 

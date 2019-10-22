@@ -10,7 +10,7 @@
 #define UI_H
 
 //Include entity.h
-#include "../entity.h"
+#include "../component.h"
 
 //Include sprite
 #include "../components/sprite.h"
@@ -19,7 +19,7 @@
 #include "../unique_types.h"
 
 //User Interface Element is a entity
-class UIElement : public Entity {
+class UIElement : public Component {
 private:
 	bool entered; /***< True if mouse is inside the uiElement*/
 public:
