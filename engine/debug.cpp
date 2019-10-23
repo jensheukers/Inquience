@@ -11,6 +11,8 @@
 #include <functional>
 
 #include "../external/imgui/imgui.h"
+
+#include "editor.h"
 #include "input.h"
 #include "luascript.h"
 
@@ -103,6 +105,10 @@ void Debug::ConstructConsole() {
 			for (size_t i = 0; i < GetInstance()->logs.size(); i++) {
 				GetInstance()->logs.erase(GetInstance()->logs.begin() + i);
 			}
+		}
+		ImGui::SameLine();
+		if (ImGui::Button("Editor")) {
+			Editor::editorActive = true;
 		}
 
 	ImGui::End();

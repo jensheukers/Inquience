@@ -309,11 +309,13 @@ void Core::Update() {
 
 	//Update Entities
 	if (SceneManager::GetActiveScene()) {
-		//Update Scene
-		SceneManager::GetActiveScene()->Update();
-
-		//Update collision check for next frame, as transformations should have been done by now
-		CollisionManager::Update();
+			//Update Scene
+			SceneManager::GetActiveScene()->Update();
+		
+		if (!Editor::editorActive) {
+			//Update collision check for next frame, as transformations should have been done by now
+			CollisionManager::Update();
+		}
 
 		if (SceneManager::GetActiveScene()->GetActiveCamera()) {
 			instance->renderer->RenderScene(SceneManager::GetActiveScene(), SceneManager::GetActiveScene()->GetActiveCamera());

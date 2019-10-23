@@ -62,6 +62,7 @@ public:
 	Vec2 localPosition; /***< The local position of the Entity*/
 	Vec2 localScale; /***< The local scale of the Entity*/
 	std::string tag; /***< Tag of the entity, whenever GetChildByTag() gets called and tag matches it will be returned*/
+	int uniqueId; /***< Unique id of the entity*/
 
 	/**
 	* Constructor

@@ -11,6 +11,10 @@
 
 #include "math/vec2.h"
 
+struct Gizmos {
+	void Update(Vec2 origin, float lenght);
+};
+
 struct GridTile {
 	Vec2 position;
 	Vec2 bounds;
@@ -42,12 +46,44 @@ struct Grid {
 class Editor {
 private:
 	static Editor* instance;
+	Gizmos gizmos;
 	Grid grid;
+
+	//Menu activator booleans
+	bool loadMenuActive;
+	bool saveMenuActive;
+
+	bool hierarchyActive;
+	bool inspectorActive;
+
+	//Instance pointers
+	class Entity* currentSelectedEntity = nullptr;
+	bool bHoldingEntity;
 
 	/**
 	* Returns the editor instance
 	*/
 	static Editor* GetInstance();
+
+	/**
+	* Sets current selected entity if in bounds
+	*/
+	void SetCurrentSelectedEntityByPosition(Entity* parent, Vec2 pos);
+
+	/**
+	* Construct a treenode of entities
+	*/
+	void ConstructTreenode(class Entity* entity);
+
+	/**
+	* Handles all file tab relation menus
+	*/
+	void HandleFileMenus();
+
+	/**
+	* Handles all the view menu's
+	*/
+	void HandleViewMenus();
 public:
 	static bool editorActive;
 

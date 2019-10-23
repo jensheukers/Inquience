@@ -6,6 +6,7 @@
 // Written by Jens Heukers, September 2019
 #include "entity.h"
 #include "core.h"
+#include "editor.h"
 
 //Include font.h to check if child is text when added
 #include <iostream>
@@ -24,8 +25,11 @@ void Entity::HandleParentTransformations() {
 void Entity::UpdateChildren() {
 	for (Entity* child : children) {
 		if (child->active) {
-			child->Update(); // Update child
-			child->UpdateComponents(); // Update components
+			if (!Editor::editorActive) {
+				child->Update(); // Update child
+				child->UpdateComponents(); // Update components
+			}
+
 			child->HandleParentTransformations(); // Handle the parent transformations
 		}
 
@@ -44,6 +48,11 @@ Entity::Entity() {
 	this->position = Vec2(0,0);
 	this->scale = Vec2(0, 0);
 	this->tag = "Entity";
+
+	//Set id
+	static int currentUniqueId = 0;
+	this->uniqueId = currentUniqueId;
+	currentUniqueId++;
 
 	//Set entity active
 	this->active = true;
