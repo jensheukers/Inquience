@@ -4,7 +4,7 @@
 // Copyright (C) Jens Heukers - All Rights Reserved
 // Unauthorized copying of this file, via any medium is strictly prohibited
 // Proprietary and confidential
-// Written by Jens Heukers, September 2019
+// Written by Jens Heukers, October 2019
 #include "core.h"
 #include "debug.h"
 #include "scenemanager.h"
@@ -12,6 +12,8 @@
 #include "input.h"
 #include "soundmanager.h"
 #include "luascript.h"
+#include "editor.h"
+
 #include "math/physics.h"
 
 #include "component_register.h"
@@ -152,6 +154,7 @@ void Core::Initialize(int argc, char* argv[]) {
 
 	LuaScript::AddNativeFunction("SetTag", [](lua_State* state) -> int {
 		_curEntity->tag = std::string(lua_tostring(state, -1));
+		return 0;
 	});
 
 	//Position is always local
@@ -273,6 +276,13 @@ void Core::Initialize(int argc, char* argv[]) {
 
 		return 0;
 	});
+
+
+	//Editor can be enabled/disabled by calling this function
+	LuaScript::AddNativeFunction("Editor", [](lua_State* state) -> int {
+		Editor::editorActive = !Editor::editorActive;
+		return 0;
+	});
 }
 
 void Core::Update() {
@@ -324,6 +334,10 @@ void Core::Update() {
 
 	if (Debug::consoleActive) {
 		Debug::ConstructConsole();
+	}
+
+	if (Editor::editorActive) {
+		Editor::Update();
 	}
 
 	instance->renderer->RenderImGui();
