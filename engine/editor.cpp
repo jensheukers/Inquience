@@ -76,8 +76,10 @@ void Editor::ConstructTreenode(Entity* entity) {
 					}
 				}
 				if (ImGui::MenuItem("Parent to")) {
-					currentSelectedEntity->GetParent()->RemoveChild(currentSelectedEntity);
-					entity->AddChild(currentSelectedEntity);
+					if (entity != currentSelectedEntity) {
+						currentSelectedEntity->GetParent()->RemoveChild(currentSelectedEntity);
+						entity->AddChild(currentSelectedEntity);
+					}
 				}
 
 				ImGui::EndPopup();
