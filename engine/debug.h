@@ -52,6 +52,11 @@ public:
 	static void DrawLine(Vec2 a, Vec2 b, glm::vec3 color = glm::vec3(1, 1, 1));
 
 	/**
+	* Draws 4 lines to create a cube
+	*/
+	static void DrawCube(Vec2 a, Vec2 b, glm::vec3 color = glm::vec3(1, 1, 1));
+
+	/**
 	* Returns the line draw list
 	*/
 	static std::vector<Line> GetLineDrawList() { return GetInstance()->_lineDrawList; };

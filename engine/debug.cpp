@@ -57,6 +57,13 @@ void Debug::DrawLine(Vec2 a, Vec2 b, glm::vec3 color) {
 	GetInstance()->_lineDrawList.push_back(line);
 }
 
+void Debug::DrawCube(Vec2 a, Vec2 b, glm::vec3 color) {
+	Line line0; line0.a = a; line0.b = Vec2(b.x, a.y); line0.color = color; GetInstance()->_lineDrawList.push_back(line0);
+	Line line1; line1.a = Vec2(b.x, a.y); line1.b = b; line1.color = color; GetInstance()->_lineDrawList.push_back(line1);
+	Line line2; line2.a = b; line2.b = Vec2(a.x, b.y); line2.color = color; GetInstance()->_lineDrawList.push_back(line2);
+	Line line3; line3.a = Vec2(a.x, b.y); line3.b = a; line3.color = color; GetInstance()->_lineDrawList.push_back(line3);
+}
+
 void Debug::ConstructConsole() {
 	//Handle events
 	ImGuiIO& io = ImGui::GetIO();

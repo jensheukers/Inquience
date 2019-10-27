@@ -56,6 +56,8 @@ private:
 	bool hierarchyActive;
 	bool inspectorActive;
 
+	bool createEntityActive;
+
 	bool addComponentActive;
 
 	//Instance pointers
@@ -86,6 +88,11 @@ private:
 	* Handles all the view menu's
 	*/
 	void HandleViewMenus();
+
+	/**
+	* Handles all entity menus
+	*/
+	void HandleEntityMenus();
 public:
 	static bool editorActive;
 

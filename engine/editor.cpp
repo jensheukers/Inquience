@@ -172,6 +172,7 @@ void Editor::HandleViewMenus() {
 				} ImGui::SameLine();
 
 				if (ImGui::Button(std::string("Remove" + std::string("##") + std::to_string(i)).c_str())) {
+					component->bShowComponentProperties = false;
 					currentSelectedEntity->RemoveComponent(component);
 				}
 
@@ -207,6 +208,45 @@ void Editor::HandleViewMenus() {
 		}
 		else {
 			ImGui::Text("No entity selected");
+		}
+
+		ImGui::End();
+	}
+}
+
+void Editor::HandleEntityMenus() {
+	if (createEntityActive) {
+		ImGui::Begin("Create Entity", &createEntityActive);
+		if (!SceneManager::GetActiveScene()) {
+			ImGui::Text("No active scene");
+			ImGui::End();
+			return;
+		}
+
+
+		static float position[2];
+		static float scale[2] = { 32, 32};
+		static bool parentToSelected;
+
+		ImGui::InputFloat2("Position", position);
+		ImGui::InputFloat2("Scale", scale);
+		ImGui::Checkbox("Parent to selected", &parentToSelected);
+
+		if (ImGui::Button("Create")) {
+			Entity* entity = new Entity();
+
+			entity->localPosition = Vec2(position[0], position[1]);
+			entity->localScale = Vec2(scale[0], scale[1]);
+
+			if (parentToSelected && currentSelectedEntity) {
+				currentSelectedEntity->AddChild(entity);
+			}
+			else {
+				SceneManager::GetActiveScene()->AddChild(entity);
+			}
+
+			currentSelectedEntity = entity;
+			createEntityActive = false;
 		}
 
 		ImGui::End();
@@ -263,9 +303,7 @@ void Editor::Update() {
 	}
 
 	if (ImGui::BeginMenu("Entity")) {
-		if (ImGui::MenuItem("New Entity")) {
-
-		}
+		if (ImGui::MenuItem("New Entity")) { GetInstance()->createEntityActive = true; }
 
 		ImGui::EndMenu();
 	}
@@ -275,9 +313,13 @@ void Editor::Update() {
 	//Handle menus
 	GetInstance()->HandleFileMenus();
 	GetInstance()->HandleViewMenus();
+	GetInstance()->HandleEntityMenus();
 
-	//Update gizmos
+	//Update gizmos and draw visual
 	if (GetInstance()->currentSelectedEntity) {
 		GetInstance()->gizmos.Update(Vec2(500, 200), 128);
+
+		//Draw around selected entity for visual
+		Debug::DrawCube(GetInstance()->currentSelectedEntity->GetPosition(), GetInstance()->currentSelectedEntity->GetPosition() + GetInstance()->currentSelectedEntity->GetScale(), glm::vec3(1, 0, 0));
 	}
 }

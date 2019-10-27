@@ -11,6 +11,9 @@
 #include <string>
 #include <functional>
 
+//INCLUDE IMGUI EDITOR ONLY
+#include "../external/imgui/imgui.h"
+
 typedef std::vector<std::string> StringVector;
 typedef std::function<void(StringVector)> PropertySetCallback;
 typedef std::function<StringVector()> PropertyGetCallback;

@@ -114,3 +114,13 @@ UV Sprite::Split(Texture* texture, int pixelsPerTile, int index) {
 
 	return uv;
 }
+
+void Sprite::OnComponentPropertiesEditor()
+{
+	static char buffer[128]; // Allocate buffer
+	ImGui::InputText("##0", buffer, sizeof(buffer));
+	ImGui::SameLine();
+	if (ImGui::Button("Set/Load Texture")) {
+		this->SetTexture(TextureLoader::LoadTarga(buffer));
+	}
+}
