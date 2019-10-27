@@ -45,6 +45,11 @@ public:
 	* Returns a newly created component instance of type where key matches
 	*/
 	static Component* GetNewComponentInstance(std::string key);
+
+	/**
+	* Returns all registered components keys
+	*/
+	static std::vector<std::string> GetAvailableKeys();
 };
 
 #endif // !COMPONENT_REGISTER_H

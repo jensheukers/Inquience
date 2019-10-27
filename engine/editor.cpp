@@ -13,6 +13,8 @@
 #include "luascript.h"
 #include "input.h"
 
+#include "component_register.h"
+
 #include "math/physics.h"
 
 #include "components/sprite.h"
@@ -159,9 +161,9 @@ void Editor::HandleViewMenus() {
 
 			//Spawn components
 			ImGui::Spacing();
-			ImGui::Text("Components:");
+			ImGui::Text("Components:"); ImGui::SameLine();
+			if (ImGui::Button("Add")) { addComponentActive = true; };
 			ImGui::BeginChild("Components");
-
 			for (size_t i = 0; i < currentSelectedEntity->GetComponents().size(); i++) {
 				Component* component = currentSelectedEntity->GetComponents()[i];
 				ImGui::Text(component->GetName().c_str()); ImGui::SameLine();
@@ -169,7 +171,7 @@ void Editor::HandleViewMenus() {
 					component->bShowComponentProperties = true;
 				} ImGui::SameLine();
 
-				if (ImGui::Button("Remove")) {
+				if (ImGui::Button(std::string("Remove" + std::string("##") + std::to_string(i)).c_str())) {
 					currentSelectedEntity->RemoveComponent(component);
 				}
 
@@ -179,8 +181,29 @@ void Editor::HandleViewMenus() {
 					ImGui::End();
 				}
 			}
-
 			ImGui::EndChild();
+
+			//Activate Menus
+			if (addComponentActive) {
+				ImGui::Begin("Add Component", &addComponentActive);
+				ImGui::Text("Control + Left Click to add component to current entity");
+				ImGui::ListBoxHeader("Registered Components");
+				for (size_t i = 0; i < Component_Register::GetAvailableKeys().size(); i++) {
+					std::string& item_name = Component_Register::GetAvailableKeys()[i];
+					if (ImGui::Selectable(Component_Register::GetAvailableKeys()[i].c_str()) && Input::GetKey(KEYCODE_LEFT_CONTROL)) {
+						if (Component* component = Component_Register::GetNewComponentInstance(Component_Register::GetAvailableKeys()[i])) {
+							if (!currentSelectedEntity->HasComponent(component)) {
+								currentSelectedEntity->AddExistingComponentInstance(component);
+							}
+							else {
+								delete component;
+							}
+						}
+					}
+				}
+				ImGui::ListBoxFooter();
+				ImGui::End();
+			}
 		}
 		else {
 			ImGui::Text("No entity selected");
@@ -236,6 +259,14 @@ void Editor::Update() {
 	if (ImGui::BeginMenu("View")) {
 		if (ImGui::MenuItem("Hierarchy")) { GetInstance()->hierarchyActive = true; }
 		if (ImGui::MenuItem("Inspector")) { GetInstance()->inspectorActive = true; }
+		ImGui::EndMenu();
+	}
+
+	if (ImGui::BeginMenu("Entity")) {
+		if (ImGui::MenuItem("New Entity")) {
+
+		}
+
 		ImGui::EndMenu();
 	}
 

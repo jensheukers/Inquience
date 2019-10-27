@@ -56,6 +56,8 @@ private:
 	bool hierarchyActive;
 	bool inspectorActive;
 
+	bool addComponentActive;
+
 	//Instance pointers
 	class Entity* currentSelectedEntity = nullptr;
 	bool bHoldingEntity;

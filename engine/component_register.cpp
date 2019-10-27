@@ -18,3 +18,12 @@ Component* Component_Register::GetNewComponentInstance(std::string key) {
 
 	return GetInstance()->components[key]->CreateNewInstance();
 }
+
+std::vector<std::string> Component_Register::GetAvailableKeys()
+{
+	std::vector<std::string> r;
+	for (std::map<std::string, Component*>::iterator it = GetInstance()->components.begin(); it != GetInstance()->components.end(); ++it) {
+		r.push_back(it->first);
+	}
+	return r;
+}

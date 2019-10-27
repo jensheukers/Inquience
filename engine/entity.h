@@ -209,6 +209,18 @@ public:
 		return false;
 	}
 
+	/**
+	* Check if component is present with instance passed
+	*/
+	template <class T>
+	bool HasComponent(T* instance) {
+		for (size_t i = 0; i < components.size(); i++) {
+			if (typeid(*instance) == typeid(*components[i]))
+				return true;
+		}
+		return false;
+	}
+
 	/*
 	* Removes component of type from components vector if exists
 	* @return bool success
