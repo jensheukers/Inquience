@@ -7,6 +7,9 @@
 #include "component.h"
 #include "debug.h"
 
+//Include imgui for editor purpose (Only with editor)
+#include "../external/imgui/imgui.h"
+
 size_t Component::GetPropertyIndex(std::string key) {
 	for (size_t i = 0; i < properties.size(); i++) {
 		if (properties[i]->key == key) {
@@ -49,4 +52,9 @@ Entity* Component::SetOwner(Entity* entity) {
 
 Entity* Component::GetOwner() {
 	return this->owner;
+}
+
+void Component::OnComponentPropertiesEditor()
+{
+	ImGui::Text("Component properties have not been derrived!");
 }

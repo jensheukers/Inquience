@@ -165,13 +165,18 @@ void Editor::HandleViewMenus() {
 			for (size_t i = 0; i < currentSelectedEntity->GetComponents().size(); i++) {
 				Component* component = currentSelectedEntity->GetComponents()[i];
 				ImGui::Text(component->GetName().c_str()); ImGui::SameLine();
-				if (ImGui::Button("Open")) {
-					//Spawn component inspector
+				if (ImGui::Button(std::string("Properties" + std::string("##") + std::to_string(i)).c_str())) {
+					component->bShowComponentProperties = true;
 				} ImGui::SameLine();
 
 				if (ImGui::Button("Remove")) {
-					//Remove component
 					currentSelectedEntity->RemoveComponent(component);
+				}
+
+				if (component->bShowComponentProperties) {
+					ImGui::Begin((currentSelectedEntity->tag + " - Component: " + component->GetName() + " - Properties").c_str(), &component->bShowComponentProperties);
+					component->OnComponentPropertiesEditor();
+					ImGui::End();
 				}
 			}
 

@@ -87,6 +87,14 @@ public:
 	*/
 	virtual Component* CreateNewInstance() { return new Component(); }
 
+// SHOULD ONLY BE WITH EDITOR (Fix/Create macro's)
+	bool bShowComponentProperties = false;
+
+	/**
+	* Gets called when a component property window gets opened for this component
+	*/
+	virtual void OnComponentPropertiesEditor();
+// -----------------------------------------
 	/**
 	* Destructor
 	*/
