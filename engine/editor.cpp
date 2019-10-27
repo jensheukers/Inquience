@@ -171,6 +171,7 @@ void Editor::HandleViewMenus() {
 
 				if (ImGui::Button("Remove")) {
 					//Remove component
+					currentSelectedEntity->RemoveComponent(component);
 				}
 			}
 

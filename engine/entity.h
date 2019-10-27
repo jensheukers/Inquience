@@ -180,7 +180,7 @@ public:
 	template<class T>
 	T* GetComponent(int index = 0) {
 		int steps = index;
-		for (int i = 0; i < (int)components.size(); i++) {
+		for (size_t i = 0; i < components.size(); i++) {
 			if (dynamic_cast<T*>(components[i])) {
 				if (steps != 0) { steps--; continue; }
 				else return (T*)components[i]; // Assume components[i] == The given input template class
@@ -202,9 +202,25 @@ public:
 	*/
 	template<class T>
 	bool HasComponent() {
-		for (int i = 0; i < (int)components.size(); i++) {
+		for (size_t i = 0; i < components.size(); i++) {
 			if (dynamic_cast<T*>(components[i]))
 				return true;
+		}
+		return false;
+	}
+
+	/*
+	* Removes component of type from components vector if exists
+	* @return bool success
+	*/
+	template<class T>
+	bool RemoveComponent(T* instance) {
+		for (size_t i = 0; i < components.size(); i++) {
+			if (instance == components[i]) {
+				components.erase(components.begin() + i);
+				delete instance;
+				return true;
+			}
 		}
 		return false;
 	}
