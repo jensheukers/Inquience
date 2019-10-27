@@ -59,10 +59,12 @@ Editor* Editor::GetInstance() {
 void Editor::SetCurrentSelectedEntityByPosition(Entity* parent, Vec2 pos) {
 	for (size_t i = 0; i < parent->GetChildren().size(); i++) {
 		Entity* child = parent->GetChildren()[i];
-		if (Physics::InBounds(pos, child->GetPosition(), child->GetPosition() + child->GetScale())) {
-			currentSelectedEntity = child;
-			bHoldingEntity = true;
-		}
+		SetCurrentSelectedEntityByPosition(child, pos);
+	}
+
+	if (Physics::InBounds(pos, parent->GetPosition(), parent->GetPosition() + parent->GetScale()) && parent != SceneManager::GetActiveScene()) {
+		currentSelectedEntity = parent;
+		bHoldingEntity = true;
 	}
 }
 
@@ -137,7 +139,42 @@ void Editor::HandleViewMenus() {
 	if (GetInstance()->inspectorActive) {
 		ImGui::Begin("Inpector", &GetInstance()->inspectorActive);
 		if (currentSelectedEntity) {
-			ImGui::Text(currentSelectedEntity->tag.c_str());
+			ImGui::Text(("Tag: " + currentSelectedEntity->tag).c_str());
+			ImGui::Spacing();
+			ImGui::Text("Local Transformations:");
+
+			static float position[2];
+			position[0] = currentSelectedEntity->localPosition.x;
+			position[1] = currentSelectedEntity->localPosition.y;
+			ImGui::InputFloat2("Position", position);
+
+			static float scale[2];
+			scale[0] = currentSelectedEntity->localScale.x;
+			scale[1] = currentSelectedEntity->localScale.y;
+			ImGui::InputFloat2("Scale", scale);
+
+			//Set
+			currentSelectedEntity->localPosition = Vec2(position[0], position[1]);
+			currentSelectedEntity->localScale = Vec2(scale[0], scale[1]);
+
+			//Spawn components
+			ImGui::Spacing();
+			ImGui::Text("Components:");
+			ImGui::BeginChild("Components");
+
+			for (size_t i = 0; i < currentSelectedEntity->GetComponents().size(); i++) {
+				Component* component = currentSelectedEntity->GetComponents()[i];
+				ImGui::Text(component->GetName().c_str()); ImGui::SameLine();
+				if (ImGui::Button("Open")) {
+					//Spawn component inspector
+				} ImGui::SameLine();
+
+				if (ImGui::Button("Remove")) {
+					//Remove component
+				}
+			}
+
+			ImGui::EndChild();
 		}
 		else {
 			ImGui::Text("No entity selected");
@@ -166,7 +203,7 @@ void Editor::Update() {
 
 	if (GetInstance()->bHoldingEntity && GetInstance()->currentSelectedEntity) {
 		Vec2 mousePos = Input::GetMousePosition() + SceneManager::GetActiveScene()->GetActiveCamera()->GetPosition();
-		GetInstance()->currentSelectedEntity->localPosition = mousePos - GetInstance()->currentSelectedEntity->GetScale() / 2;
+		GetInstance()->currentSelectedEntity->localPosition = ((mousePos - GetInstance()->currentSelectedEntity->GetParent()->GetPosition()) - GetInstance()->currentSelectedEntity->GetScale() / 2);
 	}
 
 	if (Input::GetButtonUp(BUTTONCODE_LEFT)) {
