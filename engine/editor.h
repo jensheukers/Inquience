@@ -50,18 +50,21 @@ private:
 	Grid grid;
 
 	//Menu activator booleans
-	bool loadMenuActive;
-	bool saveMenuActive;
+	bool loadMenuActive = false;
+	bool saveMenuActive = false;
 
-	bool hierarchyActive;
-	bool inspectorActive;
+	bool hierarchyActive = false;
+	bool inspectorActive = false;
 
-	bool createEntityActive;
+	bool createEntityActive = false;
+	bool tileMapCreationActive = false;
 
-	bool addComponentActive;
+	bool addComponentActive = false;
 
 	//Instance pointers
 	class Entity* currentSelectedEntity = nullptr;
+	class Entity* referenceEntity = nullptr;
+
 	bool bHoldingEntity;
 	bool bSnapToGrid;
 
@@ -106,6 +109,8 @@ public:
 	* Update gets called every frame by core
 	*/
 	static void Update();
+	
+	~Editor();
 };
 
 

@@ -56,6 +56,9 @@ Editor* Editor::instance;
 Editor::Editor() {
 	//Todo: Fetch grid settings
 	grid.Construct(Vec2(512), Vec2(32));
+
+	//Create a reference entity
+	this->referenceEntity = new Entity();
 }
 
 Editor* Editor::GetInstance() {
@@ -258,6 +261,129 @@ void Editor::HandleEntityMenus() {
 
 		ImGui::End();
 	}
+
+	if (tileMapCreationActive) {
+		ImGui::Begin("Tile Edit", &tileMapCreationActive);
+		//Texture pointer
+		static Texture* texture;
+
+		//UvCoordinate Holder
+		static UV uv;
+
+		//Variables
+		static float imageSize = 256; // Initialize at 256 as expected image size
+		static int tileSize = 32; // Initialize at DEFAULT_TILE_SIZE
+		static int objectScale = 32;
+		static bool childToCurrentSelection = false;
+
+		static char buffer[128]; // Allocate buffer
+		ImGui::InputText("Path", buffer, sizeof(buffer));
+		ImGui::SameLine();
+		if (ImGui::Button("Load")) {
+			Texture* t = TextureLoader::LoadTarga(buffer);
+
+			if (t->textureData->width != t->textureData->height) {
+				Debug::Log("Error: cannot load tilemap as width != height");
+			}
+			else {
+				texture = t;
+				imageSize = (float)texture->textureData->width;
+			}
+		}
+
+		ImGui::InputInt("Tile Size", &tileSize);
+		ImGui::InputInt("Object Spawn Scale", &objectScale);
+		ImGui::Checkbox("Child to currently selected Entity", &childToCurrentSelection);
+
+		int tiles = (int)imageSize / tileSize;
+
+		//tileSetImagePosition
+		ImVec2 tilesetImagePos = ImGui::GetCursorScreenPos();
+
+		if (texture) {
+			unsigned glTexId = texture->_glTexture;
+			ImGui::Image((void*)(intptr_t)glTexId, ImVec2(imageSize, imageSize), ImVec2(0, 1), ImVec2(1, 0));
+		}
+
+		// draw grid
+		ImDrawList* draw_list = ImGui::GetWindowDrawList();
+
+		// draw horizontal lines
+		for (int x = 0; x < tiles + 1; ++x) {
+			draw_list->AddLine(ImVec2(tilesetImagePos.x + x * tileSize, tilesetImagePos.y),
+				ImVec2(tilesetImagePos.x + x * tileSize, tilesetImagePos.y + tiles * tileSize),
+				ImColor(255, 255, 255));
+		}
+
+		// draw vertical lines
+		for (int y = 0; y < tiles + 1; ++y) {
+			draw_list->AddLine(ImVec2(tilesetImagePos.x, tilesetImagePos.y + y * tileSize),
+				ImVec2(tilesetImagePos.x + tiles * tileSize, tilesetImagePos.y + y * tileSize),
+				ImColor(255, 255, 255));
+		}
+
+		static int tileMapIndex = 0;
+
+		if (!referenceEntity->HasComponent<Sprite>()) {
+			referenceEntity->AddComponent<Sprite>();
+		}
+
+		//Input selection
+		if (ImGui::IsItemHovered()) {
+			if (Input::GetButtonDown(BUTTONCODE_LEFT)) {
+				Vec2 relMousePos = Vec2(ImGui::GetMousePos().x - tilesetImagePos.x, ImGui::GetMousePos().y - tilesetImagePos.y);
+
+				//Get the right uv coordinates.
+
+				int _i = 0; // Tile index
+				//Iterate through image
+				for (int y = (int)imageSize - tileSize; y > -1; y -= tileSize) {
+					for (int x = 0; x < imageSize; x += tileSize) {
+						//Iterate through every pixel
+						for (int py = 0; py <= tileSize; py++) {
+							for (int px = 0; px <= tileSize; px++) {
+								if ((x + px) == relMousePos.x && (y + py) == relMousePos.y) {
+									referenceEntity->GetComponent<Sprite>()->SetTexture(TextureLoader::LoadTarga(buffer));
+									referenceEntity->GetComponent<Sprite>()->Split(tileSize, _i);
+									tileMapIndex = _i;
+								}
+							}
+						}
+						_i++;
+					}
+				}
+			}
+
+			std::string tileMapIndexText = "Tile Index: " + std::to_string(tileMapIndex);
+			ImGui::Text((char*)tileMapIndexText.c_str());
+		}
+
+		if (Input::GetButtonDown(BUTTONCODE_LEFT)) {
+			Entity* entity = new Entity();
+			entity->AddComponent<Sprite>();
+			entity->GetComponent<Sprite>()->SetTexture(referenceEntity->GetComponent<Sprite>()->GetTexture());
+			entity->GetComponent<Sprite>()->uv = referenceEntity->GetComponent<Sprite>()->uv;
+			
+			entity->localScale = Vec2(objectScale);
+
+			Vec2 mousePos = (Input::GetMousePosition() + SceneManager::GetActiveScene()->GetActiveCamera()->GetPosition());
+			if (bSnapToGrid && grid.GetGridTile(mousePos)) {
+				entity->localPosition = grid.GetGridTile(mousePos)->position;
+			}
+			else {
+				entity->localPosition = (mousePos - entity->GetScale() / 2);
+			}
+
+			if (childToCurrentSelection && currentSelectedEntity) {
+				currentSelectedEntity->AddChild(entity);
+			}
+			else {
+				SceneManager::GetActiveScene()->AddChild(entity);
+			}
+		}
+
+		ImGui::End();
+	}
 }
 
 bool Editor::editorActive = false;
@@ -297,6 +423,7 @@ void Editor::Update() {
 
 	if (ImGui::BeginMenu("Entity")) {
 		if (ImGui::MenuItem("New Entity")) { GetInstance()->createEntityActive = true; }
+		if (ImGui::MenuItem("Tile Edit")) { GetInstance()->tileMapCreationActive = true; }
 
 		ImGui::EndMenu();
 	}
@@ -326,7 +453,6 @@ void Editor::Update() {
 	if (GetInstance()->bHoldingEntity && GetInstance()->currentSelectedEntity) {
 		Vec2 mousePos = (Input::GetMousePosition() + SceneManager::GetActiveScene()->GetActiveCamera()->GetPosition()) - GetInstance()->currentSelectedEntity->GetParent()->GetPosition();
 
-		GetInstance()->bSnapToGrid = true;
 		if (GetInstance()->bSnapToGrid && GetInstance()->grid.GetGridTile(mousePos)) {
 			GetInstance()->currentSelectedEntity->localPosition = GetInstance()->grid.GetGridTile(mousePos)->position;
 		}
@@ -339,8 +465,18 @@ void Editor::Update() {
 		GetInstance()->bHoldingEntity = false;
 	}
 
+	//Enable disable snapping
+	if (Input::GetKeyDown(KEYCODE_S)) {
+		if (GetInstance()->bSnapToGrid) {
+			GetInstance()->bSnapToGrid = false;
+		}
+		else {
+			GetInstance()->bSnapToGrid = true;
+		}
+	}
+
 	//Current entity specific
-	if (GetInstance()->currentSelectedEntity) {
+	if (GetInstance()->currentSelectedEntity && !GetInstance()->tileMapCreationActive) {
 		//Delete
 		if (Input::GetKeyDown(KEYCODE_DELETE)) {
 			GetInstance()->currentSelectedEntity->GetParent()->RemoveChild(GetInstance()->currentSelectedEntity);
@@ -349,17 +485,12 @@ void Editor::Update() {
 
 		//Copy current selected
 		if (Input::GetKeyDown(KEYCODE_V)) {
-
 		}
+	}
+}
 
-		//Enable disable snapping
-		if (Input::GetKeyDown(KEYCODE_S)) {
-			if (GetInstance()->bSnapToGrid) { 
-				GetInstance()->bSnapToGrid = false;
-			}
-			else {
-				GetInstance()->bSnapToGrid = true;
-			}
-		}
+Editor::~Editor() {
+	if (this->referenceEntity) {
+		delete this->referenceEntity;
 	}
 }
