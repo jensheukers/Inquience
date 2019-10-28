@@ -21,7 +21,7 @@ struct GridTile {
 };
 
 struct Grid {
-	std::vector<GridTile> gridTiles;
+	std::vector<GridTile*> gridTiles;
 
 	/**
 	* Constructs a grid
@@ -34,7 +34,7 @@ struct Grid {
 	* Returns the gridtile depending on param
 	* @param GridTile tile
 	*/
-	GridTile GetGridPosition(Vec2 position);
+	GridTile* GetGridTile(Vec2 position);
 
 	/**
 	* Clears the grid
@@ -63,6 +63,12 @@ private:
 	//Instance pointers
 	class Entity* currentSelectedEntity = nullptr;
 	bool bHoldingEntity;
+	bool bSnapToGrid;
+
+	/**
+	* Constructor
+	*/
+	Editor();
 
 	/**
 	* Returns the editor instance

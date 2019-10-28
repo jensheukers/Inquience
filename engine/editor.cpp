@@ -26,30 +26,37 @@ void Gizmos::Update(Vec2 origin, float lenght) {
 void Grid::Construct(Vec2 size, Vec2 tileSize) {
 	for (int x = 0; x < (int)size.x; x += (int)tileSize.x) {
 		for (int y = 0; y < (int)size.y; y += (int)tileSize.y) {
-			GridTile tile;
-			tile.position = Vec2(x, y);
-			tile.bounds = Vec2(x + tileSize.x, y + tileSize.y);
+			GridTile* tile = new GridTile();
+			tile->position = Vec2(x, y);
+			tile->bounds = Vec2(x + tileSize.x, y + tileSize.y);
 
 			gridTiles.push_back(tile);
 		}
 	}
 }
 
-GridTile Grid::GetGridPosition(Vec2 position) {
+GridTile* Grid::GetGridTile(Vec2 position) {
 	for (size_t i = 0; i < gridTiles.size(); i++) {
-		if (Physics::InBounds(position, gridTiles[i].position, gridTiles[i].bounds)) {
+		if (Physics::InBounds(position, gridTiles[i]->position, gridTiles[i]->bounds)) {
 			return gridTiles[i];
 		}
 	}
+	return nullptr;
 }
 
 void Grid::Clear() {
 	for (size_t i = 0; i < gridTiles.size(); i++) {
+		delete gridTiles[i];
 		gridTiles.erase(gridTiles.begin() + i);
 	}
 }
 
 Editor* Editor::instance;
+
+Editor::Editor() {
+	//Todo: Fetch grid settings
+	grid.Construct(Vec2(512), Vec2(32));
+}
 
 Editor* Editor::GetInstance() {
 	if (!instance) {
@@ -265,20 +272,6 @@ void Editor::Update() {
 	io.KeysDown[KEYCODE_LEFT] = Input::GetKeyDown(KEYCODE_LEFT);
 	io.KeysDown[KEYCODE_RIGHT] = Input::GetKeyDown(KEYCODE_RIGHT);
 
-	//Set active object by clicking on any entity
-	if (SceneManager::GetActiveScene() && Input::GetButtonDown(BUTTONCODE_LEFT)) {
-		GetInstance()->SetCurrentSelectedEntityByPosition(SceneManager::GetActiveScene(), Input::GetMousePosition() + SceneManager::GetActiveScene()->GetActiveCamera()->GetPosition());
-	}
-
-	if (GetInstance()->bHoldingEntity && GetInstance()->currentSelectedEntity) {
-		Vec2 mousePos = Input::GetMousePosition() + SceneManager::GetActiveScene()->GetActiveCamera()->GetPosition();
-		GetInstance()->currentSelectedEntity->localPosition = ((mousePos - GetInstance()->currentSelectedEntity->GetParent()->GetPosition()) - GetInstance()->currentSelectedEntity->GetScale() / 2);
-	}
-
-	if (Input::GetButtonUp(BUTTONCODE_LEFT)) {
-		GetInstance()->bHoldingEntity = false;
-	}
-
 	ImGui::BeginMainMenuBar();
 
 	if (ImGui::BeginMenu("File")) {
@@ -321,5 +314,52 @@ void Editor::Update() {
 
 		//Draw around selected entity for visual
 		Debug::DrawCube(GetInstance()->currentSelectedEntity->GetPosition(), GetInstance()->currentSelectedEntity->GetPosition() + GetInstance()->currentSelectedEntity->GetScale(), glm::vec3(1, 0, 0));
+	}
+
+	//Handle Input
+
+	//Set active object by clicking on any entity
+	if (SceneManager::GetActiveScene() && Input::GetButtonDown(BUTTONCODE_LEFT)) {
+		GetInstance()->SetCurrentSelectedEntityByPosition(SceneManager::GetActiveScene(), Input::GetMousePosition() + SceneManager::GetActiveScene()->GetActiveCamera()->GetPosition());
+	}
+
+	if (GetInstance()->bHoldingEntity && GetInstance()->currentSelectedEntity) {
+		Vec2 mousePos = (Input::GetMousePosition() + SceneManager::GetActiveScene()->GetActiveCamera()->GetPosition()) - GetInstance()->currentSelectedEntity->GetParent()->GetPosition();
+
+		GetInstance()->bSnapToGrid = true;
+		if (GetInstance()->bSnapToGrid && GetInstance()->grid.GetGridTile(mousePos)) {
+			GetInstance()->currentSelectedEntity->localPosition = GetInstance()->grid.GetGridTile(mousePos)->position;
+		}
+		else {
+			GetInstance()->currentSelectedEntity->localPosition = (mousePos - GetInstance()->currentSelectedEntity->GetScale() / 2);
+		}
+	}
+
+	if (Input::GetButtonUp(BUTTONCODE_LEFT)) {
+		GetInstance()->bHoldingEntity = false;
+	}
+
+	//Current entity specific
+	if (GetInstance()->currentSelectedEntity) {
+		//Delete
+		if (Input::GetKeyDown(KEYCODE_DELETE)) {
+			GetInstance()->currentSelectedEntity->GetParent()->RemoveChild(GetInstance()->currentSelectedEntity);
+			delete GetInstance()->currentSelectedEntity;
+		}
+
+		//Copy current selected
+		if (Input::GetKeyDown(KEYCODE_V)) {
+
+		}
+
+		//Enable disable snapping
+		if (Input::GetKeyDown(KEYCODE_S)) {
+			if (GetInstance()->bSnapToGrid) { 
+				GetInstance()->bSnapToGrid = false;
+			}
+			else {
+				GetInstance()->bSnapToGrid = true;
+			}
+		}
 	}
 }
