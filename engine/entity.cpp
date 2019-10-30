@@ -11,6 +11,12 @@
 //Include font.h to check if child is text when added
 #include <iostream>
 
+void Entity::GenerateUniqueID() {
+	static int currentUniqueId = 0;
+	this->uniqueId = currentUniqueId;
+	currentUniqueId++;
+}
+
 void Entity::HandleParentTransformations() {
 	if (!this->parent) { // If we have no parent
 		this->position = localPosition;
@@ -44,18 +50,35 @@ void Entity::UpdateComponents() {
 }
 
 Entity::Entity() {
-	this->parent = nullptr; // Set parent to nullptr
+	this->parent = nullptr;
 	this->position = Vec2(0,0);
 	this->scale = Vec2(0, 0);
 	this->tag = "Entity";
 
-	//Set id
-	static int currentUniqueId = 0;
-	this->uniqueId = currentUniqueId;
-	currentUniqueId++;
-
-	//Set entity active
+	this->GenerateUniqueID();
+	
 	this->active = true;
+}
+
+Entity::Entity(const Entity& entity) {
+	this->parent = nullptr;
+	this->position = entity.position;
+	this->localPosition = entity.localPosition;
+	this->scale = entity.scale;
+	this->localScale = entity.localScale;
+	this->tag = entity.tag;
+
+	this->GenerateUniqueID();
+
+	//Copy components
+	for (size_t i = 0; i < entity.components.size(); i++) {
+		this->AddExistingComponentInstance(entity.components[i]->Copy());
+	}
+
+	//Copy children
+	for (size_t i = 0; i < entity.children.size(); i++) {
+		this->AddChild(new Entity(*entity.children[i]));
+	}
 }
 
 void Entity::SetActive(bool state) {
@@ -156,6 +179,26 @@ Entity* Entity::GetChildByTag(std::string tag) {
 		if (found) return found;
 	}
 	return found;
+}
+
+void Entity::MoveChildUp(Entity* child) {
+	for (int i = children.size() - 1; i >= 0; i--) {
+		if (children[i] == child && i - 1 != -1) {
+			Entity* swap = children[i - 1];
+			children[i - 1] = child;
+			children[i] = swap;
+		}
+	}
+}
+
+void Entity::MoveChildDown(Entity* child) {
+	for (int i = children.size() - 1; i >= 0; i--) {
+		if (children[i] == child && i + 1 != children.size()) {
+			Entity* swap = children[i + 1];
+			children[i + 1] = child;
+			children[i] = swap;
+		}
+	}
 }
 
 Entity::~Entity() {

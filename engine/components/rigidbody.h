@@ -53,7 +53,8 @@ public:
 	*/
 	Vec2 GetVelocity();
 
-	virtual Component* CreateNewInstance() override { return new RigidBody(); }
+	virtual RigidBody* New() override { return new RigidBody(); }
+	virtual RigidBody* Copy() const { return new RigidBody(*this); }
 
 	Vec2 GetPositionLastFrame() { return positionLastFrame; }
 };

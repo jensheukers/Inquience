@@ -37,6 +37,11 @@ private:
 	Vec2 scale; /***< The global scale (Parent transformations included)*/
 
 	bool active; /***< Determines wheter the entity is active or not, if entity is not active no updates will be performed*/
+
+	/**
+	* Generates a UniqueID and sets uniqueId
+	*/
+	void GenerateUniqueID();
 protected:
 	/**
 	* Handles transformation with parent entity
@@ -68,6 +73,11 @@ public:
 	* Constructor
 	*/
 	Entity();
+
+	/**
+	* Copy constructor
+	*/
+	Entity(const Entity& entity);
 
 	/**
 	* Sets a entity active or not, also updates children automaticly
@@ -251,6 +261,16 @@ public:
 	* Returns this if tag == this->tag, else calls this method on children.
 	*/
 	Entity* GetChildByTag(std::string tag);
+
+	/**
+	* Moves child up by 1 in children array
+	*/
+	void MoveChildUp(Entity* child);
+
+	/**
+	* Moves child down by 1 in children array
+	*/
+	void MoveChildDown(Entity* child);
 
 	/**
 	* Destructor

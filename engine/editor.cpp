@@ -88,12 +88,44 @@ void Editor::ConstructTreenode(Entity* entity) {
 					if (ImGui::MenuItem("Select")) {
 						currentSelectedEntity = entity;
 					}
+					
+					if (ImGui::MenuItem("Copy")) {
+						entity->GetParent()->AddChild(new Entity(*entity));
+					}
+
+					if (ImGui::MenuItem("Delete")) {
+						entity->GetParent()->RemoveChild(entity);
+						delete entity;
+					}
+
+					if (ImGui::MenuItem("Move Up")) {
+						entity->GetParent()->MoveChildUp(entity);
+					}
+
+					if (ImGui::MenuItem("Move down")) {
+						entity->GetParent()->MoveChildDown(entity);
+					}
 				}
-				if (ImGui::MenuItem("Parent to")) {
+
+				if (ImGui::MenuItem("Create Empty Child")) {
+					entity->AddChild(new Entity());
+				}
+
+				if (ImGui::MenuItem("Parent selected to")) {
 					if (entity != currentSelectedEntity) {
 						currentSelectedEntity->GetParent()->RemoveChild(currentSelectedEntity);
 						entity->AddChild(currentSelectedEntity);
 					}
+				}
+
+				if (ImGui::MenuItem("Rename")) {
+					currentSelectedEntity = entity;
+					renameEntityActive = -true;
+				}
+
+				if (entity != SceneManager::GetActiveScene() && ImGui::MenuItem("Properties")) {
+					this->currentSelectedEntity = entity;
+					this->inspectorActive = true;
 				}
 
 				ImGui::EndPopup();
@@ -143,7 +175,18 @@ void Editor::HandleViewMenus() {
 		if (SceneManager::GetActiveScene()) {
 			ConstructTreenode(SceneManager::GetActiveScene());
 		}
-	
+		
+		if (renameEntityActive) {
+			ImGui::Begin("Rename Entity", &renameEntityActive);
+			static char buffer[128]; // Allocate buffer
+			ImGui::InputText("", buffer, sizeof(buffer));
+			ImGui::SameLine();
+			if (ImGui::Button("Set Tag")) {
+				currentSelectedEntity->tag = buffer;
+			}
+			ImGui::End();
+		}
+
 		ImGui::End();
 	}
 
@@ -485,6 +528,12 @@ void Editor::Update() {
 
 		//Copy current selected
 		if (Input::GetKeyDown(KEYCODE_V)) {
+			Entity* copy = new Entity(*GetInstance()->currentSelectedEntity);
+			GetInstance()->currentSelectedEntity->GetParent()->AddChild(copy);
+
+			//Set position to mouse position
+			copy->localPosition = Input::GetMousePosition() + SceneManager::GetActiveScene()->GetActiveCamera()->GetPosition();
+			GetInstance()->currentSelectedEntity = copy;
 		}
 	}
 }

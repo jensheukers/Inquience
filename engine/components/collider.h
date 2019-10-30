@@ -68,7 +68,8 @@ public:
 	*/
 	std::vector<Collider*> GetHits();
 
-	virtual Component* CreateNewInstance() override { return new Collider(); }
+	virtual Collider* New() override { return new Collider(); }
+	virtual Collider* Copy() const { return new Collider(*this); }
 
 	/**
 	* Destructor
@@ -84,7 +85,7 @@ protected:
 	void DrawDebugLines() override;
 
 public:
-	virtual Component* CreateNewInstance() override { return new BoxCollider(); }
+	virtual Collider* New() override { return new BoxCollider(); }
 
 	/**
 	* Override IsColliding to do collision check

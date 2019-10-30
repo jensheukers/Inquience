@@ -101,7 +101,8 @@ public:
 	*/
 	void Update() override;
 
-	virtual Component* CreateNewInstance() override { return new Animator(); }
+	virtual Animator* New() override { return new Animator(); }
+	virtual Animator* Copy() const { return new Animator(*this); }
 };
 
 #endif // !ANIMATOR_H

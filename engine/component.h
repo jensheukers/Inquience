@@ -88,7 +88,12 @@ public:
 	/**
 	* Creates and returns a new instance, This method should be overwritten on derived components to always retrieve right type when using the component register
 	*/
-	virtual Component* CreateNewInstance() { return new Component(); }
+	virtual Component* New() { return new Component(); }
+
+	/**
+	* Copies the component settings and returns a new instance, should be overwritten
+	*/
+	virtual Component* Copy() const { return new Component(*this); }
 
 // SHOULD ONLY BE WITH EDITOR (Fix/Create macro's)
 	bool bShowComponentProperties = false;

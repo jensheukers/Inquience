@@ -61,6 +61,8 @@ private:
 
 	bool addComponentActive = false;
 
+	bool renameEntityActive = false;
+
 	//Instance pointers
 	class Entity* currentSelectedEntity = nullptr;
 	class Entity* referenceEntity = nullptr;

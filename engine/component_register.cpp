@@ -16,7 +16,7 @@ Component* Component_Register::GetNewComponentInstance(std::string key) {
 		return nullptr;
 	}
 
-	return GetInstance()->components[key]->CreateNewInstance();
+	return GetInstance()->components[key]->New();
 }
 
 std::vector<std::string> Component_Register::GetAvailableKeys()

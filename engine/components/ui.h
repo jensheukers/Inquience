@@ -60,7 +60,8 @@ public:
 	/**
 	* Overwrite
 	*/
-	virtual UIComponent* CreateNewInstance() override { return new UIComponent(); }
+	virtual UIComponent* New() override { return new UIComponent(); }
+	virtual UIComponent* Copy() const { return new UIComponent(*this); }
 
 	/**
 	* Destructor
