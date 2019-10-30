@@ -18,6 +18,7 @@ struct Gizmos {
 struct GridTile {
 	Vec2 position;
 	Vec2 bounds;
+	class Entity* entity = nullptr;
 };
 
 struct Grid {
@@ -104,6 +105,11 @@ private:
 	* Handles all entity menus
 	*/
 	void HandleEntityMenus();
+
+	/**
+	* Checks if tile position is occupied
+	*/
+	bool IsTilePositionOccupied(GridTile* tile, Entity* entity);
 public:
 	static bool editorActive;
 

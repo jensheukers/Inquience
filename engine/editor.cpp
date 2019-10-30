@@ -401,27 +401,35 @@ void Editor::HandleEntityMenus() {
 			ImGui::Text((char*)tileMapIndexText.c_str());
 		}
 
-		if (Input::GetButtonDown(BUTTONCODE_LEFT)) {
-			Entity* entity = new Entity();
-			entity->AddComponent<Sprite>();
-			entity->GetComponent<Sprite>()->SetTexture(referenceEntity->GetComponent<Sprite>()->GetTexture());
-			entity->GetComponent<Sprite>()->uv = referenceEntity->GetComponent<Sprite>()->uv;
-			
-			entity->localScale = Vec2(objectScale);
+		Vec2 mousePos = (Input::GetMousePosition() + SceneManager::GetActiveScene()->GetActiveCamera()->GetPosition());
+		if (Input::GetButton(BUTTONCODE_LEFT) && bSnapToGrid) {
+			if (grid.GetGridTile(mousePos) && !grid.GetGridTile(mousePos)->entity && !ImGui::IsWindowFocused()) {
+				Entity* entity = new Entity();
+				entity->AddComponent<Sprite>();
+				entity->GetComponent<Sprite>()->SetTexture(referenceEntity->GetComponent<Sprite>()->GetTexture());
+				entity->GetComponent<Sprite>()->uv = referenceEntity->GetComponent<Sprite>()->uv;
 
-			Vec2 mousePos = (Input::GetMousePosition() + SceneManager::GetActiveScene()->GetActiveCamera()->GetPosition());
-			if (bSnapToGrid && grid.GetGridTile(mousePos)) {
+				entity->localScale = Vec2(objectScale);
+
 				entity->localPosition = grid.GetGridTile(mousePos)->position;
-			}
-			else {
-				entity->localPosition = (mousePos - entity->GetScale() / 2);
-			}
 
-			if (childToCurrentSelection && currentSelectedEntity) {
-				currentSelectedEntity->AddChild(entity);
+				if (childToCurrentSelection && currentSelectedEntity) {
+					currentSelectedEntity->AddChild(entity);
+				}
+				else {
+					SceneManager::GetActiveScene()->AddChild(entity);
+				}
+
+				grid.GetGridTile(mousePos)->entity = entity;
 			}
-			else {
-				SceneManager::GetActiveScene()->AddChild(entity);
+		}
+
+		if (Input::GetButton(BUTTONCODE_RIGHT) && bSnapToGrid) {
+			if (grid.GetGridTile(mousePos) && grid.GetGridTile(mousePos)->entity) {
+				Entity* entity = grid.GetGridTile(mousePos)->entity;
+				delete entity->GetParent()->RemoveChild(entity);
+
+				grid.GetGridTile(mousePos)->entity = nullptr;
 			}
 		}
 
@@ -489,7 +497,7 @@ void Editor::Update() {
 	//Handle Input
 
 	//Set active object by clicking on any entity
-	if (SceneManager::GetActiveScene() && Input::GetButtonDown(BUTTONCODE_LEFT)) {
+	if (SceneManager::GetActiveScene() && Input::GetButtonDown(BUTTONCODE_LEFT) && !GetInstance()->tileMapCreationActive) {
 		GetInstance()->SetCurrentSelectedEntityByPosition(SceneManager::GetActiveScene(), Input::GetMousePosition() + SceneManager::GetActiveScene()->GetActiveCamera()->GetPosition());
 	}
 
