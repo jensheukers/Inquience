@@ -14,14 +14,9 @@
 #include "input.h"
 
 #include "component_register.h"
-
-#include "math/physics.h"
-
 #include "components/sprite.h"
 
-void Gizmos::Update(Vec2 origin, float lenght) {
-	/* Implement */
-}
+#include "math/physics.h"
 
 void Grid::Construct(Vec2 size, Vec2 tileSize) {
 	for (int x = 0; x < (int)size.x; x += (int)tileSize.x) {
@@ -51,44 +46,42 @@ void Grid::Clear() {
 	}
 }
 
-Editor* Editor::instance;
-
-Editor::Editor() {
-	//Todo: Fetch grid settings
-	grid.Construct(Vec2(512), Vec2(32));
-
-	//Create a reference entity
-	this->referenceEntity = new Entity();
+EditorWindow::EditorWindow() {
+	this->active = true; // Always set to active
 }
 
-Editor* Editor::GetInstance() {
-	if (!instance) {
-		instance = new Editor();
-	}
-	return instance;
-}
-
-void Editor::SetCurrentSelectedEntityByPosition(Entity* parent, Vec2 pos) {
-	for (size_t i = 0; i < parent->GetChildren().size(); i++) {
-		Entity* child = parent->GetChildren()[i];
-		SetCurrentSelectedEntityByPosition(child, pos);
-	}
-
-	if (Physics::InBounds(pos, parent->GetPosition(), parent->GetPosition() + parent->GetScale()) && parent != SceneManager::GetActiveScene()) {
-		currentSelectedEntity = parent;
-		bHoldingEntity = true;
+void EditorWindow::Handle(Editor* editor) {
+	if (!this->active) {
+		delete this;
 	}
 }
 
-void Editor::ConstructTreenode(Entity* entity) {
+EditorInputWindow::EditorInputWindow(const char* title) {
+	this->title = title;
+}
+
+void EditorInputWindow::Handle(Editor* editor) {
+	EditorWindow::Handle(editor); 
+
+	ImGui::Begin(this->title, &this->active);
+	ImGui::InputText("", this->buffer, sizeof(this->buffer));
+	ImGui::SameLine();
+	if (ImGui::Button("Apply")) {
+		this->onApply.Execute();
+		this->active = false;
+	}
+	ImGui::End();
+}
+
+void EditorHierarchy::ConstructTreenode(Editor* editor, Entity* entity) {
 	if (ImGui::TreeNode((std::to_string(entity->uniqueId) + " " + entity->tag).c_str())) {
 		if (SceneManager::GetActiveScene()) {
 			if (ImGui::BeginPopupContextItem()) {
 				if (entity != SceneManager::GetActiveScene()) {
 					if (ImGui::MenuItem("Select")) {
-						currentSelectedEntity = entity;
+						editor->currentSelectedEntity = entity;
 					}
-					
+
 					if (ImGui::MenuItem("Copy")) {
 						entity->GetParent()->AddChild(new Entity(*entity));
 					}
@@ -112,20 +105,23 @@ void Editor::ConstructTreenode(Entity* entity) {
 				}
 
 				if (ImGui::MenuItem("Parent selected to")) {
-					if (entity != currentSelectedEntity) {
-						currentSelectedEntity->GetParent()->RemoveChild(currentSelectedEntity);
-						entity->AddChild(currentSelectedEntity);
+					if (entity != editor->currentSelectedEntity) {
+						editor->currentSelectedEntity->GetParent()->RemoveChild(editor->currentSelectedEntity);
+						entity->AddChild(editor->currentSelectedEntity);
 					}
 				}
 
 				if (ImGui::MenuItem("Rename")) {
-					currentSelectedEntity = entity;
-					renameEntityActive = -true;
+					editor->currentSelectedEntity = entity;
+
+					//TODO: IMPLEMENT
 				}
 
 				if (entity != SceneManager::GetActiveScene() && ImGui::MenuItem("Properties")) {
-					this->currentSelectedEntity = entity;
-					this->inspectorActive = true;
+					editor->currentSelectedEntity = entity;
+					
+					//TODO: IMPLEMENT
+					//editor->
 				}
 
 				ImGui::EndPopup();
@@ -133,311 +129,300 @@ void Editor::ConstructTreenode(Entity* entity) {
 		}
 
 		for (size_t i = 0; i < entity->GetChildren().size(); i++) {
-			ConstructTreenode(entity->GetChildren()[i]);
+			ConstructTreenode(editor, entity->GetChildren()[i]);
 		}
 
 		ImGui::TreePop();
 	}
 }
 
-void Editor::HandleFileMenus() {
-	if (GetInstance()->loadMenuActive) {
-		ImGui::Begin("Load", &GetInstance()->loadMenuActive);
-		static char buffer[128]; // Allocate buffer
-		ImGui::InputText("Path", buffer, sizeof(buffer));
-		ImGui::SameLine();
-		if (ImGui::Button("Load")) {
-			ImGui::Text(".lua file extension automaticly added");
-			LuaScript::RunFunction(std::string(buffer + std::string(".lua")), std::string(buffer));
-			GetInstance()->loadMenuActive = false;
-		}
-		ImGui::End();
+void EditorHierarchy::Handle(Editor* editor) {
+	EditorWindow::Handle(editor);
+	ImGui::Begin("Hierarchy", &this->active);
+	if (SceneManager::GetActiveScene()) {
+		ConstructTreenode(editor, SceneManager::GetActiveScene());
 	}
 
-	if (GetInstance()->saveMenuActive) {
-		ImGui::Begin("Save", &GetInstance()->saveMenuActive);
-		static char buffer[128]; // Allocate buffer
-		ImGui::InputText("Path", buffer, sizeof(buffer));
-		ImGui::SameLine();
-		if (ImGui::Button("Save")) {
-			ImGui::Text(".lua file extension automaticly added");
-			SceneManager::GetActiveScene()->WriteToLuaFile(LuaScriptFile::LuaScriptFile(std::string(buffer)), std::string(buffer));
-			GetInstance()->saveMenuActive = false;
-		}
-		ImGui::End();
-	}
+	ImGui::End();
 }
 
-void Editor::HandleViewMenus() {
-	//Hierarchy
-	if (GetInstance()->hierarchyActive) {
-		ImGui::Begin("Hierarchy", &GetInstance()->hierarchyActive);
-		if (SceneManager::GetActiveScene()) {
-			ConstructTreenode(SceneManager::GetActiveScene());
-		}
-		
-		if (renameEntityActive) {
-			ImGui::Begin("Rename Entity", &renameEntityActive);
-			static char buffer[128]; // Allocate buffer
-			ImGui::InputText("", buffer, sizeof(buffer));
-			ImGui::SameLine();
-			if (ImGui::Button("Set Tag")) {
-				currentSelectedEntity->tag = buffer;
+void EditorInspector::Handle(Editor* editor) {
+	EditorWindow::Handle(editor);
+	ImGui::Begin("Inpector", &this->active);
+	if (editor->currentSelectedEntity) {
+		ImGui::Text(("Tag: " + editor->currentSelectedEntity->tag).c_str());
+		ImGui::Spacing();
+		ImGui::Text("Local Transformations:");
+
+		static float position[2];
+		position[0] = editor->currentSelectedEntity->localPosition.x;
+		position[1] = editor->currentSelectedEntity->localPosition.y;
+		ImGui::InputFloat2("Position", position);
+
+		static float scale[2];
+		scale[0] = editor->currentSelectedEntity->localScale.x;
+		scale[1] = editor->currentSelectedEntity->localScale.y;
+		ImGui::InputFloat2("Scale", scale);
+
+		//Set
+		editor->currentSelectedEntity->localPosition = Vec2(position[0], position[1]);
+		editor->currentSelectedEntity->localScale = Vec2(scale[0], scale[1]);
+
+		//Spawn components
+		ImGui::Spacing();
+		ImGui::Text("Components:"); ImGui::SameLine();
+		if (ImGui::Button("Add")) { addComponentActive = true; };
+		ImGui::BeginChild("Components");
+		for (size_t i = 0; i < editor->currentSelectedEntity->GetComponents().size(); i++) {
+			Component* component = editor->currentSelectedEntity->GetComponents()[i];
+			ImGui::Text(component->GetName().c_str()); ImGui::SameLine();
+			if (ImGui::Button(std::string("Properties" + std::string("##") + std::to_string(i)).c_str())) {
+				component->bShowComponentProperties = true;
+			} ImGui::SameLine();
+
+			if (ImGui::Button(std::string("Remove" + std::string("##") + std::to_string(i)).c_str())) {
+				component->bShowComponentProperties = false;
+				editor->currentSelectedEntity->RemoveComponent(component);
 			}
-			ImGui::End();
-		}
 
-		ImGui::End();
-	}
-
-	//Inspector
-	if (GetInstance()->inspectorActive) {
-		ImGui::Begin("Inpector", &GetInstance()->inspectorActive);
-		if (currentSelectedEntity) {
-			ImGui::Text(("Tag: " + currentSelectedEntity->tag).c_str());
-			ImGui::Spacing();
-			ImGui::Text("Local Transformations:");
-
-			static float position[2];
-			position[0] = currentSelectedEntity->localPosition.x;
-			position[1] = currentSelectedEntity->localPosition.y;
-			ImGui::InputFloat2("Position", position);
-
-			static float scale[2];
-			scale[0] = currentSelectedEntity->localScale.x;
-			scale[1] = currentSelectedEntity->localScale.y;
-			ImGui::InputFloat2("Scale", scale);
-
-			//Set
-			currentSelectedEntity->localPosition = Vec2(position[0], position[1]);
-			currentSelectedEntity->localScale = Vec2(scale[0], scale[1]);
-
-			//Spawn components
-			ImGui::Spacing();
-			ImGui::Text("Components:"); ImGui::SameLine();
-			if (ImGui::Button("Add")) { addComponentActive = true; };
-			ImGui::BeginChild("Components");
-			for (size_t i = 0; i < currentSelectedEntity->GetComponents().size(); i++) {
-				Component* component = currentSelectedEntity->GetComponents()[i];
-				ImGui::Text(component->GetName().c_str()); ImGui::SameLine();
-				if (ImGui::Button(std::string("Properties" + std::string("##") + std::to_string(i)).c_str())) {
-					component->bShowComponentProperties = true;
-				} ImGui::SameLine();
-
-				if (ImGui::Button(std::string("Remove" + std::string("##") + std::to_string(i)).c_str())) {
-					component->bShowComponentProperties = false;
-					currentSelectedEntity->RemoveComponent(component);
-				}
-
-				if (component->bShowComponentProperties) {
-					ImGui::Begin((currentSelectedEntity->tag + " - Component: " + component->GetName() + " - Properties").c_str(), &component->bShowComponentProperties);
-					component->OnComponentPropertiesEditor();
-					ImGui::End();
-				}
-			}
-			ImGui::EndChild();
-
-			//Activate Menus
-			if (addComponentActive) {
-				ImGui::Begin("Add Component", &addComponentActive);
-				ImGui::Text("Control + Left Click to add component to current entity");
-				ImGui::ListBoxHeader("Registered Components");
-				for (size_t i = 0; i < Component_Register::GetAvailableKeys().size(); i++) {
-					std::string& item_name = Component_Register::GetAvailableKeys()[i];
-					if (ImGui::Selectable(Component_Register::GetAvailableKeys()[i].c_str()) && Input::GetKey(KEYCODE_LEFT_CONTROL)) {
-						if (Component* component = Component_Register::GetNewComponentInstance(Component_Register::GetAvailableKeys()[i])) {
-							if (!currentSelectedEntity->HasComponent(component)) {
-								currentSelectedEntity->AddExistingComponentInstance(component);
-							}
-							else {
-								delete component;
-							}
-						}
-					}
-				}
-				ImGui::ListBoxFooter();
+			if (component->bShowComponentProperties) {
+				ImGui::Begin((editor->currentSelectedEntity->tag + " - Component: " + component->GetName() + " - Properties").c_str(), &component->bShowComponentProperties);
+				component->OnComponentPropertiesEditor();
 				ImGui::End();
 			}
 		}
-		else {
-			ImGui::Text("No entity selected");
-		}
+		ImGui::EndChild();
 
-		ImGui::End();
+		//Activate Menus
+		if (addComponentActive) {
+			ImGui::Begin("Add Component", &addComponentActive);
+			ImGui::Text("Control + Left Click to add component to current entity");
+			ImGui::ListBoxHeader("Registered Components");
+			for (size_t i = 0; i < Component_Register::GetAvailableKeys().size(); i++) {
+				std::string& item_name = Component_Register::GetAvailableKeys()[i];
+				if (ImGui::Selectable(Component_Register::GetAvailableKeys()[i].c_str()) && Input::GetKey(KEYCODE_LEFT_CONTROL)) {
+					if (Component * component = Component_Register::GetNewComponentInstance(Component_Register::GetAvailableKeys()[i])) {
+						if (!editor->currentSelectedEntity->HasComponent(component)) {
+							editor->currentSelectedEntity->AddExistingComponentInstance(component);
+						}
+						else {
+							delete component;
+						}
+					}
+				}
+			}
+			ImGui::ListBoxFooter();
+			ImGui::End();
+		}
 	}
+	else {
+		ImGui::Text("No entity selected");
+	}
+
+	ImGui::End();
 }
 
-void Editor::HandleEntityMenus() {
-	if (createEntityActive) {
-		ImGui::Begin("Create Entity", &createEntityActive);
-		if (!SceneManager::GetActiveScene()) {
-			ImGui::Text("No active scene");
-			ImGui::End();
-			return;
+void EditorCreateEntityWizard::Handle(Editor* editor) {
+	EditorWindow::Handle(editor);
+	ImGui::Begin("Create Entity", &this->active);
+	if (!SceneManager::GetActiveScene()) {
+		ImGui::Text("No active scene");
+		ImGui::End();
+		return;
+	}
+
+	static float position[2];
+	static float scale[2] = { 32, 32 };
+	static bool parentToSelected;
+
+	ImGui::InputFloat2("Position", position);
+	ImGui::InputFloat2("Scale", scale);
+	ImGui::Checkbox("Parent to selected", &parentToSelected);
+
+	if (ImGui::Button("Create")) {
+		Entity* entity = new Entity();
+
+		entity->localPosition = Vec2(position[0], position[1]);
+		entity->localScale = Vec2(scale[0], scale[1]);
+
+		if (parentToSelected && editor->currentSelectedEntity) {
+			editor->currentSelectedEntity->AddChild(entity);
+		}
+		else {
+			SceneManager::GetActiveScene()->AddChild(entity);
 		}
 
+		editor->currentSelectedEntity = entity;
+		this->active = false;
+	}
 
-		static float position[2];
-		static float scale[2] = { 32, 32};
-		static bool parentToSelected;
+	ImGui::End();
+}
 
-		ImGui::InputFloat2("Position", position);
-		ImGui::InputFloat2("Scale", scale);
-		ImGui::Checkbox("Parent to selected", &parentToSelected);
+void EditorTileEdit::Handle(Editor* editor) {
+	EditorWindow::Handle(editor);
 
-		if (ImGui::Button("Create")) {
+	ImGui::Begin("Tile Edit", &this->active);
+	//Texture pointer
+	static Texture* texture;
+
+	//UvCoordinate Holder
+	static UV uv;
+
+	//Variables
+	static float imageSize = 256; // Initialize at 256 as expected image size
+	static int tileSize = 32; // Initialize at DEFAULT_TILE_SIZE
+	static int objectScale = 32;
+	static bool childToCurrentSelection = false;
+
+	static char buffer[128]; // Allocate buffer
+	ImGui::InputText("Path", buffer, sizeof(buffer));
+	ImGui::SameLine();
+	if (ImGui::Button("Load")) {
+		Texture* t = TextureLoader::LoadTarga(buffer);
+
+		if (t->textureData->width != t->textureData->height) {
+			Debug::Log("Error: cannot load tilemap as width != height");
+		}
+		else {
+			texture = t;
+			imageSize = (float)texture->textureData->width;
+		}
+	}
+
+	ImGui::InputInt("Tile Size", &tileSize);
+	ImGui::InputInt("Object Spawn Scale", &objectScale);
+	ImGui::Checkbox("Child to currently selected Entity", &childToCurrentSelection);
+
+	int tiles = (int)imageSize / tileSize;
+
+	//tileSetImagePosition
+	ImVec2 tilesetImagePos = ImGui::GetCursorScreenPos();
+
+	if (texture) {
+		unsigned glTexId = texture->_glTexture;
+		ImGui::Image((void*)(intptr_t)glTexId, ImVec2(imageSize, imageSize), ImVec2(0, 1), ImVec2(1, 0));
+	}
+
+	// draw grid
+	ImDrawList* draw_list = ImGui::GetWindowDrawList();
+
+	// draw horizontal lines
+	for (int x = 0; x < tiles + 1; ++x) {
+		draw_list->AddLine(ImVec2(tilesetImagePos.x + x * tileSize, tilesetImagePos.y),
+			ImVec2(tilesetImagePos.x + x * tileSize, tilesetImagePos.y + tiles * tileSize),
+			ImColor(255, 255, 255));
+	}
+
+	// draw vertical lines
+	for (int y = 0; y < tiles + 1; ++y) {
+		draw_list->AddLine(ImVec2(tilesetImagePos.x, tilesetImagePos.y + y * tileSize),
+			ImVec2(tilesetImagePos.x + tiles * tileSize, tilesetImagePos.y + y * tileSize),
+			ImColor(255, 255, 255));
+	}
+
+	static int tileMapIndex = 0;
+
+	if (!editor->referenceEntity->HasComponent<Sprite>()) {
+		editor->referenceEntity->AddComponent<Sprite>();
+	}
+
+	//Input selection
+	if (ImGui::IsItemHovered()) {
+		if (Input::GetButtonDown(BUTTONCODE_LEFT)) {
+			Vec2 relMousePos = Vec2(ImGui::GetMousePos().x - tilesetImagePos.x, ImGui::GetMousePos().y - tilesetImagePos.y);
+
+			//Get the right uv coordinates.
+
+			int _i = 0; // Tile index
+			//Iterate through image
+			for (int y = (int)imageSize - tileSize; y > -1; y -= tileSize) {
+				for (int x = 0; x < imageSize; x += tileSize) {
+					//Iterate through every pixel
+					for (int py = 0; py <= tileSize; py++) {
+						for (int px = 0; px <= tileSize; px++) {
+							if ((x + px) == relMousePos.x && (y + py) == relMousePos.y) {
+								editor->referenceEntity->GetComponent<Sprite>()->SetTexture(TextureLoader::LoadTarga(buffer));
+								editor->referenceEntity->GetComponent<Sprite>()->Split(tileSize, _i);
+								tileMapIndex = _i;
+							}
+						}
+					}
+					_i++;
+				}
+			}
+		}
+
+		std::string tileMapIndexText = "Tile Index: " + std::to_string(tileMapIndex);
+		ImGui::Text((char*)tileMapIndexText.c_str());
+	}
+
+	Vec2 mousePos = (Input::GetMousePosition() + SceneManager::GetActiveScene()->GetActiveCamera()->GetPosition());
+	if (Input::GetButton(BUTTONCODE_LEFT) && editor->bSnapToGrid) {
+		if (editor->grid.GetGridTile(mousePos) && !editor->grid.GetGridTile(mousePos)->entity && !ImGui::IsWindowFocused()) {
 			Entity* entity = new Entity();
+			entity->AddComponent<Sprite>();
+			entity->GetComponent<Sprite>()->SetTexture(editor->referenceEntity->GetComponent<Sprite>()->GetTexture());
+			entity->GetComponent<Sprite>()->uv = editor->referenceEntity->GetComponent<Sprite>()->uv;
 
-			entity->localPosition = Vec2(position[0], position[1]);
-			entity->localScale = Vec2(scale[0], scale[1]);
+			entity->localScale = Vec2(objectScale);
 
-			if (parentToSelected && currentSelectedEntity) {
-				currentSelectedEntity->AddChild(entity);
+			entity->localPosition = editor->grid.GetGridTile(mousePos)->position;
+
+			if (childToCurrentSelection && editor->currentSelectedEntity) {
+				editor->currentSelectedEntity->AddChild(entity);
 			}
 			else {
 				SceneManager::GetActiveScene()->AddChild(entity);
 			}
 
-			currentSelectedEntity = entity;
-			createEntityActive = false;
+			editor->grid.GetGridTile(mousePos)->entity = entity;
 		}
-
-		ImGui::End();
 	}
 
-	if (tileMapCreationActive) {
-		ImGui::Begin("Tile Edit", &tileMapCreationActive);
-		//Texture pointer
-		static Texture* texture;
+	if (Input::GetButton(BUTTONCODE_RIGHT) && editor->bSnapToGrid) {
+		if (editor->grid.GetGridTile(mousePos) && editor->grid.GetGridTile(mousePos)->entity) {
+			Entity* entity = editor->grid.GetGridTile(mousePos)->entity;
+			delete entity->GetParent()->RemoveChild(entity);
 
-		//UvCoordinate Holder
-		static UV uv;
-
-		//Variables
-		static float imageSize = 256; // Initialize at 256 as expected image size
-		static int tileSize = 32; // Initialize at DEFAULT_TILE_SIZE
-		static int objectScale = 32;
-		static bool childToCurrentSelection = false;
-
-		static char buffer[128]; // Allocate buffer
-		ImGui::InputText("Path", buffer, sizeof(buffer));
-		ImGui::SameLine();
-		if (ImGui::Button("Load")) {
-			Texture* t = TextureLoader::LoadTarga(buffer);
-
-			if (t->textureData->width != t->textureData->height) {
-				Debug::Log("Error: cannot load tilemap as width != height");
-			}
-			else {
-				texture = t;
-				imageSize = (float)texture->textureData->width;
-			}
+			editor->grid.GetGridTile(mousePos)->entity = nullptr;
 		}
-
-		ImGui::InputInt("Tile Size", &tileSize);
-		ImGui::InputInt("Object Spawn Scale", &objectScale);
-		ImGui::Checkbox("Child to currently selected Entity", &childToCurrentSelection);
-
-		int tiles = (int)imageSize / tileSize;
-
-		//tileSetImagePosition
-		ImVec2 tilesetImagePos = ImGui::GetCursorScreenPos();
-
-		if (texture) {
-			unsigned glTexId = texture->_glTexture;
-			ImGui::Image((void*)(intptr_t)glTexId, ImVec2(imageSize, imageSize), ImVec2(0, 1), ImVec2(1, 0));
-		}
-
-		// draw grid
-		ImDrawList* draw_list = ImGui::GetWindowDrawList();
-
-		// draw horizontal lines
-		for (int x = 0; x < tiles + 1; ++x) {
-			draw_list->AddLine(ImVec2(tilesetImagePos.x + x * tileSize, tilesetImagePos.y),
-				ImVec2(tilesetImagePos.x + x * tileSize, tilesetImagePos.y + tiles * tileSize),
-				ImColor(255, 255, 255));
-		}
-
-		// draw vertical lines
-		for (int y = 0; y < tiles + 1; ++y) {
-			draw_list->AddLine(ImVec2(tilesetImagePos.x, tilesetImagePos.y + y * tileSize),
-				ImVec2(tilesetImagePos.x + tiles * tileSize, tilesetImagePos.y + y * tileSize),
-				ImColor(255, 255, 255));
-		}
-
-		static int tileMapIndex = 0;
-
-		if (!referenceEntity->HasComponent<Sprite>()) {
-			referenceEntity->AddComponent<Sprite>();
-		}
-
-		//Input selection
-		if (ImGui::IsItemHovered()) {
-			if (Input::GetButtonDown(BUTTONCODE_LEFT)) {
-				Vec2 relMousePos = Vec2(ImGui::GetMousePos().x - tilesetImagePos.x, ImGui::GetMousePos().y - tilesetImagePos.y);
-
-				//Get the right uv coordinates.
-
-				int _i = 0; // Tile index
-				//Iterate through image
-				for (int y = (int)imageSize - tileSize; y > -1; y -= tileSize) {
-					for (int x = 0; x < imageSize; x += tileSize) {
-						//Iterate through every pixel
-						for (int py = 0; py <= tileSize; py++) {
-							for (int px = 0; px <= tileSize; px++) {
-								if ((x + px) == relMousePos.x && (y + py) == relMousePos.y) {
-									referenceEntity->GetComponent<Sprite>()->SetTexture(TextureLoader::LoadTarga(buffer));
-									referenceEntity->GetComponent<Sprite>()->Split(tileSize, _i);
-									tileMapIndex = _i;
-								}
-							}
-						}
-						_i++;
-					}
-				}
-			}
-
-			std::string tileMapIndexText = "Tile Index: " + std::to_string(tileMapIndex);
-			ImGui::Text((char*)tileMapIndexText.c_str());
-		}
-
-		Vec2 mousePos = (Input::GetMousePosition() + SceneManager::GetActiveScene()->GetActiveCamera()->GetPosition());
-		if (Input::GetButton(BUTTONCODE_LEFT) && bSnapToGrid) {
-			if (grid.GetGridTile(mousePos) && !grid.GetGridTile(mousePos)->entity && !ImGui::IsWindowFocused()) {
-				Entity* entity = new Entity();
-				entity->AddComponent<Sprite>();
-				entity->GetComponent<Sprite>()->SetTexture(referenceEntity->GetComponent<Sprite>()->GetTexture());
-				entity->GetComponent<Sprite>()->uv = referenceEntity->GetComponent<Sprite>()->uv;
-
-				entity->localScale = Vec2(objectScale);
-
-				entity->localPosition = grid.GetGridTile(mousePos)->position;
-
-				if (childToCurrentSelection && currentSelectedEntity) {
-					currentSelectedEntity->AddChild(entity);
-				}
-				else {
-					SceneManager::GetActiveScene()->AddChild(entity);
-				}
-
-				grid.GetGridTile(mousePos)->entity = entity;
-			}
-		}
-
-		if (Input::GetButton(BUTTONCODE_RIGHT) && bSnapToGrid) {
-			if (grid.GetGridTile(mousePos) && grid.GetGridTile(mousePos)->entity) {
-				Entity* entity = grid.GetGridTile(mousePos)->entity;
-				delete entity->GetParent()->RemoveChild(entity);
-
-				grid.GetGridTile(mousePos)->entity = nullptr;
-			}
-		}
-
-		ImGui::End();
 	}
+
+	ImGui::End();
+
+}
+
+Editor* Editor::instance;
+
+Editor::Editor() {
+	//Todo: Fetch grid settings
+	grid.Construct(Vec2(512), Vec2(32));
+
+	//Create a reference entity
+	this->referenceEntity = new Entity();
+}
+
+Editor* Editor::GetInstance() {
+	if (!instance) {
+		instance = new Editor();
+	}
+	return instance;
 }
 
 bool Editor::editorActive = false;
+
+void Editor::SetCurrentSelectedEntityByPosition(Entity* parent, Vec2 pos) {
+	for (size_t i = 0; i < parent->GetChildren().size(); i++) {
+		Entity* child = parent->GetChildren()[i];
+		SetCurrentSelectedEntityByPosition(child, pos);
+	}
+
+	if (Physics::InBounds(pos, parent->GetPosition(), parent->GetPosition() + parent->GetScale()) && parent != SceneManager::GetActiveScene()) {
+		currentSelectedEntity = parent;
+		bHoldingEntity = true;
+	}
+}
 
 void Editor::Update() {
 	//Handle events
@@ -460,44 +445,65 @@ void Editor::Update() {
 			SceneManager::SetActiveScene(new Scene());
 			SceneManager::GetActiveScene()->SetActiveCamera(new Camera());
 		}
-		if (ImGui::MenuItem("Load")) { GetInstance()->loadMenuActive = true; }
-		if (ImGui::MenuItem("Save")) { GetInstance()->saveMenuActive = true; }
+		if (ImGui::MenuItem("Load")) { 
+			EditorInputWindow* window = new EditorInputWindow("Load");
+			window->onApply.AddLambda([=]() {
+				LuaScript::RunFunction(std::string(window->GetBuffer() + std::string(".lua")), "Initialize");
+			});
+
+			GetInstance()->windows.push_back(window);
+		}
+
+		if (ImGui::MenuItem("Save")) { 
+			EditorInputWindow* window = new EditorInputWindow("Save");
+			window->onApply.AddLambda([=]() {
+				SceneManager::GetActiveScene()->WriteToLuaFile(LuaScriptFile::LuaScriptFile(std::string(window->GetBuffer())), "Initialize");
+			});
+
+			GetInstance()->windows.push_back(window);
+		}
+
 		if (ImGui::MenuItem("Exit")) { editorActive = false; }
 		ImGui::EndMenu();
 	}
 
 	if (ImGui::BeginMenu("View")) {
-		if (ImGui::MenuItem("Hierarchy")) { GetInstance()->hierarchyActive = true; }
-		if (ImGui::MenuItem("Inspector")) { GetInstance()->inspectorActive = true; }
+		if (ImGui::MenuItem("Hierarchy")) { GetInstance()->windows.push_back(new EditorHierarchy()); }
+		if (ImGui::MenuItem("Inspector")) { GetInstance()->windows.push_back(new EditorInspector()); }
 		ImGui::EndMenu();
 	}
 
 	if (ImGui::BeginMenu("Entity")) {
-		if (ImGui::MenuItem("New Entity")) { GetInstance()->createEntityActive = true; }
-		if (ImGui::MenuItem("Tile Edit")) { GetInstance()->tileMapCreationActive = true; }
+		if (ImGui::MenuItem("New Entity")) { GetInstance()->windows.push_back(new EditorCreateEntityWizard()); }
+		if (ImGui::MenuItem("Tile Edit")) { GetInstance()->windows.push_back(new EditorTileEdit()); }
 
 		ImGui::EndMenu();
 	}
 
 	ImGui::EndMainMenuBar();
 
-	//Handle menus
-	GetInstance()->HandleFileMenus();
-	GetInstance()->HandleViewMenus();
-	GetInstance()->HandleEntityMenus();
+	//Handle windows
+	for (int i = GetInstance()->windows.size() - 1; i >= 0; i--) {
+		//Erase garbage pointers
+		if (!GetInstance()->windows[i]) {
+			GetInstance()->windows.erase(GetInstance()->windows.begin() + i);
+			continue;
+		}
 
-	//Update gizmos and draw visual
+		if (GetInstance()->windows[i]->active) {
+			GetInstance()->windows[i]->Handle(GetInstance());
+		}
+	}
+
+	//Draw around selected entity for visual
 	if (GetInstance()->currentSelectedEntity) {
-		GetInstance()->gizmos.Update(Vec2(500, 200), 128);
-
-		//Draw around selected entity for visual
 		Debug::DrawCube(GetInstance()->currentSelectedEntity->GetPosition(), GetInstance()->currentSelectedEntity->GetPosition() + GetInstance()->currentSelectedEntity->GetScale(), glm::vec3(1, 0, 0));
 	}
 
 	//Handle Input
 
 	//Set active object by clicking on any entity
-	if (SceneManager::GetActiveScene() && Input::GetButtonDown(BUTTONCODE_LEFT) && !GetInstance()->tileMapCreationActive) {
+	/*if (SceneManager::GetActiveScene() && Input::GetButtonDown(BUTTONCODE_LEFT) && !GetInstance()->tileMapCreationActive) {
 		GetInstance()->SetCurrentSelectedEntityByPosition(SceneManager::GetActiveScene(), Input::GetMousePosition() + SceneManager::GetActiveScene()->GetActiveCamera()->GetPosition());
 	}
 
@@ -543,7 +549,7 @@ void Editor::Update() {
 			copy->localPosition = Input::GetMousePosition() + SceneManager::GetActiveScene()->GetActiveCamera()->GetPosition();
 			GetInstance()->currentSelectedEntity = copy;
 		}
-	}
+	}*/
 }
 
 Editor::~Editor() {

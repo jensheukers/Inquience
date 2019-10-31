@@ -10,10 +10,7 @@
 #include <vector>
 
 #include "math/vec2.h"
-
-struct Gizmos {
-	void Update(Vec2 origin, float lenght);
-};
+#include "unique_types.h"
 
 struct GridTile {
 	Vec2 position;
@@ -43,33 +40,75 @@ struct Grid {
 	void Clear();
 };
 
+class EditorWindow {
+public:
+	bool active; /***< If true the editor window will be displayed*/
+
+	/**
+	* Constructor
+	*/
+	EditorWindow();
+
+	/**
+	* Handle gets called every frame when active, base class handle should ALWAYS be called, to handle destruction
+	*/
+	virtual void Handle(class Editor* editor);
+};
+
+class EditorInputWindow : public EditorWindow {
+private:
+	const char* title; /***< The title of the input window*/
+	char buffer[256]; /***< Buffer holds string*/
+public:
+	struct Delegate onApply; /***< Gets executed when apply is clicked*/
+
+	/**
+	* Constructor
+	*/
+	EditorInputWindow(const char* title = "InputWindow");
+
+	void Handle(Editor* editor) override;
+
+	/**
+	* Returns the buffer
+	*/
+	const char* GetBuffer() { return this->buffer; }
+};
+
+class EditorHierarchy : public EditorWindow {
+private:
+	/**
+	* Construct a treenode of entities
+	*/
+	void ConstructTreenode(Editor* editor, class Entity* entity);
+public:
+	void Handle(Editor* editor) override;
+};
+
+class EditorInspector : public EditorWindow {
+private:
+	bool addComponentActive;
+public:
+	void Handle(Editor* editor) override;
+};
+
+class EditorCreateEntityWizard : public EditorWindow {
+public:
+	void Handle(Editor* editor) override;
+};
+
+class EditorTileEdit : public EditorWindow {
+public:
+	void Handle(Editor* editor) override;
+};
+
 //Editor is a singleton instance
 class Editor {
 private:
 	static Editor* instance;
-	Gizmos gizmos;
-	Grid grid;
 
-	//Menu activator booleans
-	bool loadMenuActive = false;
-	bool saveMenuActive = false;
-
-	bool hierarchyActive = false;
-	bool inspectorActive = false;
-
-	bool createEntityActive = false;
-	bool tileMapCreationActive = false;
-
-	bool addComponentActive = false;
-
-	bool renameEntityActive = false;
-
-	//Instance pointers
-	class Entity* currentSelectedEntity = nullptr;
-	class Entity* referenceEntity = nullptr;
-
-	bool bHoldingEntity;
-	bool bSnapToGrid;
+	//Menus
+	std::vector<EditorWindow*> windows;
 
 	/**
 	* Constructor
@@ -80,44 +119,31 @@ private:
 	* Returns the editor instance
 	*/
 	static Editor* GetInstance();
+public:
+	static bool editorActive; /***If true the editor will be called by core*/
+	Grid grid; /***< Grid reference*/
+
+	//Instance pointers
+	class Entity* currentSelectedEntity = nullptr;
+	class Entity* referenceEntity = nullptr;
+
+	bool bHoldingEntity; /***< If true the cursor is holding a entity*/
+	bool bSnapToGrid; /***< If true the current selected will try to snap to grid*/
 
 	/**
 	* Sets current selected entity if in bounds
 	*/
-	void SetCurrentSelectedEntityByPosition(Entity* parent, Vec2 pos);
-
-	/**
-	* Construct a treenode of entities
-	*/
-	void ConstructTreenode(class Entity* entity);
-
-	/**
-	* Handles all file tab relation menus
-	*/
-	void HandleFileMenus();
-
-	/**
-	* Handles all the view menu's
-	*/
-	void HandleViewMenus();
-
-	/**
-	* Handles all entity menus
-	*/
-	void HandleEntityMenus();
-
-	/**
-	* Checks if tile position is occupied
-	*/
-	bool IsTilePositionOccupied(GridTile* tile, Entity* entity);
-public:
-	static bool editorActive;
+	void SetCurrentSelectedEntityByPosition(class Entity* parent, Vec2 pos);
 
 	/**
 	* Update gets called every frame by core
 	*/
 	static void Update();
 	
+
+	/**
+	* Destructor
+	*/
 	~Editor();
 };
 
