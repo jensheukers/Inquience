@@ -50,9 +50,9 @@ public:
 	EditorWindow();
 
 	/**
-	* Handle gets called every frame when active, base class handle should ALWAYS be called, to handle destruction
+	* Handle gets called every frame when active
 	*/
-	virtual void Handle(class Editor* editor);
+	virtual void Handle(class Editor* editor) = 0;
 };
 
 class EditorInputWindow : public EditorWindow {
@@ -139,10 +139,27 @@ public:
 	void SetCurrentSelectedEntityByPosition(class Entity* parent, Vec2 pos);
 
 	/**
+	* Adds a window instance to the windows list
+	* @param EditorWindow*
+	*/
+	static void AddEditorWindow(EditorWindow* window);
+
+	/**
+	* Checks if any window of type is active (open atm)
+	* @return bool
+	*/
+	template <typename T>
+	static bool AnyWindowOfTypeActive() {
+		for (size_t i = 0; i < GetInstance()->windows.size(); i++) {
+			if (dynamic_cast<T*>(GetInstance()->windows[i])) return true;
+		}
+		return false;
+	}
+
+	/**
 	* Update gets called every frame by core
 	*/
 	static void Update();
-	
 
 	/**
 	* Destructor

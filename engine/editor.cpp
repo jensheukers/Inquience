@@ -50,19 +50,11 @@ EditorWindow::EditorWindow() {
 	this->active = true; // Always set to active
 }
 
-void EditorWindow::Handle(Editor* editor) {
-	if (!this->active) {
-		delete this;
-	}
-}
-
 EditorInputWindow::EditorInputWindow(const char* title) {
 	this->title = title;
 }
 
 void EditorInputWindow::Handle(Editor* editor) {
-	EditorWindow::Handle(editor); 
-
 	ImGui::Begin(this->title, &this->active);
 	ImGui::InputText("", this->buffer, sizeof(this->buffer));
 	ImGui::SameLine();
@@ -114,14 +106,18 @@ void EditorHierarchy::ConstructTreenode(Editor* editor, Entity* entity) {
 				if (ImGui::MenuItem("Rename")) {
 					editor->currentSelectedEntity = entity;
 
-					//TODO: IMPLEMENT
+					EditorInputWindow* window = new EditorInputWindow();
+					window->onApply.AddLambda([=]() {
+						editor->currentSelectedEntity->tag = std::string(window->GetBuffer());
+					});
+
+					Editor::AddEditorWindow(window);
 				}
 
 				if (entity != SceneManager::GetActiveScene() && ImGui::MenuItem("Properties")) {
 					editor->currentSelectedEntity = entity;
 					
-					//TODO: IMPLEMENT
-					//editor->
+					if (!Editor::AnyWindowOfTypeActive<EditorInspector>()) Editor::AddEditorWindow(new EditorInspector());
 				}
 
 				ImGui::EndPopup();
@@ -137,7 +133,6 @@ void EditorHierarchy::ConstructTreenode(Editor* editor, Entity* entity) {
 }
 
 void EditorHierarchy::Handle(Editor* editor) {
-	EditorWindow::Handle(editor);
 	ImGui::Begin("Hierarchy", &this->active);
 	if (SceneManager::GetActiveScene()) {
 		ConstructTreenode(editor, SceneManager::GetActiveScene());
@@ -147,7 +142,6 @@ void EditorHierarchy::Handle(Editor* editor) {
 }
 
 void EditorInspector::Handle(Editor* editor) {
-	EditorWindow::Handle(editor);
 	ImGui::Begin("Inpector", &this->active);
 	if (editor->currentSelectedEntity) {
 		ImGui::Text(("Tag: " + editor->currentSelectedEntity->tag).c_str());
@@ -223,7 +217,6 @@ void EditorInspector::Handle(Editor* editor) {
 }
 
 void EditorCreateEntityWizard::Handle(Editor* editor) {
-	EditorWindow::Handle(editor);
 	ImGui::Begin("Create Entity", &this->active);
 	if (!SceneManager::GetActiveScene()) {
 		ImGui::Text("No active scene");
@@ -260,7 +253,8 @@ void EditorCreateEntityWizard::Handle(Editor* editor) {
 }
 
 void EditorTileEdit::Handle(Editor* editor) {
-	EditorWindow::Handle(editor);
+	//Enable snapToGrid
+	editor->bSnapToGrid = true;
 
 	ImGui::Begin("Tile Edit", &this->active);
 	//Texture pointer
@@ -456,6 +450,10 @@ void Editor::SetCurrentSelectedEntityByPosition(Entity* parent, Vec2 pos) {
 	}
 }
 
+void Editor::AddEditorWindow(EditorWindow* window) {
+	GetInstance()->windows.push_back(window);
+}
+
 void Editor::Update() {
 	//Handle events
 	ImGuiIO& io = ImGui::GetIO();
@@ -500,14 +498,14 @@ void Editor::Update() {
 	}
 
 	if (ImGui::BeginMenu("View")) {
-		if (ImGui::MenuItem("Hierarchy")) { GetInstance()->windows.push_back(new EditorHierarchy()); }
-		if (ImGui::MenuItem("Inspector")) { GetInstance()->windows.push_back(new EditorInspector()); }
+		if (ImGui::MenuItem("Hierarchy")) { AddEditorWindow(new EditorHierarchy()); }
+		if (ImGui::MenuItem("Inspector")) { AddEditorWindow(new EditorInspector()); }
 		ImGui::EndMenu();
 	}
 
 	if (ImGui::BeginMenu("Entity")) {
-		if (ImGui::MenuItem("New Entity")) { GetInstance()->windows.push_back(new EditorCreateEntityWizard()); }
-		if (ImGui::MenuItem("Tile Edit")) { GetInstance()->windows.push_back(new EditorTileEdit()); }
+		if (ImGui::MenuItem("New Entity")) { AddEditorWindow(new EditorCreateEntityWizard()); }
+		if (ImGui::MenuItem("Tile Edit")) { AddEditorWindow(new EditorTileEdit()); }
 
 		ImGui::EndMenu();
 	}
@@ -517,15 +515,13 @@ void Editor::Update() {
 	//Handle windows
 	bool anyWindowActive = false;
 	for (int i = GetInstance()->windows.size() - 1; i >= 0; i--) {
-		//Erase garbage pointers
-		if (!GetInstance()->windows[i]) {
-			GetInstance()->windows.erase(GetInstance()->windows.begin() + i);
-			continue;
-		}
-
 		if (GetInstance()->windows[i]->active) {
 			GetInstance()->windows[i]->Handle(GetInstance());
 			anyWindowActive = true;
+		}
+		else {
+			delete GetInstance()->windows[i];
+			GetInstance()->windows.erase(GetInstance()->windows.begin() + i);
 		}
 	}
 
@@ -541,7 +537,7 @@ void Editor::Update() {
 		}
 
 		//Set active object by clicking on any entity
-		if (SceneManager::GetActiveScene() && Input::GetButtonDown(BUTTONCODE_LEFT)) {
+		if (SceneManager::GetActiveScene() && Input::GetKey(KEYCODE_LEFT_CONTROL) && Input::GetButtonDown(BUTTONCODE_LEFT)) {
 			GetInstance()->SetCurrentSelectedEntityByPosition(SceneManager::GetActiveScene(), Input::GetMousePosition() + SceneManager::GetActiveScene()->GetActiveCamera()->GetPosition());
 		}
 
