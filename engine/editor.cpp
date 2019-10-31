@@ -401,6 +401,38 @@ Editor::Editor() {
 
 	//Create a reference entity
 	this->referenceEntity = new Entity();
+
+	//Input delegates
+	KeyComboEvent setGridSnappingEvent = KeyComboEvent(KeyCombo{ KeyEvent(KEYCODE_LEFT_CONTROL, KeyEvent_Type::Get), KeyEvent(KEYCODE_S, KeyEvent_Type::GetDown)});
+	setGridSnappingEvent.onActivate.AddLambda([=]() {
+		if (this->bSnapToGrid) {
+			this->bSnapToGrid = false;
+		}
+		else {
+			this->bSnapToGrid = true;
+		}
+	});
+	combos.push_back(setGridSnappingEvent);
+
+	KeyComboEvent copySelectedEvent = KeyComboEvent(KeyCombo{ KeyEvent(KEYCODE_LEFT_CONTROL, KeyEvent_Type::Get), KeyEvent(KEYCODE_V, KeyEvent_Type::GetDown) });
+	copySelectedEvent.onActivate.AddLambda([=]() {
+		if (!currentSelectedEntity) return;
+		Entity* copy = new Entity(*currentSelectedEntity);
+		currentSelectedEntity->GetParent()->AddChild(copy);
+
+		//Set position to mouse position
+		copy->localPosition = Input::GetMousePosition() + SceneManager::GetActiveScene()->GetActiveCamera()->GetPosition();
+		currentSelectedEntity = copy;
+	});
+	combos.push_back(copySelectedEvent);
+
+	KeyComboEvent deleteSelectedEvent = KeyComboEvent(KeyCombo{ KeyEvent(KEYCODE_LEFT_CONTROL, KeyEvent_Type::Get), KeyEvent(KEYCODE_DELETE, KeyEvent_Type::GetDown) });
+	deleteSelectedEvent.onActivate.AddLambda([=]() {
+		if (!currentSelectedEntity) return;
+		currentSelectedEntity->GetParent()->RemoveChild(GetInstance()->currentSelectedEntity);
+		delete currentSelectedEntity;
+	});
+	combos.push_back(deleteSelectedEvent);
 }
 
 Editor* Editor::GetInstance() {
@@ -483,6 +515,7 @@ void Editor::Update() {
 	ImGui::EndMainMenuBar();
 
 	//Handle windows
+	bool anyWindowActive = false;
 	for (int i = GetInstance()->windows.size() - 1; i >= 0; i--) {
 		//Erase garbage pointers
 		if (!GetInstance()->windows[i]) {
@@ -492,6 +525,7 @@ void Editor::Update() {
 
 		if (GetInstance()->windows[i]->active) {
 			GetInstance()->windows[i]->Handle(GetInstance());
+			anyWindowActive = true;
 		}
 	}
 
@@ -501,55 +535,31 @@ void Editor::Update() {
 	}
 
 	//Handle Input
-
-	//Set active object by clicking on any entity
-	/*if (SceneManager::GetActiveScene() && Input::GetButtonDown(BUTTONCODE_LEFT) && !GetInstance()->tileMapCreationActive) {
-		GetInstance()->SetCurrentSelectedEntityByPosition(SceneManager::GetActiveScene(), Input::GetMousePosition() + SceneManager::GetActiveScene()->GetActiveCamera()->GetPosition());
-	}
-
-	if (GetInstance()->bHoldingEntity && GetInstance()->currentSelectedEntity) {
-		Vec2 mousePos = (Input::GetMousePosition() + SceneManager::GetActiveScene()->GetActiveCamera()->GetPosition()) - GetInstance()->currentSelectedEntity->GetParent()->GetPosition();
-
-		if (GetInstance()->bSnapToGrid && GetInstance()->grid.GetGridTile(mousePos)) {
-			GetInstance()->currentSelectedEntity->localPosition = GetInstance()->grid.GetGridTile(mousePos)->position;
+	if (!anyWindowActive) {
+		for (size_t i = 0; i < GetInstance()->combos.size(); i++) {
+			GetInstance()->combos[i].Check();
 		}
-		else {
-			GetInstance()->currentSelectedEntity->localPosition = (mousePos - GetInstance()->currentSelectedEntity->GetScale() / 2);
+
+		//Set active object by clicking on any entity
+		if (SceneManager::GetActiveScene() && Input::GetButtonDown(BUTTONCODE_LEFT)) {
+			GetInstance()->SetCurrentSelectedEntityByPosition(SceneManager::GetActiveScene(), Input::GetMousePosition() + SceneManager::GetActiveScene()->GetActiveCamera()->GetPosition());
+		}
+
+		if (GetInstance()->bHoldingEntity && GetInstance()->currentSelectedEntity) {
+			Vec2 mousePos = (Input::GetMousePosition() + SceneManager::GetActiveScene()->GetActiveCamera()->GetPosition()) - GetInstance()->currentSelectedEntity->GetParent()->GetPosition();
+
+			if (GetInstance()->bSnapToGrid && GetInstance()->grid.GetGridTile(mousePos)) {
+				GetInstance()->currentSelectedEntity->localPosition = GetInstance()->grid.GetGridTile(mousePos)->position;
+			}
+			else {
+				GetInstance()->currentSelectedEntity->localPosition = (mousePos - GetInstance()->currentSelectedEntity->GetScale() / 2);
+			}
 		}
 	}
 
 	if (Input::GetButtonUp(BUTTONCODE_LEFT)) {
 		GetInstance()->bHoldingEntity = false;
 	}
-
-	//Enable disable snapping
-	if (Input::GetKeyDown(KEYCODE_S)) {
-		if (GetInstance()->bSnapToGrid) {
-			GetInstance()->bSnapToGrid = false;
-		}
-		else {
-			GetInstance()->bSnapToGrid = true;
-		}
-	}
-
-	//Current entity specific
-	if (GetInstance()->currentSelectedEntity && !GetInstance()->tileMapCreationActive) {
-		//Delete
-		if (Input::GetKeyDown(KEYCODE_DELETE)) {
-			GetInstance()->currentSelectedEntity->GetParent()->RemoveChild(GetInstance()->currentSelectedEntity);
-			delete GetInstance()->currentSelectedEntity;
-		}
-
-		//Copy current selected
-		if (Input::GetKeyDown(KEYCODE_V)) {
-			Entity* copy = new Entity(*GetInstance()->currentSelectedEntity);
-			GetInstance()->currentSelectedEntity->GetParent()->AddChild(copy);
-
-			//Set position to mouse position
-			copy->localPosition = Input::GetMousePosition() + SceneManager::GetActiveScene()->GetActiveCamera()->GetPosition();
-			GetInstance()->currentSelectedEntity = copy;
-		}
-	}*/
 }
 
 Editor::~Editor() {

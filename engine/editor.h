@@ -130,6 +130,9 @@ public:
 	bool bHoldingEntity; /***< If true the cursor is holding a entity*/
 	bool bSnapToGrid; /***< If true the current selected will try to snap to grid*/
 
+	//Key Combos
+	std::vector<struct KeyComboEvent> combos;
+
 	/**
 	* Sets current selected entity if in bounds
 	*/
