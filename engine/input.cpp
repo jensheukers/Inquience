@@ -11,6 +11,42 @@
 #include "input.h"
 #include "GLFW/glfw3.h"
 
+KeyEvent::KeyEvent(int keyCode, KeyEvent_Type type) {
+	this->keyCode = keyCode;
+	this->type = type;
+}
+
+bool KeyEvent::Check() {
+	switch (this->type) {
+	case KeyEvent_Type::Get:
+		if (Input::GetKey(this->keyCode)) return true;
+		break;
+	case KeyEvent_Type::GetDown:
+		if (Input::GetKeyDown(this->keyCode)) return true;
+		break;
+	case KeyEvent_Type::GetUp:
+		if (Input::GetKeyUp(this->keyCode)) return true;
+		break;
+	default:
+		return false;
+		break;
+	}
+	return false;
+}
+
+KeyComboEvent::KeyComboEvent(KeyCombo combo) {
+	this->combo = combo;
+}
+
+bool KeyComboEvent::Check() {
+	for (size_t i = 0; i < this->combo.size(); i++) {
+		if (!this->combo[i].Check()) return false;
+	}
+
+	this->onActivate.Execute();
+	return true;
+}
+
 void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods) {
 	switch (action) {
 	case GLFW_PRESS: // On Key press
@@ -113,4 +149,8 @@ Vec2 Input::GetMousePosition() {
 
 int Input::GetLastKey() {
 	return Input::GetInstance()->lastKey;
+}
+
+bool Input::CheckCombo(KeyComboEvent comboEvent) {
+	return comboEvent.Check();
 }

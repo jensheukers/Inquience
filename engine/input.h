@@ -1,14 +1,11 @@
 // Header file for Input class.
 //
-// Version: 9/7/2019
-//
 // Copyright (C) Jens Heukers - All Rights Reserved
 // Unauthorized copying of this file, via any medium is strictly prohibited
 // Proprietary and confidential
-// Written by Jens Heukers, July 2019
-
-//Forward declare
-struct GLFWwindow;
+// Written by Jens Heukers, November 2019
+#ifndef INPUT_H
+#define INPUT_H
 
 //Define Button macros
 
@@ -141,10 +138,55 @@ struct GLFWwindow;
 #define 	KEYCODE_MENU   348
 #define 	KEYCODE_LAST   KEYCODE_MENU
 
-#ifndef INPUT_H
-#define INPUT_H
 #include <map>
+#include <iostream>
+
 #include "math/vec2.h"
+#include "unique_types.h"
+
+enum KeyEvent_Type {
+	Get,
+	GetDown,
+	GetUp
+};
+
+struct KeyEvent {
+	int keyCode;
+	KeyEvent_Type type;
+
+	/**
+	* Constructor, takes the keycode and the type
+	*/
+	KeyEvent(int keyCode, KeyEvent_Type type);
+
+	/**
+	* Checks if key is pressed
+	* @return bool, true if pressed
+	*/
+	bool Check();
+};
+
+typedef std::vector<KeyEvent> KeyCombo;
+
+struct KeyComboEvent {
+private:
+	KeyCombo combo; /***< The combo list*/
+public:
+	Delegate onActivate; /***< Executed when the combo is pressed*/
+
+	/**
+	* Constructor
+	* @param KeyCombo
+	*/
+	KeyComboEvent(KeyCombo combo = {});
+
+	/**
+	* Checks if keycombo is pressed, also calls the onActivate delegate
+	* @return bool, true if all keys in combo are pressed
+	*/
+	bool Check();
+};
+
 
 class Input {
 private:
@@ -171,7 +213,7 @@ public:
 	/**
 	* Initialize the Input class
 	*/
-	static void Init(GLFWwindow* window);
+	static void Init(struct GLFWwindow* window);
 
 	/**
 	* Gets called every frame by Core to handle keys and lastkey
@@ -232,6 +274,11 @@ public:
 	* Returns the last key pressed this frame, if there is no key pressed this frame it returns KEYCODE_EMPTY_KEY
 	*/
 	static int GetLastKey();
+
+	/**
+	* Checks a combo then returns result
+	*/
+	static bool CheckCombo(KeyComboEvent comboEvent);
 };
 
 #endif // !INPUT_H
