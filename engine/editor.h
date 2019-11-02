@@ -15,7 +15,6 @@
 struct GridTile {
 	Vec2 position;
 	Vec2 bounds;
-	class Entity* entity = nullptr;
 };
 
 struct Grid {
@@ -155,6 +154,15 @@ public:
 		}
 		return false;
 	}
+
+	/**
+	* Returns the entity if on the tile, iterates through all children of given enity parameter until found, else return nullptr
+	* Note that this is a heavy operation, should not be executed every frame
+	* @param GridTile* tile
+	* @param Entity* entity
+	* @return Entity*	Entity occupying the tile
+	*/
+	class Entity* GetEntityOnTile(GridTile* tile, class Entity* entity);
 
 	/**
 	* Update gets called every frame by core

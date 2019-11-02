@@ -353,7 +353,7 @@ void EditorTileEdit::Handle(Editor* editor) {
 
 	Vec2 mousePos = (Input::GetMousePosition() + SceneManager::GetActiveScene()->GetActiveCamera()->GetPosition());
 	if (Input::GetButton(BUTTONCODE_LEFT) && editor->bSnapToGrid) {
-		if (editor->grid.GetGridTile(mousePos) && !editor->grid.GetGridTile(mousePos)->entity && !ImGui::IsWindowFocused()) {
+		if (editor->grid.GetGridTile(mousePos) && !editor->GetEntityOnTile(editor->grid.GetGridTile(mousePos), SceneManager::GetActiveScene()) && !ImGui::IsWindowFocused()) {
 			Entity* entity = new Entity();
 			entity->AddComponent<Sprite>();
 			entity->GetComponent<Sprite>()->SetTexture(editor->referenceEntity->GetComponent<Sprite>()->GetTexture());
@@ -369,17 +369,14 @@ void EditorTileEdit::Handle(Editor* editor) {
 			else {
 				SceneManager::GetActiveScene()->AddChild(entity);
 			}
-
-			editor->grid.GetGridTile(mousePos)->entity = entity;
 		}
 	}
 
 	if (Input::GetButton(BUTTONCODE_RIGHT) && editor->bSnapToGrid) {
-		if (editor->grid.GetGridTile(mousePos) && editor->grid.GetGridTile(mousePos)->entity) {
-			Entity* entity = editor->grid.GetGridTile(mousePos)->entity;
-			delete entity->GetParent()->RemoveChild(entity);
-
-			editor->grid.GetGridTile(mousePos)->entity = nullptr;
+		if (GridTile* tile = editor->grid.GetGridTile(mousePos)) {
+			if (Entity* entity = editor->GetEntityOnTile(tile, SceneManager::GetActiveScene())) {
+				if (entity != nullptr) { delete entity->GetParent()->RemoveChild(entity); }
+			}
 		}
 	}
 
@@ -452,6 +449,18 @@ void Editor::SetCurrentSelectedEntityByPosition(Entity* parent, Vec2 pos) {
 
 void Editor::AddEditorWindow(EditorWindow* window) {
 	GetInstance()->windows.push_back(window);
+}
+
+Entity* Editor::GetEntityOnTile(GridTile* tile, Entity* entity) {
+	if (entity != SceneManager::GetActiveScene() && tile->position == entity->GetPosition()) return entity;
+
+	for (size_t i = 0; i < entity->GetChildren().size(); i++) {
+		if (Entity* child = this->GetEntityOnTile(tile, entity->GetChildren()[i])) {
+			return child;
+		}
+	}
+
+	return nullptr;
 }
 
 void Editor::Update() {
