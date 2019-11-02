@@ -15,7 +15,7 @@ function Example()
 		--Note that these components have to be registered in component_register.h, class prefix is automaticly added.
 		BeginComponent("Sprite")
 			--We can set a property within the component by calling SetProperty(KEY, Values, ....) 
-			SetProperty("Texture", "res/placeholder.tga")
+			SetProperty("Texture", "res/terrain_tiles.tga")
 			
 			--Sprite also has a property to split
 			SetProperty("Split", 32, 52) -- First parameter: Amount of Pixels Per Tile, Second parameter: Index

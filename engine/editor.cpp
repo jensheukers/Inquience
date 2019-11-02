@@ -512,7 +512,7 @@ void Editor::Update() {
 		ImGui::EndMenu();
 	}
 
-	if (ImGui::BeginMenu("Entity")) {
+	if (ImGui::BeginMenu("Add")) {
 		if (ImGui::MenuItem("New Entity")) { AddEditorWindow(new EditorCreateEntityWizard()); }
 		if (ImGui::MenuItem("Tile Edit")) { AddEditorWindow(new EditorTileEdit()); }
 

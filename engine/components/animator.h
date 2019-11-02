@@ -4,12 +4,10 @@
 //
 // Animations only know uv coordinates, so the texture of the sprite is to be used
 //
-// Version: 1/5/2019
-//
 // Copyright (C) Jens Heukers - All Rights Reserved
 // Unauthorized copying of this file, via any medium is strictly prohibited
 // Proprietary and confidential
-// Written by Jens Heukers, May 2019
+// Written by Jens Heukers, November 2019
 #ifndef ANIMATOR_H
 #define ANIMATOR_H
 
@@ -26,35 +24,60 @@
 //Animation class
 class Animation {
 private:
-	std::vector<UV> frames; /***< The uv coordinates of every frame, note that animation should use one default texture*/
+	std::vector<UV*> frames; /***< The uv coordinates of every frame, note that animation should use one default texture*/
 	int currentFrameIndex; /***< The index of the current frame*/
 public:
 	float frameTime; /***< The time between frames, default set to DEFAULT_FRAME_TIME*/
+	std::string name; /***< The name of the animation, so we can reference it*/
 
 	/**
-	* Constructor, takes in vector containing all frames
-	* @param std::vector<UV>
+	* Constructor, takes in vector containing all frames* @param std::vector<UV>
 	*/
-	Animation(std::vector<UV> frames);
+	Animation(std::vector<UV*> frames = {});
 
 	/**
 	* Return the next frame coordinates
 	* @return UV
 	*/
-	UV NextFrame();
+	UV* NextFrame();
 
 	/**
 	* Return the previous frame coordinates
 	* @return UV
 	*/
-	UV PreviousFrame();
+	UV* PreviousFrame();
 
 	/**
 	* Returns the current frame coordinates
 	* @return UV
 	*/
-	UV CurrentFrame();
-	
+	UV* CurrentFrame();
+
+	/**
+	* Adds a frame to the frames vector
+	*/
+	UV* AddFrame(UV frameData);
+
+	/**
+	* Removes a frame from the frames vector
+	*/
+	UV* RemoveFrame(UV* frameData);
+
+	/**
+	* Shifts a frame to the right of the frames array
+	*/
+	void ShiftRight(UV* frameData);
+
+	/**
+	* Shifts a frame to the left of the frames array
+	*/
+	void ShiftLeft(UV* frameData);
+
+
+	/**
+	* Returns the frames UV data vector
+	*/
+	std::vector<UV*> GetFrames() const { return this->frames; };
 };
 
 //Animator class
@@ -72,14 +95,16 @@ public:
 	/**
 	* Adds a animation to the animations list
 	* @param Animation*
+	* @return Animation*
 	*/
-	void AddAnimation(Animation* animation);
+	Animation* AddAnimation(Animation* animation);
 
 	/**
-	* Removes a animation from the animations list, where index matches
-	* @param int
+	* Removes a animation from the animations list
+	* @param Animation*
+	* @return Animation*
 	*/
-	void RemoveAnimation(int index);
+	Animation* RemoveAnimation(Animation* animation);
 
 	/**
 	* Gets a animation from the animations list, where index matches
@@ -103,6 +128,8 @@ public:
 
 	virtual Animator* New() override { return new Animator(); }
 	virtual Animator* Copy() const { return new Animator(*this); }
+
+	virtual void OnComponentPropertiesEditor() override;
 };
 
 #endif // !ANIMATOR_H
