@@ -92,19 +92,18 @@ Animator::Animator() {
 			//Animation specifics
 			animation->frameTime = std::stof(animationData[0]);
 
-			animation->name = animationData[1];
+			strcpy(animation->name, animationData[1].c_str());
 
-			std::vector<UV*> frames;
 			for (size_t ii = 2; ii < animationData.size(); ii++) {
 				StringVector frameData = Essentials::Split(animationData[ii], '%');
 
-				UV* uv = new UV();
-				uv->rightUp = Vec2(std::stof(frameData[0]), std::stof(frameData[1]));
-				uv->leftUp = Vec2(std::stof(frameData[2]), std::stof(frameData[3]));
-				uv->rightDown = Vec2(std::stof(frameData[4]), std::stof(frameData[5]));
-				uv->leftDown = Vec2(std::stof(frameData[6]), std::stof(frameData[7]));
+				UV uv;
+				uv.rightUp = Vec2(std::stof(frameData[0]), std::stof(frameData[1]));
+				uv.leftUp = Vec2(std::stof(frameData[2]), std::stof(frameData[3]));
+				uv.rightDown = Vec2(std::stof(frameData[4]), std::stof(frameData[5]));
+				uv.leftDown = Vec2(std::stof(frameData[6]), std::stof(frameData[7]));
 
-				frames.push_back(uv);
+				animation->AddFrame(uv);
 			}
 			this->AddAnimation(animation);
 		}
@@ -115,7 +114,7 @@ Animator::Animator() {
 			dataString += "\"";
 
 			dataString += std::to_string(this->animations[i]->frameTime) + ",";
-			dataString += this->animations[i]->name + ",";
+			dataString += std::string(this->animations[i]->name) + ",";
 
 			//Frames
 			for (size_t ii = 0; ii < animations[i]->GetFrames().size(); ii++) {
@@ -161,7 +160,7 @@ Animation* Animator::SetActiveAnimation(int index) {
 }
 
 void Animator::Update() {
-	if (!currentAnimation && !this->GetOwner()->GetComponent<Sprite>()) return; // ensure
+	if (!this->currentAnimation || !this->GetOwner()->GetComponent<Sprite>()) return; // ensure
 
 	if (lastPlayTime + currentAnimation->frameTime < Core::GetTimeElapsed()) {
 		//Set uv coordinates
@@ -185,7 +184,7 @@ void Animator::OnComponentPropertiesEditor() {
 
 	ImGui::BeginChild("Animations");
 	for (size_t i = 0; i < this->animations.size(); i++) {
-		ImGui::Text(std::to_string(i).c_str()); ImGui::SameLine();
+		ImGui::Text(this->animations[i]->name); ImGui::SameLine();
 		if (ImGui::Button(std::string("Select" + std::string("##") + std::to_string(i)).c_str())) {
 			this->currentAnimation = this->animations[i];
 		} ImGui::SameLine();
@@ -216,13 +215,14 @@ void Animator::OnComponentPropertiesEditor() {
 
 				ImGui::Text("Preview: ");
 				ImGui::Image((void*)(intptr_t)this->GetOwner()->GetComponent<Sprite>()->GetTexture()->_glTexture, ImVec2(128, 128),
-							ImVec2(uv.leftUp.x, uv.leftUp.y), ImVec2(uv.rightDown.x, uv.rightDown.y));
+							ImVec2(uv.leftDown.x, uv.leftDown.y), ImVec2(uv.rightUp.x, uv.rightUp.y));
 				ImGui::End();
 			}
 			ImGui::Text("Properties: ");
 			ImGui::InputFloat("Frame Time", &this->currentAnimation->frameTime);
 
-			ImGui::InputText("Name", (char*)this->currentAnimation->name.data(), this->currentAnimation->name.size());
+
+			ImGui::InputText("Name", this->currentAnimation->name, sizeof(this->currentAnimation->name));
 
 			ImGui::Text("Timeline: ");
 			if (ImGui::Button("Add Frame")) {
@@ -253,7 +253,7 @@ void Animator::OnComponentPropertiesEditor() {
 
 				//Display images
 				ImGui::Image((void*)(intptr_t)this->GetOwner()->GetComponent<Sprite>()->GetTexture()->_glTexture, ImVec2(64, 64),
-							ImVec2(frame->leftUp.x, frame->leftUp.y), ImVec2(frame->rightDown.x, frame->rightDown.y));
+								ImVec2(frame->leftDown.x, frame->leftDown.y), ImVec2(frame->rightUp.x, frame->rightUp.y));
 
 				if (ImGui::IsItemHovered() && Input::GetButtonDown(BUTTONCODE_LEFT)) {
 					currentSelectedFrame = this->currentAnimation->GetFrames()[i];
@@ -294,7 +294,7 @@ void Animator::OnComponentPropertiesEditor() {
 
 				UV* uv = this->currentAnimation->CurrentFrame();
 				ImGui::Image((void*)(intptr_t)this->GetOwner()->GetComponent<Sprite>()->GetTexture()->_glTexture, ImVec2(64, 64),
-					ImVec2(uv->leftUp.x, uv->leftUp.y), ImVec2(uv->rightDown.x, uv->rightDown.y));
+					ImVec2(uv->leftDown.x, uv->leftDown.y), ImVec2(uv->rightUp.x, uv->rightUp.y));
 			}
 			else {
 				ImGui::Text("No frames to display");
