@@ -1,13 +1,12 @@
 // Source file for Input class.
 //
-// Version: 9/7/2019
-//
 // Copyright (C) Jens Heukers - All Rights Reserved
 // Unauthorized copying of this file, via any medium is strictly prohibited
 // Proprietary and confidential
-// Written by Jens Heukers, July 2019
+// Written by Jens Heukers, November 2019
 
 //Include input.h and glfw3.h
+
 #include "input.h"
 #include "GLFW/glfw3.h"
 
@@ -45,6 +44,18 @@ bool KeyComboEvent::Check() {
 
 	this->onActivate.Execute();
 	return true;
+}
+
+Axis::Axis(int positiveKey, int negativeKey) {
+	this->positiveKey = positiveKey;
+	this->negativeKey = negativeKey;
+}
+
+float Axis::GetValue() {
+	int value = 0;
+	if (Input::GetKey(positiveKey)) value += 1;
+	if (Input::GetKey(negativeKey)) value -= 1;
+	return value;
 }
 
 void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods) {
@@ -87,18 +98,18 @@ Input* Input::GetInstance() {
 void Input::HandleUpdates() {
 	// Set Key Last
 	for (size_t i = 0; i < Input::GetInstance()->_keys.size(); i++) {
-		Input::GetInstance()->_keysLast[i] = Input::GetInstance()->_keys[i];
+		GetInstance()->_keysLast[i] = GetInstance()->_keys[i];
 	}
 
 	for (size_t i = 0; i < Input::GetInstance()->_buttons.size(); i++) {
-		Input::GetInstance()->_buttonsLast[i] = Input::GetInstance()->_buttons[i];
+		GetInstance()->_buttonsLast[i] = GetInstance()->_buttons[i];
 	}
 
-	Input::GetInstance()->lastKey = KEYCODE_EMPTY_KEY;
+	GetInstance()->lastKey = KEYCODE_EMPTY_KEY;
 }
 
 void Input::Init(GLFWwindow* window) {
-	Input* instance = Input::GetInstance();
+	Input* instance = GetInstance();
 	glfwSetKeyCallback(window, key_callback); // Set key callback
 	glfwSetMouseButtonCallback(window, mouse_button_callback); // Set button callback
 	glfwSetCursorPosCallback(window, cursor_position_callback); // Set mouse pos callback
@@ -136,21 +147,37 @@ bool Input::GetButtonUp(int buttonCode) {
 }
 
 void Input::SetButton(int buttonCode, bool state) {
-	Input::GetInstance()->_buttons[buttonCode] = state;
+	GetInstance()->_buttons[buttonCode] = state;
 }
 
 void Input::SetMousePos(Vec2 point) {
-	Input::GetInstance()->_mousePos = point;
+	GetInstance()->_mousePos = point;
 }
 
 Vec2 Input::GetMousePosition() {
-	return Input::GetInstance()->_mousePos;
+	return GetInstance()->_mousePos;
 }
 
 int Input::GetLastKey() {
-	return Input::GetInstance()->lastKey;
+	return GetInstance()->lastKey;
 }
 
 bool Input::CheckCombo(KeyComboEvent comboEvent) {
 	return comboEvent.Check();
+}
+
+void Input::AddAxis(std::string name, Axis* axis) {
+	GetInstance()->_axises[name] = axis;
+}
+
+const float Input::GetAxis(std::string name) {
+	return GetInstance()->_axises[name]->GetValue();
+}
+
+void Input::Terminate() {
+	for (std::map<std::string, Axis*>::iterator it = GetInstance()->_axises.begin(); it != GetInstance()->_axises.end(); ++it) {
+		delete it->second;
+	}
+
+	delete GetInstance();
 }

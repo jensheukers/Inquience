@@ -187,6 +187,24 @@ public:
 	bool Check();
 };
 
+struct Axis {
+private:
+	int positiveKey; /***< The positive key of the axis (1)*/
+	int negativeKey; /***< The positive key of the axis (-1)*/
+public:
+	/**
+	* Constructor
+	* @param int	Positive key
+	* @param int	Negative key
+	*/
+	Axis(int positiveKey, int negativeKey);
+
+	/**
+	* Returns the current value of the axis
+	* @return float
+	*/
+	float GetValue();
+};
 
 class Input {
 private:
@@ -199,6 +217,8 @@ private:
 
 	std::map<int, bool> _buttons; /***< @brief Map containing all buttons pressed this frame */
 	std::map<int, bool> _buttonsLast; /***< @brief Map containing all buttons pressed last frame */
+
+	std::map<std::string, Axis*> _axises; /***< Map that contains axises*/
 
 	int lastKey; /***< @brief The last key pressed */
 
@@ -279,6 +299,21 @@ public:
 	* Checks a combo then returns result
 	*/
 	static bool CheckCombo(KeyComboEvent comboEvent);
+
+	/**
+	* Adds a axis to the axises vector
+	*/
+	static void AddAxis(std::string name, Axis* axis);
+
+	/**
+	* Returns the value of the axis
+	*/
+	static const float GetAxis(std::string name);
+
+	/**
+	* Terminates the input class
+	*/
+	static void Terminate();
 };
 
 #endif // !INPUT_H

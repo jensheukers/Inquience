@@ -375,15 +375,11 @@ bool Core::IsActive() {
 void Core::Destroy() {
 	if (!IsActive()) return; // Instance already destroyed
 
-	//Terminate TextureLoader
 	TextureLoader::Terminate();
-
-	//Terminate renderer
+	Input::Terminate();
 	delete instance->renderer;
 
-	//Delete scenemanager
 	SceneManager::Terminate();
-
 	SoundManager::Destroy();
 
 	// Delete instance and set instance to nullptr
