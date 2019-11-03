@@ -24,7 +24,7 @@
 
 Core* Core::instance; // The singleton instance
 
-void Core::Initialize(int argc, char* argv[]) {
+void Core::Initialize(int argc, char* argv[], Vec2 resolution, std::string title) {
 	Debug::Log("Initializing Engine");
 
 	//Create singleton instance, if not already set
@@ -40,7 +40,7 @@ void Core::Initialize(int argc, char* argv[]) {
 	instance->executableDirectoryPath.append("\\"); // Append a slash to return the absolute directory
 
 	//Create renderer
-	instance->renderer = new Renderer(Vec2(1280, 720), Vec2(1280, 720), "Dustville");
+	instance->renderer = new Renderer(resolution, title.c_str());
 
 	//Initialize variables
 	instance->frame = 0;

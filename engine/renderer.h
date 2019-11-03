@@ -34,8 +34,7 @@ private:
 	Shader* lineShader; /***< The shader used to draw lines*/
 
 	//Local variables
-	Vec2 resolution; /***< The resolution where the game is displayed in*/
-	Vec2 scale; /***< The scale of the window*/
+	Vec2 resolution; /***< The resolution of the window*/
 
 	glm::mat4 projection; /***< The projection matrix*/
 
@@ -48,7 +47,7 @@ private:
 	/**
 	* Renders a entity to the screen
 	*/
-	void RenderEntity(Entity* entity, class Camera* camera);
+	void RenderEntity(class Entity* entity, class Camera* camera);
 
 	/**
 	* Draws text to the screen
@@ -66,7 +65,7 @@ public:
 	* @param Vec2 scale of the window
 	* @param const char* titleName
 	*/
-	Renderer(Vec2 resolution, Vec2 scale, const char* title);
+	Renderer(Vec2 resolution, const char* title);
 
 	/**
 	* Renders the scene
@@ -109,12 +108,6 @@ public:
 	* @return Vec2
 	*/
 	Vec2 GetResolution();
-
-	/**
-	* Returns the window scale as a Vec2
-	* @return Vec2
-	*/
-	Vec2 GetScale();
 
 	/**
 	* Destructor

@@ -36,7 +36,7 @@ public:
 	* Initalizes the Core of the engine
 	* @return void
 	*/
-	static void Initialize(int argc, char* argv[]);
+	static void Initialize(int argc, char* argv[], Vec2 resolution = Vec2(1280, 720), std::string title = "INQUIENCE");
 
 	/**
 	* Updates the engine, if engine is initialized

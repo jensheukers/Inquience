@@ -12,7 +12,7 @@
 #include "../engine/luascript.h"
 
 int main(int argc, char * argv[]) {
-	Core::Initialize(argc, argv);
+	Core::Initialize(argc, argv, Vec2(1280, 720), "Inquience");
 
 	LuaScript::RunFunction("res/example.lua", "Example");
 

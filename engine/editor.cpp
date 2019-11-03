@@ -554,7 +554,7 @@ void Editor::Update() {
 
 	//Draw around selected entity for visual
 	if (GetInstance()->currentSelectedEntity) {
-		Debug::DrawCube(GetInstance()->currentSelectedEntity->GetPosition(), GetInstance()->currentSelectedEntity->GetPosition() + GetInstance()->currentSelectedEntity->GetScale(), glm::vec3(1, 0, 0));
+		Debug::DrawCube(GetInstance()->currentSelectedEntity->GetPosition(), GetInstance()->currentSelectedEntity->GetPosition() + GetInstance()->currentSelectedEntity->GetScale(), glm::vec3(1, 0, 1));
 	}
 
 	//Handle Input

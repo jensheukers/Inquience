@@ -24,18 +24,6 @@
 //Include SceneManager.h to receive scene data
 #include "scenemanager.h"
 
-//Pointer to scale vector2 for use in window_size_callback
-Vec2* scale_ptr;
-
-void window_size_callback(GLFWwindow* window, int width, int height)
-{
-	glViewport(0, 0, (GLsizei)width, (GLsizei)height);
-
-	//Update renderer scale
-	scale_ptr->x = (float)width;
-	scale_ptr->y = (float)height;
-}
-
 void Renderer::RenderEntity(Entity* entity, Camera* camera) {
 	//Calculate the position with the camera position included
 	Vec2 calculatedPos = Vec2(entity->GetPosition().x - camera->GetPosition().x, entity->GetPosition().y - camera->GetPosition().y);
@@ -147,7 +135,7 @@ void Renderer::RenderText(Font* font, std::string text, Vec2 position, float siz
 	glBindTexture(GL_TEXTURE_2D, 0);
 }
 
-Renderer::Renderer(Vec2 resolution, Vec2 scale, const char* title) {
+Renderer::Renderer(Vec2 resolution, const char* title) {
 	//Initialize GLFW and Glew
 	if (!glfwInit()) {
 		Debug::Log("GLFW Failed to Initialize");
@@ -155,21 +143,15 @@ Renderer::Renderer(Vec2 resolution, Vec2 scale, const char* title) {
 
 	//Set resolution and scale vectors
 	this->resolution = resolution;
-	this->scale = scale;
-
-	//Set scale ptr adress
-	scale_ptr = &this->scale;
 
 	//Create GLFWWindow instance
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
 	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+	glfwWindowHint(GLFW_RESIZABLE, GL_FALSE);
 
-	window = glfwCreateWindow((int)scale.x, (int)scale.y, title, NULL, NULL);
+	window = glfwCreateWindow((int)resolution.x, (int)resolution.y, title, NULL, NULL);
 	glfwMakeContextCurrent(window); // Make current context
-
-	//Window size callback
-	glfwSetWindowSizeCallback(window, window_size_callback);
 
 	//Initialize GLEW
 	if (glewInit() != GLEW_OK) {
@@ -178,7 +160,7 @@ Renderer::Renderer(Vec2 resolution, Vec2 scale, const char* title) {
 
 	//Setup viewport and projection matrix
 	this->projection = glm::ortho(0.0f, resolution.x, resolution.y, 0.0f, -1.0f, 1.0f);
-	glViewport(0, 0, (GLsizei)scale.x, (GLsizei)scale.y);
+	glViewport(0, 0, (GLsizei)resolution.x, (GLsizei)resolution.y);
 
 	//Set opengl properties
 	glClearColor(0.0f, 0.0f, 0.0f, 0.0f); // Clear color should be black
@@ -367,10 +349,6 @@ GLFWwindow* Renderer::GetWindow() {
 
 Vec2 Renderer::GetResolution() {
 	return resolution;
-}
-
-Vec2 Renderer::GetScale() {
-	return scale;
 }
 
 Renderer::~Renderer() {
