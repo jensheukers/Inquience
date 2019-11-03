@@ -24,7 +24,7 @@ void LuaScriptFile::ParseLine(std::string line, unsigned tabs) {
 }
 
 LuaScriptFile::LuaScriptFile(std::string path) {
-	this->path = Core::GetExecutableDirectoryPath() + (path + ".lua");
+	this->path = Core::GetExecutableDirectoryPath() + path;
 
 	//Create new file
 	this->stream = std::ofstream(this->path);

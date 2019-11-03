@@ -7,6 +7,11 @@
 #ifndef EDITOR_H
 #define EDITOR_H
 
+#define EDITOR_ENTITY_SUFFIX ".asset"
+#define EDITOR_SCENE_SUFFIX ".scene"
+
+#define EDITOR_LUA_LOAD_FUNCNAME "Initialize"
+
 #include <vector>
 
 #include "math/vec2.h"

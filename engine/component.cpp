@@ -7,8 +7,8 @@
 #include "component.h"
 #include "debug.h"
 
-//Include imgui for editor purpose (Only with editor)
-#include "../external/imgui/imgui.h"
+//Include imgui for editor purpose
+#include "imgui.h"
 
 size_t Component::GetPropertyIndex(std::string key) {
 	for (size_t i = 0; i < properties.size(); i++) {

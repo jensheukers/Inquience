@@ -6,8 +6,8 @@
 // Written by Jens Heukers, October 2019
 #include "editor.h"
 
-//FIX INCLUDES
-#include "../external/imgui/imgui.h"
+
+#include "imgui.h"
 
 #include "scenemanager.h"
 #include "luascript.h"
@@ -144,6 +144,15 @@ void EditorHierarchy::Handle(Editor* editor) {
 void EditorInspector::Handle(Editor* editor) {
 	ImGui::Begin("Inpector", &this->active);
 	if (editor->currentSelectedEntity) {
+		if (ImGui::Button("Save as .asset")) {
+			EditorInputWindow* window = new EditorInputWindow("Save Asset");
+			window->onApply.AddLambda([=]() {
+				editor->currentSelectedEntity->WriteToLuaFile(LuaScriptFile(std::string(window->GetBuffer()) + EDITOR_ENTITY_SUFFIX), EDITOR_LUA_LOAD_FUNCNAME);
+			});
+
+			editor->AddEditorWindow(window);
+		}
+
 		ImGui::Text(("Tag: " + editor->currentSelectedEntity->tag).c_str());
 		ImGui::Spacing();
 		ImGui::Text("Local Transformations:");
@@ -191,21 +200,22 @@ void EditorInspector::Handle(Editor* editor) {
 		if (addComponentActive) {
 			ImGui::Begin("Add Component", &addComponentActive);
 			ImGui::Text("Control + Left Click to add component to current entity");
-			ImGui::ListBoxHeader("Registered Components");
-			for (size_t i = 0; i < Component_Register::GetAvailableKeys().size(); i++) {
-				std::string& item_name = Component_Register::GetAvailableKeys()[i];
-				if (ImGui::Selectable(Component_Register::GetAvailableKeys()[i].c_str()) && Input::GetKey(KEYCODE_LEFT_CONTROL)) {
-					if (Component * component = Component_Register::GetNewComponentInstance(Component_Register::GetAvailableKeys()[i])) {
-						if (!editor->currentSelectedEntity->HasComponent(component)) {
-							editor->currentSelectedEntity->AddExistingComponentInstance(component);
-						}
-						else {
-							delete component;
+			if (ImGui::ListBoxHeader("Registered Components")) {
+				for (size_t i = 0; i < Component_Register::GetAvailableKeys().size(); i++) {
+					std::string& item_name = Component_Register::GetAvailableKeys()[i];
+					if (ImGui::Selectable(Component_Register::GetAvailableKeys()[i].c_str()) && Input::GetKey(KEYCODE_LEFT_CONTROL)) {
+						if (Component * component = Component_Register::GetNewComponentInstance(Component_Register::GetAvailableKeys()[i])) {
+							if (!editor->currentSelectedEntity->HasComponent(component)) {
+								editor->currentSelectedEntity->AddExistingComponentInstance(component);
+							}
+							else {
+								delete component;
+							}
 						}
 					}
 				}
+				ImGui::ListBoxFooter();
 			}
-			ImGui::ListBoxFooter();
 			ImGui::End();
 		}
 	}
@@ -487,19 +497,19 @@ void Editor::Update() {
 		if (ImGui::MenuItem("Load")) { 
 			EditorInputWindow* window = new EditorInputWindow("Load");
 			window->onApply.AddLambda([=]() {
-				LuaScript::RunFunction(std::string(window->GetBuffer() + std::string(".lua")), "Initialize");
+				LuaScript::RunFunction(std::string(window->GetBuffer()) + EDITOR_SCENE_SUFFIX, EDITOR_LUA_LOAD_FUNCNAME);
 			});
 
-			GetInstance()->windows.push_back(window);
+			GetInstance()->AddEditorWindow(window);
 		}
 
 		if (ImGui::MenuItem("Save")) { 
 			EditorInputWindow* window = new EditorInputWindow("Save");
 			window->onApply.AddLambda([=]() {
-				SceneManager::GetActiveScene()->WriteToLuaFile(LuaScriptFile::LuaScriptFile(std::string(window->GetBuffer())), "Initialize");
+				SceneManager::GetActiveScene()->WriteToLuaFile(LuaScriptFile::LuaScriptFile(std::string(window->GetBuffer() + std::string(EDITOR_SCENE_SUFFIX))), EDITOR_LUA_LOAD_FUNCNAME);
 			});
 
-			GetInstance()->windows.push_back(window);
+			GetInstance()->AddEditorWindow(window);
 		}
 
 		if (ImGui::MenuItem("Exit")) { editorActive = false; }
@@ -512,8 +522,16 @@ void Editor::Update() {
 		ImGui::EndMenu();
 	}
 
-	if (ImGui::BeginMenu("Add")) {
+	if (ImGui::BeginMenu("Entity")) {
 		if (ImGui::MenuItem("New Entity")) { AddEditorWindow(new EditorCreateEntityWizard()); }
+		if (ImGui::MenuItem("Load Entity Asset")) {
+			EditorInputWindow* window = new EditorInputWindow("Load Asset");
+			window->onApply.AddLambda([=]() {
+				LuaScript::RunFunction(std::string(window->GetBuffer()) + EDITOR_ENTITY_SUFFIX, EDITOR_LUA_LOAD_FUNCNAME);
+			});
+
+			GetInstance()->AddEditorWindow(window);
+		}
 		if (ImGui::MenuItem("Tile Edit")) { AddEditorWindow(new EditorTileEdit()); }
 
 		ImGui::EndMenu();

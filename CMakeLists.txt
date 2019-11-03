@@ -22,8 +22,9 @@ set(FREETYPE_DIR "external/freetype")
 set(LUA_DIR "external/lua")
 set(OPENAL_DIR "external/openal")
 set(OGGVORBIS_DIR "external/oggvorbis")
+set(IMGUI_DIR "external/imgui")
 
-include_directories(${GLFW_DIR}/include ${GLEW_DIR}/include ${GLM_DIR} ${STEAM_DIR} ${FREETYPE_DIR}/include ${LUA_DIR}/include ${OPENAL_DIR}/include ${OGGVORBIS_DIR}/include)
+include_directories(${GLFW_DIR}/include ${GLEW_DIR}/include ${GLM_DIR} ${STEAM_DIR} ${FREETYPE_DIR}/include ${LUA_DIR}/include ${OPENAL_DIR}/include ${OGGVORBIS_DIR}/include ${IMGUI_DIR})
 link_directories(${GLFW_DIR}/lib-vc2015 ${GLEW_DIR}/lib/Win32 ${STEAM_DIR}/lib ${FREETYPE_DIR}/win32 ${LUA_DIR}/lib ${OPENAL_DIR}/libs/Win32 ${OGGVORBIS_DIR}/lib/Win32)
 
 # Add Executable

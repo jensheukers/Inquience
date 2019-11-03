@@ -17,9 +17,9 @@
 #include <glm/gtc/matrix_transform.hpp>
 
 //Include ImGui headers
-#include "../external/imgui/imgui.h"
-#include "../external/imgui/imgui_impl_glfw.h"
-#include "../external/imgui/imgui_impl_opengl3.h"
+#include "imgui.h"
+#include "imgui_impl_glfw.h"
+#include "imgui_impl_opengl3.h"
 
 //Include SceneManager.h to receive scene data
 #include "scenemanager.h"

@@ -12,7 +12,7 @@
 #include <functional>
 
 //INCLUDE IMGUI EDITOR ONLY
-#include "../external/imgui/imgui.h"
+#include "imgui.h"
 
 typedef std::vector<std::string> StringVector;
 typedef std::function<void(StringVector)> PropertySetCallback;

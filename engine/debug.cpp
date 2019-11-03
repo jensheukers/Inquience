@@ -10,7 +10,7 @@
 
 #include <functional>
 
-#include "../external/imgui/imgui.h"
+#include "imgui.h"
 
 #include "editor.h"
 #include "input.h"
