@@ -20,6 +20,10 @@
 class Collider : public Component {
 private:
 	std::vector<Collider*> hits;
+
+	bool collisionEntered; /***< Boolean that is true whenever another collider entered our collider this frame*/
+	bool collisionActive;/***< Boolean that is true whenever another collider is in our collider this frame, and was last frame*/
+	bool collisionExited; /***< Boolean that is true whenever another collider exited our collider this frame*/
 protected:
 	/**
 	* Draws debug lines
@@ -31,14 +35,8 @@ public:
 	Vec2 outer; /***< The external bounds of the collider*/
  
 	Delegate onCollisionEnter; /***< Should be triggered whenever another collider entered our collider this frame*/
-	Delegate onCollision; /***< Should be triggered whenever another collider entered our collider last frame, and is still colliding*/
+	Delegate onCollisionActive; /***< Should be triggered whenever another collider entered our collider last frame, and is still colliding*/
 	Delegate onCollisionExit; /***< Should be triggered whenever another collider was colliding last frame but not this frame*/
-
-	bool collisionEntered; /***< Boolean that is true whenever another collider entered our collider this frame*/
-	bool collisionActive;/***< Boolean that is true whenever another collider is in our collider this frame, and was last frame*/
-	bool collisionExited; /***< Boolean that is true whenever another collider exited our collider this frame*/
-
-	Collider* hitLast; /***< The last collider to enter this collider*/
 
 	bool bDrawDebugLines; /***< If true DrawDebugLines will be called*/
 	glm::vec3 debugDrawColor; /***< The color to draw in, default is (0, 1, 0)*/
@@ -56,7 +54,7 @@ public:
 	/**
 	* Is called every frame by collisionmanager
 	*/
-	void CheckCollision();
+	void CheckCollision(const std::vector<Collider*> colliders);
 
 	/**
 	* The actual collision check, can be overwritten
@@ -66,7 +64,22 @@ public:
 	/**
 	* Returns all the colliders currently colliding with this collider
 	*/
-	std::vector<Collider*> GetHits();
+	std::vector<Collider*> const GetHits();
+
+	/**
+	* Returns the value of collisionEntered as a constant
+	*/
+	bool CollisionEntered() const { return this->collisionEntered; }
+
+	/**
+	* Returns the value of collisionActive as a constant
+	*/
+	bool CollisionActive() const { return this->collisionActive; }
+
+	/**
+	* Returns the value of collisionExit as a constant
+	*/
+	bool CollisionExited() const { return this->collisionExited; }
 
 	virtual Collider* New() override { return new Collider(); }
 	virtual Collider* Copy() const { return new Collider(*this); }

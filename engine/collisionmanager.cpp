@@ -33,6 +33,6 @@ std::vector<Collider*> CollisionManager::GetColliders() {
 
 void CollisionManager::Update() {
 	for (size_t i = 0; i <  GetColliders().size(); i++) {
-		GetColliders()[i]->CheckCollision();
+		GetColliders()[i]->CheckCollision(GetColliders());
 	}
 }

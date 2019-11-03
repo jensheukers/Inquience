@@ -139,6 +139,9 @@ bool Entity::Active() {
 Entity* Entity::AddChild(Entity* entity) {
 	this->children.push_back(entity);
 	entity->SetParent(this);
+
+	//Make sure to instantly set correct transformations
+	entity->HandleParentTransformations();
 	return entity;
 }
 

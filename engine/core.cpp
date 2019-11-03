@@ -43,7 +43,6 @@ void Core::Initialize(int argc, char* argv[]) {
 	instance->renderer = new Renderer(Vec2(1280, 720), Vec2(1280, 720), "Dustville");
 
 	//Initialize variables
-	instance->sceneToBeLoaded = nullptr;
 	instance->frame = 0;
 
 	//Initialize Input
@@ -301,21 +300,15 @@ void Core::Update() {
 		lastTime = instance->timeElapsed;
 	}
 
-	if (instance->sceneToBeLoaded != nullptr) {
-		delete SceneManager::GetActiveScene();
-		SceneManager::SetActiveScene(instance->sceneToBeLoaded);
-		instance->sceneToBeLoaded = nullptr;
-	}
-
 	//Update Entities
 	if (SceneManager::GetActiveScene()) {
-			//Update Scene
-			SceneManager::GetActiveScene()->Update();
-		
 		if (!Editor::editorActive) {
-			//Update collision check for next frame, as transformations should have been done by now
+			//Do a collision check for this frame
 			CollisionManager::Update();
 		}
+
+		//Update Scene
+		SceneManager::GetActiveScene()->Update();
 
 		if (SceneManager::GetActiveScene()->GetActiveCamera()) {
 			instance->renderer->RenderScene(SceneManager::GetActiveScene(), SceneManager::GetActiveScene()->GetActiveCamera());
@@ -404,10 +397,6 @@ std::string Core::GetExecutableDirectoryPath() {
 
 Renderer* Core::GetRendererInstance() {
 	return instance->renderer;
-}
-
-void Core::SwitchScene(Scene* scene) {
-	instance->sceneToBeLoaded = scene;
 }
 
 float Core::CalculateDeltaTime() {
