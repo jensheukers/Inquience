@@ -46,7 +46,7 @@ public:
 	* Returns the velocity
 	* @return Vec2
 	*/
-	Vec2 GetVelocity();
+	const Vec2 GetVelocity();
 
 	virtual RigidBody* New() override { return new RigidBody(); }
 	virtual RigidBody* Copy() const { return new RigidBody(*this); }

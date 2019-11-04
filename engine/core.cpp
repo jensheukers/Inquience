@@ -305,10 +305,10 @@ void Core::Update() {
 		if (!Editor::editorActive) {
 			//Do a collision check for this frame
 			CollisionManager::Update();
-		}
 
-		//Update Scene
-		SceneManager::GetActiveScene()->Update();
+			//Update Scene
+			SceneManager::GetActiveScene()->Update();
+		}
 
 		if (SceneManager::GetActiveScene()->GetActiveCamera()) {
 			instance->renderer->RenderScene(SceneManager::GetActiveScene(), SceneManager::GetActiveScene()->GetActiveCamera());

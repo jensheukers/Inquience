@@ -111,6 +111,7 @@ public:
 	*/
 	virtual bool IsColliding(Collider* other) override;
 
+	virtual BoxCollider* New() const { return new BoxCollider(); }
 	virtual BoxCollider* Copy() const { return new BoxCollider(*this); }
 
 	void OnComponentPropertiesEditor() override;

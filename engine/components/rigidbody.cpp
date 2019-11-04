@@ -43,6 +43,6 @@ void RigidBody::SetVelocity(Vec2 velocity) {
 	this->velocity = velocity;
 }
 
-Vec2 RigidBody::GetVelocity() {
+const Vec2 RigidBody::GetVelocity() {
 	return velocity;
 }
