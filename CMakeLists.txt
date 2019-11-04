@@ -135,6 +135,13 @@ add_custom_command(TARGET Engine POST_BUILD
 #------------------------------------------------------
 add_executable( Inquience
 	inquience/main.cpp
+	
+	#Source files
+	inquience/source/creature.cpp
+	inquience/source/creature.h
+	
+	inquience/source/components/healthcomponent.cpp
+	inquience/source/components/healthcomponent.h
 )
 
 target_link_libraries(Inquience

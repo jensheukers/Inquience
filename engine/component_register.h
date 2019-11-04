@@ -50,6 +50,14 @@ public:
 	* Returns all registered components keys
 	*/
 	static std::vector<std::string> GetAvailableKeys();
+
+	/**
+	* Registers a new component, creates 1 instance of type
+	*/
+	template<typename T>
+	static void RegisterComponent() {
+		GetInstance()->components[typeid(T).name()] = new T();
+	};
 };
 
 #endif // !COMPONENT_REGISTER_H
