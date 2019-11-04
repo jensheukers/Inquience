@@ -32,7 +32,6 @@ protected:
 public:
 	bool isTrigger; /*** Determine's if collider is a trigger or not, this is just a fictional property and has no use in the component itself,
 						 it is just here if it is to be used, RigidBody does use isTrigger*/
-	Vec2 outer; /***< The external bounds of the collider*/
  
 	Delegate onCollisionEnter; /***< Should be triggered whenever another collider entered our collider this frame*/
 	Delegate onCollisionActive; /***< Should be triggered whenever another collider entered our collider last frame, and is still colliding*/
@@ -98,12 +97,23 @@ protected:
 	void DrawDebugLines() override;
 
 public:
+	/**
+	* Constructor
+	*/
+	BoxCollider();
+
+	Vec2 outer; /***< The external bounds of the BoxCollider*/
+
 	virtual Collider* New() override { return new BoxCollider(); }
 
 	/**
 	* Override IsColliding to do collision check
 	*/
 	virtual bool IsColliding(Collider* other) override;
+
+	virtual BoxCollider* Copy() const { return new BoxCollider(*this); }
+
+	void OnComponentPropertiesEditor() override;
 };
 
 #endif // !COLLIDER_H

@@ -39,7 +39,7 @@ GridTile* Grid::GetGridTile(Vec2 position) {
 	return nullptr;
 }
 
-void Grid::Clear() {
+Grid::~Grid() {
 	for (size_t i = 0; i < gridTiles.size(); i++) {
 		delete gridTiles[i];
 		gridTiles.erase(gridTiles.begin() + i);
@@ -284,13 +284,17 @@ void EditorTileEdit::Handle(Editor* editor) {
 	ImGui::SameLine();
 	if (ImGui::Button("Load")) {
 		Texture* t = TextureLoader::LoadTarga(buffer);
-
-		if (t->textureData->width != t->textureData->height) {
-			Debug::Log("Error: cannot load tilemap as width != height");
+		if (t) {
+			if (t->textureData->width != t->textureData->height) {
+				Debug::Log("Error: cannot load tilemap as width != height");
+			}
+			else {
+				texture = t;
+				imageSize = (float)texture->textureData->width;
+			}
 		}
 		else {
-			texture = t;
-			imageSize = (float)texture->textureData->width;
+			Debug::Log("Error loading tilemap texture");
 		}
 	}
 
@@ -362,8 +366,8 @@ void EditorTileEdit::Handle(Editor* editor) {
 	}
 
 	Vec2 mousePos = (Input::GetMousePosition() + SceneManager::GetActiveScene()->GetActiveCamera()->GetPosition());
-	if (Input::GetButton(BUTTONCODE_LEFT) && editor->bSnapToGrid) {
-		if (editor->grid.GetGridTile(mousePos) && !editor->GetEntityOnTile(editor->grid.GetGridTile(mousePos), SceneManager::GetActiveScene()) && !ImGui::IsWindowFocused()) {
+	if (Input::GetButton(BUTTONCODE_LEFT) && editor->bSnapToGrid && !ImGui::IsAnyWindowFocused()) {
+		if (editor->grid->GetGridTile(mousePos) && !editor->GetEntityOnTile(editor->grid->GetGridTile(mousePos), SceneManager::GetActiveScene()) && !ImGui::IsWindowFocused()) {
 			Entity* entity = new Entity();
 			entity->AddComponent<Sprite>();
 			entity->GetComponent<Sprite>()->SetTexture(editor->referenceEntity->GetComponent<Sprite>()->GetTexture());
@@ -371,7 +375,7 @@ void EditorTileEdit::Handle(Editor* editor) {
 
 			entity->localScale = Vec2(objectScale);
 
-			entity->localPosition = editor->grid.GetGridTile(mousePos)->position;
+			entity->localPosition = editor->grid->GetGridTile(mousePos)->position;
 
 			if (childToCurrentSelection && editor->currentSelectedEntity) {
 				editor->currentSelectedEntity->AddChild(entity);
@@ -382,8 +386,8 @@ void EditorTileEdit::Handle(Editor* editor) {
 		}
 	}
 
-	if (Input::GetButton(BUTTONCODE_RIGHT) && editor->bSnapToGrid) {
-		if (GridTile* tile = editor->grid.GetGridTile(mousePos)) {
+	if (Input::GetButton(BUTTONCODE_RIGHT) && editor->bSnapToGrid && !ImGui::IsAnyWindowFocused()) {
+		if (GridTile* tile = editor->grid->GetGridTile(mousePos)) {
 			if (Entity* entity = editor->GetEntityOnTile(tile, SceneManager::GetActiveScene())) {
 				if (entity != nullptr) { delete entity->GetParent()->RemoveChild(entity); }
 			}
@@ -394,11 +398,30 @@ void EditorTileEdit::Handle(Editor* editor) {
 
 }
 
+void EditorGridSettings::Handle(Editor* editor) {
+	ImGui::Begin("Grid Settings", &this->active);
+	static float gridSizeValues[2];
+	static float tileSizeValues[2];
+
+	ImGui::InputFloat2("Grid Size", gridSizeValues);
+	ImGui::InputFloat2("Tile Size", tileSizeValues);
+
+	if (ImGui::Button("Construct")) {
+		delete editor->grid;
+		editor->grid = new Grid();
+		editor->grid->Construct(Vec2(gridSizeValues[0], gridSizeValues[1]), Vec2(tileSizeValues[0], tileSizeValues[1]));
+		this->active = false;
+	}
+	ImGui::End();
+}
+
 Editor* Editor::instance;
 
 Editor::Editor() {
+	grid = new Grid();
+
 	//Todo: Fetch grid settings
-	grid.Construct(Vec2(512), Vec2(32));
+	grid->Construct(Vec2(2048), Vec2(32));
 
 	//Create a reference entity
 	this->referenceEntity = new Entity();
@@ -537,14 +560,17 @@ void Editor::Update() {
 		ImGui::EndMenu();
 	}
 
+	if (ImGui::BeginMenu("Settings")) {
+		if (ImGui::MenuItem("Grid Settings")) { AddEditorWindow(new EditorGridSettings()); }
+		ImGui::EndMenu();
+	}
+
 	ImGui::EndMainMenuBar();
 
 	//Handle windows
-	bool anyWindowActive = false;
 	for (int i = GetInstance()->windows.size() - 1; i >= 0; i--) {
-		if (GetInstance()->windows[i]->active) {
+		if (GetInstance()->windows[i]->active && SceneManager::GetActiveScene()) {
 			GetInstance()->windows[i]->Handle(GetInstance());
-			anyWindowActive = true;
 		}
 		else {
 			delete GetInstance()->windows[i];
@@ -558,7 +584,7 @@ void Editor::Update() {
 	}
 
 	//Handle Input
-	if (!anyWindowActive) {
+	if (!ImGui::IsAnyWindowFocused()) {
 		for (size_t i = 0; i < GetInstance()->combos.size(); i++) {
 			GetInstance()->combos[i].Check();
 		}
@@ -571,8 +597,8 @@ void Editor::Update() {
 		if (GetInstance()->bHoldingEntity && GetInstance()->currentSelectedEntity) {
 			Vec2 mousePos = (Input::GetMousePosition() + SceneManager::GetActiveScene()->GetActiveCamera()->GetPosition()) - GetInstance()->currentSelectedEntity->GetParent()->GetPosition();
 
-			if (GetInstance()->bSnapToGrid && GetInstance()->grid.GetGridTile(mousePos)) {
-				GetInstance()->currentSelectedEntity->localPosition = GetInstance()->grid.GetGridTile(mousePos)->position;
+			if (GetInstance()->bSnapToGrid && GetInstance()->grid->GetGridTile(mousePos)) {
+				GetInstance()->currentSelectedEntity->localPosition = GetInstance()->grid->GetGridTile(mousePos)->position;
 			}
 			else {
 				GetInstance()->currentSelectedEntity->localPosition = (mousePos - GetInstance()->currentSelectedEntity->GetScale() / 2);
@@ -586,6 +612,8 @@ void Editor::Update() {
 }
 
 Editor::~Editor() {
+	delete this->grid;
+
 	if (this->referenceEntity) {
 		delete this->referenceEntity;
 	}
