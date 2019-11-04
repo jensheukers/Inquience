@@ -149,6 +149,10 @@ target_link_libraries(Inquience
 	${ALL_LIBS}
 )
 
+target_include_directories( Inquience PUBLIC
+	${CMAKE_SOURCE_DIR}/inquience
+)
+
 add_custom_command(TARGET Inquience POST_BUILD 
 					COMMAND ${CMAKE_COMMAND} -E make_directory
 						$<TARGET_FILE_DIR:Inquience>/res)
