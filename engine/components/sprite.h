@@ -73,6 +73,11 @@ public:
 	* @return UV
 	*/
 	static UV Split(Texture* texture, int pixelsPerTile, int index);
+
+	virtual Sprite* New() override { return new Sprite(); }
+	virtual Sprite* Copy() const { return new Sprite(*this); }
+
+	virtual void OnComponentPropertiesEditor() override;
 };
 
 #endif // !SPRITE_H

@@ -1,14 +1,11 @@
 // Header file for Input class.
 //
-// Version: 9/7/2019
-//
 // Copyright (C) Jens Heukers - All Rights Reserved
 // Unauthorized copying of this file, via any medium is strictly prohibited
 // Proprietary and confidential
-// Written by Jens Heukers, July 2019
-
-//Forward declare
-struct GLFWwindow;
+// Written by Jens Heukers, November 2019
+#ifndef INPUT_H
+#define INPUT_H
 
 //Define Button macros
 
@@ -141,10 +138,73 @@ struct GLFWwindow;
 #define 	KEYCODE_MENU   348
 #define 	KEYCODE_LAST   KEYCODE_MENU
 
-#ifndef INPUT_H
-#define INPUT_H
 #include <map>
+#include <iostream>
+
 #include "math/vec2.h"
+#include "unique_types.h"
+
+enum KeyEvent_Type {
+	Get,
+	GetDown,
+	GetUp
+};
+
+struct KeyEvent {
+	int keyCode;
+	KeyEvent_Type type;
+
+	/**
+	* Constructor, takes the keycode and the type
+	*/
+	KeyEvent(int keyCode, KeyEvent_Type type);
+
+	/**
+	* Checks if key is pressed
+	* @return bool, true if pressed
+	*/
+	bool Check();
+};
+
+typedef std::vector<KeyEvent> KeyCombo;
+
+struct KeyComboEvent {
+private:
+	KeyCombo combo; /***< The combo list*/
+public:
+	Delegate onActivate; /***< Executed when the combo is pressed*/
+
+	/**
+	* Constructor
+	* @param KeyCombo
+	*/
+	KeyComboEvent(KeyCombo combo = {});
+
+	/**
+	* Checks if keycombo is pressed, also calls the onActivate delegate
+	* @return bool, true if all keys in combo are pressed
+	*/
+	bool Check();
+};
+
+struct Axis {
+private:
+	int positiveKey; /***< The positive key of the axis (1)*/
+	int negativeKey; /***< The positive key of the axis (-1)*/
+public:
+	/**
+	* Constructor
+	* @param int	Positive key
+	* @param int	Negative key
+	*/
+	Axis(int positiveKey, int negativeKey);
+
+	/**
+	* Returns the current value of the axis
+	* @return float
+	*/
+	float GetValue();
+};
 
 class Input {
 private:
@@ -157,6 +217,8 @@ private:
 
 	std::map<int, bool> _buttons; /***< @brief Map containing all buttons pressed this frame */
 	std::map<int, bool> _buttonsLast; /***< @brief Map containing all buttons pressed last frame */
+
+	std::map<std::string, Axis*> _axises; /***< Map that contains axises*/
 
 	int lastKey; /***< @brief The last key pressed */
 
@@ -171,7 +233,7 @@ public:
 	/**
 	* Initialize the Input class
 	*/
-	static void Init(GLFWwindow* window);
+	static void Init(struct GLFWwindow* window);
 
 	/**
 	* Gets called every frame by Core to handle keys and lastkey
@@ -232,6 +294,26 @@ public:
 	* Returns the last key pressed this frame, if there is no key pressed this frame it returns KEYCODE_EMPTY_KEY
 	*/
 	static int GetLastKey();
+
+	/**
+	* Checks a combo then returns result
+	*/
+	static bool CheckCombo(KeyComboEvent comboEvent);
+
+	/**
+	* Adds a axis to the axises vector
+	*/
+	static void AddAxis(std::string name, Axis* axis);
+
+	/**
+	* Returns the value of the axis
+	*/
+	static const float GetAxis(std::string name);
+
+	/**
+	* Terminates the input class
+	*/
+	static void Terminate();
 };
 
 #endif // !INPUT_H

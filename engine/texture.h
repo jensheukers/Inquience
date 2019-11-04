@@ -69,7 +69,7 @@ typedef struct {
 typedef struct {
 	TextureData* textureData; /***< Pointer to the texture data*/
 	GLuint _glTexture; /***< The pointer to the gl texture on the GPU*/
-	char* path; /***< Path to the texture*/
+	std::string path; /***< Path to the texture*/
 } Texture;
 
 class TextureLoader {

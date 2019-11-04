@@ -5,7 +5,7 @@
 // Copyright (C) Jens Heukers - All Rights Reserved
 // Unauthorized copying of this file, via any medium is strictly prohibited
 // Proprietary and confidential
-// Written by Jens Heukers, September 2019
+// Written by Jens Heukers, November 2019
 #ifndef CORE_H
 #define CORE_H
 #include <string>
@@ -31,15 +31,12 @@ private:
 	float fps; /***< The amount of frames per second*/
 	float frame; /***< The Current frame*/
 	float timeElapsed; /***< The time in seconds since the program started*/
-
-	//Core scene management
-	Scene* sceneToBeLoaded; /***< Scene to be loaded at beginning of next frame, nullptr if there is no scene to be loaded*/
 public:
 	/**
 	* Initalizes the Core of the engine
 	* @return void
 	*/
-	static void Initialize(int argc, char* argv[]);
+	static void Initialize(int argc, char* argv[], Vec2 resolution = Vec2(1280, 720), std::string title = "INQUIENCE");
 
 	/**
 	* Updates the engine, if engine is initialized
@@ -94,11 +91,6 @@ public:
 	* @return Renderer*
 	*/
 	static Renderer* GetRendererInstance();
-
-	/**
-	* Safely finsishes frame then removes the active scene from memory and sets the new scene active
-	*/
-	static void SwitchScene(Scene* scene);
 
 	//Local methods
 

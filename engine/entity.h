@@ -3,7 +3,7 @@
 // Copyright (C) Jens Heukers - All Rights Reserved
 // Unauthorized copying of this file, via any medium is strictly prohibited
 // Proprietary and confidential
-// Written by Jens Heukers, September 2019
+// Written by Jens Heukers, October 2019
 #ifndef ENTITY_H
 #define ENTITY_H
 
@@ -37,6 +37,11 @@ private:
 	Vec2 scale; /***< The global scale (Parent transformations included)*/
 
 	bool active; /***< Determines wheter the entity is active or not, if entity is not active no updates will be performed*/
+
+	/**
+	* Generates a UniqueID and sets uniqueId
+	*/
+	void GenerateUniqueID();
 protected:
 	/**
 	* Handles transformation with parent entity
@@ -58,14 +63,26 @@ protected:
 	* @return void
 	*/
 	virtual void Update() {};
+
+	/**
+	* Returns a vector of LuaParsableLines, containing all child's properties and components
+	*/
+	std::vector<struct LuaParsableLine> GetChildLines(Entity* child, unsigned tabs = 0);
 public:
 	Vec2 localPosition; /***< The local position of the Entity*/
 	Vec2 localScale; /***< The local scale of the Entity*/
+	std::string tag; /***< Tag of the entity, whenever GetChildByTag() gets called and tag matches it will be returned*/
+	int uniqueId; /***< Unique id of the entity*/
 
 	/**
 	* Constructor
 	*/
 	Entity();
+
+	/**
+	* Copy constructor
+	*/
+	Entity(const Entity& entity);
 
 	/**
 	* Sets a entity active or not, also updates children automaticly
@@ -154,11 +171,20 @@ public:
 		//Create a new instance of the component, and set the owner
 		T* instance = new T();
 		Component* component = dynamic_cast<Component*>(instance);
-		component->SetOwner(this);
-
-		//Push back and return
 		components.push_back(component);
+		component->SetOwner(this);
+		component->BeginPlay();
 		return instance;
+	}
+
+	/**
+	* Adds a already existing component instance to the components vector
+	*/
+	Component* AddExistingComponentInstance(Component* component) {
+		components.push_back(component);
+		component->SetOwner(this);
+		component->BeginPlay();
+		return component;
 	}
 
 	/**
@@ -169,7 +195,7 @@ public:
 	template<class T>
 	T* GetComponent(int index = 0) {
 		int steps = index;
-		for (int i = 0; i < (int)components.size(); i++) {
+		for (size_t i = 0; i < components.size(); i++) {
 			if (dynamic_cast<T*>(components[i])) {
 				if (steps != 0) { steps--; continue; }
 				else return (T*)components[i]; // Assume components[i] == The given input template class
@@ -181,14 +207,47 @@ public:
 	}
 
 	/**
+	* Returns the component vector
+	*/
+	std::vector<Component*> GetComponents() { return this->components; }
+
+	/**
 	* Returns true if component is in the components list, else returns false
 	* @return bool
 	*/
 	template<class T>
 	bool HasComponent() {
-		for (int i = 0; i < (int)components.size(); i++) {
+		for (size_t i = 0; i < components.size(); i++) {
 			if (dynamic_cast<T*>(components[i]))
 				return true;
+		}
+		return false;
+	}
+
+	/**
+	* Check if component is present with instance passed
+	*/
+	template <class T>
+	bool HasComponent(T* instance) {
+		for (size_t i = 0; i < components.size(); i++) {
+			if (typeid(*instance) == typeid(*components[i]))
+				return true;
+		}
+		return false;
+	}
+
+	/*
+	* Removes component of type from components vector if exists
+	* @return bool success
+	*/
+	template<class T>
+	bool RemoveComponent(T* instance) {
+		for (size_t i = 0; i < components.size(); i++) {
+			if (instance == components[i]) {
+				components.erase(components.begin() + i);
+				delete instance;
+				return true;
+			}
 		}
 		return false;
 	}
@@ -202,6 +261,26 @@ public:
 	* Retruns the global scale of the entity
 	*/
 	Vec2 GetScale();
+
+	/**
+	* Returns this if tag == this->tag, else calls this method on children.
+	*/
+	Entity* GetChildByTag(std::string tag);
+
+	/**
+	* Moves child up by 1 in children array
+	*/
+	void MoveChildUp(Entity* child);
+
+	/**
+	* Moves child down by 1 in children array
+	*/
+	void MoveChildDown(Entity* child);
+
+	/**
+	* Writes the entity to a lua file as a asset
+	*/
+	virtual void WriteToLuaFile(struct LuaScriptFile& file, std::string funcName);
 
 	/**
 	* Destructor

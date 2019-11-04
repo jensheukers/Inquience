@@ -4,14 +4,19 @@
 // Copyright (C) Jens Heukers - All Rights Reserved
 // Unauthorized copying of this file, via any medium is strictly prohibited
 // Proprietary and confidential
-// Written by Jens Heukers, September 2019
+// Written by Jens Heukers, October 2019
 #include "core.h"
 #include "debug.h"
 #include "scenemanager.h"
+#include "collisionmanager.h"
 #include "input.h"
 #include "soundmanager.h"
 #include "luascript.h"
+#include "editor.h"
+
 #include "math/physics.h"
+
+#include "component_register.h"
 
 //Include steamworks api
 #include <steam_api.h>
@@ -19,7 +24,7 @@
 
 Core* Core::instance; // The singleton instance
 
-void Core::Initialize(int argc, char* argv[]) {
+void Core::Initialize(int argc, char* argv[], Vec2 resolution, std::string title) {
 	Debug::Log("Initializing Engine");
 
 	//Create singleton instance, if not already set
@@ -35,10 +40,9 @@ void Core::Initialize(int argc, char* argv[]) {
 	instance->executableDirectoryPath.append("\\"); // Append a slash to return the absolute directory
 
 	//Create renderer
-	instance->renderer = new Renderer(Vec2(1280, 720), Vec2(1280, 720), "Dustville");
+	instance->renderer = new Renderer(resolution, title.c_str());
 
 	//Initialize variables
-	instance->sceneToBeLoaded = nullptr;
 	instance->frame = 0;
 
 	//Initialize Input
@@ -58,7 +62,44 @@ void Core::Initialize(int argc, char* argv[]) {
 	LuaScript::AddNativeFunction("Log", [](lua_State* state) -> int {
 			Debug::Log(lua_tostring(state, -1));
 			return 0;
-		});
+	});
+
+	//Runs a function from a native lua file from c++
+	LuaScript::AddNativeFunction("RunFunction", [](lua_State* state) -> int {
+		int top = -lua_gettop(state);
+
+		std::string fileName = lua_tostring(state, top);
+		std::string functionName = lua_tostring(state, top + 1);
+
+		std::vector<std::string> params;
+		for (size_t i = top + 2; i < 0; i++) {
+			params.push_back(lua_tostring(state, i));
+		}
+
+		LuaScript::RunFunction(fileName, functionName, params);
+		return 0;
+	});
+
+	//Creates new scene and sets it active, unloads scene if one is already loaded
+	LuaScript::AddNativeFunction("NewScene", [](lua_State* state) -> int {
+		if (SceneManager::GetActiveScene()) {
+			delete SceneManager::GetActiveScene();
+		}
+		SceneManager::SetActiveScene(new Scene());
+		if (lua_toboolean(state, -1)) {
+			if (lua_toboolean(state, -1)) SceneManager::GetActiveScene()->SetActiveCamera(new Camera());
+		}
+
+		return 0;
+	});
+
+	//Sets camera position in scene
+	LuaScript::AddNativeFunction("SetCameraPosition", [](lua_State* state) -> int {
+		if (SceneManager::GetActiveScene() && SceneManager::GetActiveScene()->GetActiveCamera()) {
+			SceneManager::GetActiveScene()->GetActiveCamera()->SetPosition(Vec2((float)lua_tonumber(state, -2), (float)lua_tonumber(state, -1)));
+		}
+		return 0;
+	});
 
 	//Implement Lua functions for UI Handling
 
@@ -66,42 +107,40 @@ void Core::Initialize(int argc, char* argv[]) {
 	static Entity* _curEntity = nullptr;
 
 	LuaScript::AddNativeFunction("BeginEntity", [](lua_State* state) -> int {
-			//Fetch params
-			std::string path = lua_tostring(state, -lua_gettop(state));
-			
-			if (!SceneManager::GetActiveScene())  return 0;
+		if (!SceneManager::GetActiveScene())  return 0;
 
-			//Load Texture
-			Texture* texture = TextureLoader::LoadTarga((char*)path.c_str());
-			if (!texture) return 0;
+		Entity* entity = new Entity();
+		if (_curEntity) {
+			_curEntity->AddChild(entity);
+		}
+		else {
+			SceneManager::GetActiveScene()->AddChild(entity);
+		}
 
-			Entity* entity;
-			if (std::string(lua_tostring(state, -lua_gettop(state) + 1)) == "UI") {
-				entity = new UIElement();
-			}
-			else {
-				entity = new Entity();
-			}
-			
-			//When created from lua, a sprite is automaticly added
-			entity->AddComponent<Sprite>()->SetTexture(texture);
+		//Set Current element
+		_curEntity = entity;
 
-			if (_curEntity) {
-				_curEntity->AddChild(entity);
-			}
-			else {
-				SceneManager::GetActiveScene()->AddChild(entity);
-			}
+		return 0;
+	});
 
-			//Set Current element
+	LuaScript::AddNativeFunction("BeginExistingEntityByTag", [](lua_State* state) -> int {
+		if (_curEntity != nullptr) { Debug::Log("Lua: Cannot get existing entity if _curEnemy is not nullptr"); return 0; }
+
+		std::string tag = std::string(lua_tostring(state, -1));
+		Entity* entity = SceneManager::GetActiveScene()->GetChildByTag(tag);
+
+		if(!entity) {
+			Debug::Log("Lua: Cannot find entity with tag: " + tag);
+		}
+		else {
 			_curEntity = entity;
-
-			return 0;
+		}
+		return 0;
 	});
 
 	LuaScript::AddNativeFunction("EndEntity", [](lua_State* state) -> int {
 		if (_curEntity) {
-			if (_curEntity->GetParent()) {
+			if (_curEntity->GetParent() && !dynamic_cast<Scene*>(_curEntity->GetParent())) {
 				_curEntity = _curEntity->GetParent();
 			}
 			else {
@@ -109,6 +148,11 @@ void Core::Initialize(int argc, char* argv[]) {
 			}
 		}
 
+		return 0;
+	});
+
+	LuaScript::AddNativeFunction("SetTag", [](lua_State* state) -> int {
+		_curEntity->tag = std::string(lua_tostring(state, -1));
 		return 0;
 	});
 
@@ -125,11 +169,6 @@ void Core::Initialize(int argc, char* argv[]) {
 		return 0;
 	});
 
-	LuaScript::AddNativeFunction("Split", [](lua_State* state) -> int {
-		_curEntity->GetComponent<Sprite>()->Split((int)lua_tonumber(state, -2), (int)lua_tonumber(state, -1));
-		return 0;
-	});
-
 	LuaScript::AddNativeFunction("OnEnter", [](lua_State* state) ->int {
 		int top = -lua_gettop(state);
 
@@ -141,7 +180,7 @@ void Core::Initialize(int argc, char* argv[]) {
 			params.push_back(lua_tostring(state, i));
 		}
 
-		dynamic_cast<UIElement*>(_curEntity)->OnEnterDelegate.AddLambda([=]() {
+		_curEntity->GetComponent<UIComponent>()->OnEnterDelegate.AddLambda([=]() {
 			LuaScript::RunFunction(filePath, funcName, params);
 		});
 		return 0;
@@ -158,7 +197,7 @@ void Core::Initialize(int argc, char* argv[]) {
 			params.push_back(lua_tostring(state, i));
 		}
 
-		dynamic_cast<UIElement*>(_curEntity)->OnStayDelegate.AddLambda([=]() {
+		_curEntity->GetComponent<UIComponent>()->OnStayDelegate.AddLambda([=]() {
 			LuaScript::RunFunction(filePath, funcName, params);
 		});
 		return 0;
@@ -175,11 +214,47 @@ void Core::Initialize(int argc, char* argv[]) {
 			params.push_back(lua_tostring(state, i));
 		}
 
-		dynamic_cast<UIElement*>(_curEntity)->OnLeaveDelegate.AddLambda([=]() {
+		_curEntity->GetComponent<UIComponent>()->OnLeaveDelegate.AddLambda([=]() {
 			LuaScript::RunFunction(filePath, funcName, params);
 		});
 		return 0;
 	});
+
+	//Components for entities
+	static Component* _curComponent;
+	LuaScript::AddNativeFunction("BeginComponent", [](lua_State* state) ->int {
+		if (!_curEntity) {
+			Debug::Log("No active entity, cannot add component");
+			return 0;
+		}
+
+		if (Component* component = Component_Register::GetNewComponentInstance("class " + std::string(lua_tostring(state, -1)))) {
+			_curEntity->AddExistingComponentInstance(component);
+			_curComponent = component;
+		}
+
+		return 0;
+	});
+
+	LuaScript::AddNativeFunction("SetProperty", [](lua_State* state) ->int {
+		if (!_curComponent) return 0;
+		int top = -lua_gettop(state);
+		std::string propertyName = lua_tostring(state, top);
+
+		std::vector<std::string> params;
+		for (int i = top + 1; i < 0; i++) {
+			params.push_back(lua_tostring(state, i));
+		}
+
+		_curComponent->SetProperty(propertyName, params);
+		return 0;
+	});
+
+	LuaScript::AddNativeFunction("EndComponent", [](lua_State* state) ->int {
+		if (_curComponent) _curComponent = nullptr;
+		return 0;
+	});
+
 
 	//Implement lua native sound functions
 	LuaScript::AddNativeFunction("PlaySound", [](lua_State* state) -> int {
@@ -200,6 +275,13 @@ void Core::Initialize(int argc, char* argv[]) {
 
 		return 0;
 	});
+
+
+	//Editor can be enabled/disabled by calling this function
+	LuaScript::AddNativeFunction("Editor", [](lua_State* state) -> int {
+		Editor::editorActive = !Editor::editorActive;
+		return 0;
+	});
 }
 
 void Core::Update() {
@@ -218,33 +300,65 @@ void Core::Update() {
 		lastTime = instance->timeElapsed;
 	}
 
-	if (instance->sceneToBeLoaded != nullptr) {
-		delete SceneManager::GetActiveScene();
-		SceneManager::SetActiveScene(instance->sceneToBeLoaded);
-		instance->sceneToBeLoaded = nullptr;
-	}
-
 	//Update Entities
-	if (SceneManager::GetActiveScene() && SceneManager::GetActiveScene()->GetActiveCamera()) {
+	if (SceneManager::GetActiveScene()) {
+		if (!Editor::editorActive) {
+			//Do a collision check for this frame
+			CollisionManager::Update();
+		}
+
 		//Update Scene
 		SceneManager::GetActiveScene()->Update();
-		instance->renderer->RenderScene(SceneManager::GetActiveScene(), SceneManager::GetActiveScene()->GetActiveCamera());
+
+		if (SceneManager::GetActiveScene()->GetActiveCamera()) {
+			instance->renderer->RenderScene(SceneManager::GetActiveScene(), SceneManager::GetActiveScene()->GetActiveCamera());
+
+			//Render debug stuff
+			for (size_t i = 0; i < Debug::GetLineDrawList().size(); i++) {
+				Line line = Debug::GetLineDrawList()[i];
+				instance->renderer->DrawLine(line.a, line.b, line.color, SceneManager::GetActiveScene()->GetActiveCamera());
+			}
+		}
+		else {
+			Debug::Log("SceneManager has no active camera");
+		}
 	}
 	else {
-		Debug::Log("No active scene or camera present");
+		Debug::Log("SceneManager has no active scene, cannot update");
 	}
+
+	if (Debug::consoleActive) {
+		Debug::ConstructConsole();
+	}
+
+	if (Editor::editorActive) {
+		Editor::Update();
+	}
+
+	instance->renderer->RenderImGui();
 	
-	//Update Input
-	Input::HandleUpdates();
+	//Check if we should enable/disable console
+	if (Input::GetKeyDown(KEYCODE_GRAVE_ACCENT)) {
+		if (!Debug::consoleActive)
+			Debug::consoleActive = true;
+		else
+			Debug::consoleActive = false;
+	}
 
 	//Update soundmanager
 	SoundManager::Update();
+
+	//Update Input
+	Input::HandleUpdates();
 
 	//If window should not close, we poll events, swap buffers and clear, else we set active to false
 	if (!glfwWindowShouldClose(instance->renderer->GetWindow())) {
 		instance->renderer->PollEvents();
 		instance->renderer->SwapBuffers();
 		instance->renderer->Clear();
+
+		//Clear debug
+		Debug::Clear();
 	}
 	else {
 		Core::Destroy();
@@ -261,15 +375,11 @@ bool Core::IsActive() {
 void Core::Destroy() {
 	if (!IsActive()) return; // Instance already destroyed
 
-	//Terminate TextureLoader
 	TextureLoader::Terminate();
-
-	//Terminate renderer
+	Input::Terminate();
 	delete instance->renderer;
 
-	//Delete scenemanager
 	SceneManager::Terminate();
-
 	SoundManager::Destroy();
 
 	// Delete instance and set instance to nullptr
@@ -283,10 +393,6 @@ std::string Core::GetExecutableDirectoryPath() {
 
 Renderer* Core::GetRendererInstance() {
 	return instance->renderer;
-}
-
-void Core::SwitchScene(Scene* scene) {
-	instance->sceneToBeLoaded = scene;
 }
 
 float Core::CalculateDeltaTime() {

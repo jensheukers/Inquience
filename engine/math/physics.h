@@ -1,11 +1,9 @@
 // Header file for Physics class.
 //
-// Version: 2/5/2019
-//
 // Copyright (C) Jens Heukers - All Rights Reserved
 // Unauthorized copying of this file, via any medium is strictly prohibited
 // Proprietary and confidential
-// Written by Jens Heukers, May 2019
+// Written by Jens Heukers, October 2019
 #ifndef PHYSICS_H
 #define PHYSICS_H
 

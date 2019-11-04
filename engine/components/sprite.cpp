@@ -19,6 +19,34 @@ UV::UV() {
 
 Sprite::Sprite() {
 	this->texture = nullptr;
+	//Property to set texture
+	AddProperty("Texture", [=](StringVector args) {
+		SetTexture(TextureLoader::LoadTarga((char*)args[0].c_str()));
+	}, [=]() -> StringVector {
+		if (!this->GetTexture()) return {};
+		std::cout << this->GetTexture()->path << std::endl;
+		return { "\"" + std::string(this->GetTexture()->path) + "\"" };
+	});
+	
+	//Property to split
+	AddProperty("Split", [=](StringVector args) {
+		Split(std::stoi(args[0]), std::stoi(args[1]));
+	});
+
+	//Property to set uv
+	AddProperty("SetUV", [=](StringVector args) {
+		this->uv.leftUp = Vec2(std::stof(args[0]), std::stof(args[1])); // 0, 1
+		this->uv.rightUp = Vec2(std::stof(args[2]), std::stof(args[3])); // 1, 1
+		this->uv.leftDown = Vec2(std::stof(args[4]), std::stof(args[5])); // 0, 0
+		this->uv.rightDown = Vec2(std::stof(args[6]), std::stof(args[7])); // 1, 0
+	}, [=]() -> StringVector {
+		return {
+			std::to_string(this->uv.leftUp.x), std::to_string(this->uv.leftUp.y),
+			std::to_string(this->uv.rightUp.x), std::to_string(this->uv.rightUp.y),
+			std::to_string(this->uv.leftDown.x), std::to_string(this->uv.leftDown.y),
+			std::to_string(this->uv.rightDown.x), std::to_string(this->uv.rightDown.y)
+		};
+	});
 }
 
 Texture* Sprite::SetTexture(Texture* texture) {
@@ -85,4 +113,14 @@ UV Sprite::Split(Texture* texture, int pixelsPerTile, int index) {
 	}
 
 	return uv;
+}
+
+void Sprite::OnComponentPropertiesEditor()
+{
+	static char buffer[128]; // Allocate buffer
+	ImGui::InputText("##0", buffer, sizeof(buffer));
+	ImGui::SameLine();
+	if (ImGui::Button("Set/Load Texture")) {
+		this->SetTexture(TextureLoader::LoadTarga(buffer));
+	}
 }

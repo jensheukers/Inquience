@@ -55,9 +55,9 @@ public:
 };
 
 //Include ui.h for text
-#include "../graphics/ui.h"
+#include "../components/ui.h"
 
-class Text : public UIElement {
+class Text : public UIComponent {
 private:
 	Font* font; /***< The font used in the text*/
 	std::string text; /***< The text to display*/

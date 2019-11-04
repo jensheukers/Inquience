@@ -11,6 +11,7 @@
 //Include vector
 #include <vector>
 #include <functional>
+#include <string>
 
 #include <thread>
 
@@ -53,6 +54,15 @@ public:
 	* Kill the thread
 	*/
 	void Kill();
+};
+
+//Essential static functions, so we dont have to rewrite these every time
+class Essentials {
+public:
+	/**
+	* Splits a string and returns a vector
+	*/
+	static std::vector<std::string> Split(std::string string, char split);
 };
 
 #endif // !UNIQUE_TYPES_H
