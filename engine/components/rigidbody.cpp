@@ -23,6 +23,13 @@ void RigidBody::Update() {
 		return;
 	}
 
+	//Search through every entity from top in hierarchy if they have a collider component, then check for collision
+	std::vector<Collider*> colliders;
+	this->GetOwner()->GetHighestEntityInHierarchy()->GetAllComponentsOfTypeInChildren(colliders);
+
+	//Check for collision, only rigidbody objects should do collision checks
+	GetOwner()->GetComponent<Collider>()->CheckCollision(colliders);
+
 	if (GetOwner()->GetComponent<Collider>()->CollisionEntered()) {
 		GetOwner()->localPosition = positionLastFrame;
 		onBlockedDelegate.Execute();

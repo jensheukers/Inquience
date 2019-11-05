@@ -8,7 +8,6 @@
 #include "core.h"
 #include "debug.h"
 #include "scenemanager.h"
-#include "collisionmanager.h"
 #include "input.h"
 #include "soundmanager.h"
 #include "luascript.h"
@@ -303,9 +302,6 @@ void Core::Update() {
 	//Update Entities
 	if (SceneManager::GetActiveScene()) {
 		if (!Editor::editorActive) {
-			//Do a collision check for this frame
-			CollisionManager::Update();
-
 			//Update Scene
 			SceneManager::GetActiveScene()->Update();
 		}

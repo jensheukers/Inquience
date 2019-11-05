@@ -6,11 +6,9 @@
 // Written by Jens Heukers, October 2019
 #include "collider.h"
 
-#include "../collisionmanager.h"
 #include "../entity.h"
 
 void Collider::BeginPlay() {
-	CollisionManager::RegisterCollider(this);
 	debugDrawColor = glm::vec3(0, 1, 0);
 
 	AddProperty("DrawDebug", [=](std::vector<std::string> args) {
@@ -64,10 +62,6 @@ void Collider::CheckCollision(const std::vector<Collider*> colliders) {
 
 std::vector<Collider*> const Collider::GetHits() {
 	return this->hits;
-}
-
-Collider::~Collider() {
-	CollisionManager::RemoveCollider(this);
 }
 
 void BoxCollider::DrawDebugLines() {

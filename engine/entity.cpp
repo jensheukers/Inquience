@@ -256,6 +256,25 @@ void Entity::WriteToLuaFile(LuaScriptFile& file, std::string funcName) {
 	file.ParseFunction(funcName, StringVector{}, lines);
 }
 
+void Entity::FindEntitiesNearPosition(std::vector<Entity*>& vectorRef, Vec2 position, float distance) {
+	if (Vec2::Distance(position, this->GetPosition()) <= distance) {
+		vectorRef.push_back(this);
+	}
+
+	for (size_t i = 0; i < children.size(); i++) {
+		children[i]->FindEntitiesNearPosition(vectorRef, position, distance);
+	}
+}
+
+Entity* Entity::GetHighestEntityInHierarchy() {
+	if (!this->GetParent()) {
+		return this;
+	}
+	else {
+		return this->GetParent()->GetHighestEntityInHierarchy();
+	}
+}
+
 Entity::~Entity() {
 	for (size_t i = 0; i < (int)children.size(); i++) {
 		delete children[i];

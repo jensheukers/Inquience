@@ -283,6 +283,36 @@ public:
 	virtual void WriteToLuaFile(struct LuaScriptFile& file, std::string funcName);
 
 	/**
+	* Fills vector of Entity pointers that are x distance from given position
+	* Note: function does not respect children arrays, all found entities will be added to the vector as a raw pointer
+	* @param std::vector<Entity*>& vector reference
+	* @param Vec2 position (In global space)
+	* @param float distance
+	*/
+	void FindEntitiesNearPosition(std::vector<Entity*>& vectorRef, Vec2 position, float distance);
+
+	/*
+	* Returns the highest parent in the hierarchy (Mostly always scene), this is a more OOP way of getting the scene without requiring
+	* Scenemanager
+	*/
+	Entity* GetHighestEntityInHierarchy();
+
+	/**
+	* Iterates through all children and if they have component of template type, it will be added to given parameter vector
+	* @param std::vector<T*>& vector reference
+	*/
+	template<typename T>
+	void GetAllComponentsOfTypeInChildren(std::vector<T*>& vectorRef) {
+		if (T * component = GetComponent<T>()) {
+			vectorRef.push_back(component);
+		}
+
+		for (size_t ii = 0; ii < children.size(); ii++) {
+			children[ii]->GetAllComponentsOfTypeInChildren(vectorRef);
+		}
+	}
+
+	/**
 	* Destructor
 	*/
 	virtual ~Entity();

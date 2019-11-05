@@ -82,11 +82,6 @@ public:
 
 	virtual Collider* New() override { return new Collider(); }
 	virtual Collider* Copy() const { return new Collider(*this); }
-
-	/**
-	* Destructor
-	*/
-	~Collider();
 };
 
 class BoxCollider : public Collider {

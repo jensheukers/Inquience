@@ -60,7 +60,6 @@ set ( ALL_LIBS
 #------------------------------------------------------
 add_library(Engine
 	engine/camera.cpp
-	engine/collisionmanager.cpp
 	engine/component.cpp
 	engine/component_register.cpp
 	engine/core.cpp
