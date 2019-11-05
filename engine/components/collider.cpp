@@ -9,6 +9,7 @@
 #include "../entity.h"
 
 void Collider::BeginPlay() {
+	bDrawDebugLines = false;
 	debugDrawColor = glm::vec3(0, 1, 0);
 
 	AddProperty("DrawDebug", [=](std::vector<std::string> args) {

@@ -21,12 +21,12 @@
 int main(int argc, char * argv[]) {
 	Core::Initialize(argc, argv, Vec2(1280, 720), "Inquience");
 
-	Input::AddAxis("Horizontal", new Axis(KEYCODE_D, KEYCODE_A));
+	//Input::AddAxis("Horizontal", new Axis(KEYCODE_D, KEYCODE_A));
 
 	LuaScript::RunFunction("res/scenes/default.scene", "Initialize");
 
 	// We need to register our 'custom' components to the engine
-	Component_Register::RegisterComponent<HealthComponent>();
+	/*Component_Register::RegisterComponent<HealthComponent>();
 	Component_Register::RegisterComponent<MovementComponent>();
 
 	Creature* player = new Creature();
@@ -40,9 +40,10 @@ int main(int argc, char * argv[]) {
 	player->GetComponent<MovementComponent>()->AddRaycasts(16);
 
 	SceneManager::GetActiveScene()->AddChild(player);
+	*/
 
 	while (Core::IsActive()) {
-		if (!player->GetComponent<MovementComponent>()->IsGrounded()) {
+		/*if (!player->GetComponent<MovementComponent>()->IsGrounded()) {
 			player->GetComponent<RigidBody>()->AddForce(Vec2(0, 9.f));
 		}
 
@@ -61,7 +62,7 @@ int main(int argc, char * argv[]) {
 		default:
 			player->GetComponent<MovementComponent>()->ResetHorizontalVelocity();
 			break;
-		}
+		}*/
 
 		Core::Update(); // Handle updates for engine
 	}

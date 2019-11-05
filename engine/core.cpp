@@ -299,12 +299,17 @@ void Core::Update() {
 		lastTime = instance->timeElapsed;
 	}
 
+	//Update editor if active
+	if (Editor::editorActive) {
+		Editor::Update();
+	}
+
 	//Update Entities
 	if (SceneManager::GetActiveScene()) {
-		if (!Editor::editorActive) {
-			//Update Scene
-			SceneManager::GetActiveScene()->Update();
-		}
+
+		//Update Scene
+		SceneManager::GetActiveScene()->Update();
+
 
 		if (SceneManager::GetActiveScene()->GetActiveCamera()) {
 			instance->renderer->RenderScene(SceneManager::GetActiveScene(), SceneManager::GetActiveScene()->GetActiveCamera());
@@ -325,10 +330,6 @@ void Core::Update() {
 
 	if (Debug::consoleActive) {
 		Debug::ConstructConsole();
-	}
-
-	if (Editor::editorActive) {
-		Editor::Update();
 	}
 
 	instance->renderer->RenderImGui();

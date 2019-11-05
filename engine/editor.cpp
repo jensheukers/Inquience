@@ -144,15 +144,6 @@ void EditorHierarchy::Handle(Editor* editor) {
 void EditorInspector::Handle(Editor* editor) {
 	ImGui::Begin("Inpector", &this->active);
 	if (editor->currentSelectedEntity) {
-		if (ImGui::Button("Save as .asset")) {
-			EditorInputWindow* window = new EditorInputWindow("Save Asset");
-			window->onApply.AddLambda([=]() {
-				editor->currentSelectedEntity->WriteToLuaFile(LuaScriptFile(std::string(window->GetBuffer()) + EDITOR_ENTITY_SUFFIX), EDITOR_LUA_LOAD_FUNCNAME);
-			});
-
-			editor->AddEditorWindow(window);
-		}
-
 		ImGui::Text(("Tag: " + editor->currentSelectedEntity->tag).c_str());
 		ImGui::Spacing();
 		ImGui::Text("Local Transformations:");
@@ -262,142 +253,6 @@ void EditorCreateEntityWizard::Handle(Editor* editor) {
 	ImGui::End();
 }
 
-void EditorTileEdit::Handle(Editor* editor) {
-	//Enable snapToGrid
-	editor->bSnapToGrid = true;
-
-	ImGui::Begin("Tile Edit", &this->active);
-	//Texture pointer
-	static Texture* texture;
-
-	//UvCoordinate Holder
-	static UV uv;
-
-	//Variables
-	static float imageSize = 256; // Initialize at 256 as expected image size
-	static int tileSize = 32; // Initialize at DEFAULT_TILE_SIZE
-	static int objectScale = 32;
-	static bool childToCurrentSelection = false;
-
-	static char buffer[128]; // Allocate buffer
-	ImGui::InputText("Path", buffer, sizeof(buffer));
-	ImGui::SameLine();
-	if (ImGui::Button("Load")) {
-		Texture* t = TextureLoader::LoadTarga(buffer);
-		if (t) {
-			if (t->textureData->width != t->textureData->height) {
-				Debug::Log("Error: cannot load tilemap as width != height");
-			}
-			else {
-				texture = t;
-				imageSize = (float)texture->textureData->width;
-			}
-		}
-		else {
-			Debug::Log("Error loading tilemap texture");
-		}
-	}
-
-	ImGui::InputInt("Tile Size", &tileSize);
-	ImGui::InputInt("Object Spawn Scale", &objectScale);
-	ImGui::Checkbox("Child to currently selected Entity", &childToCurrentSelection);
-
-	int tiles = (int)imageSize / tileSize;
-
-	//tileSetImagePosition
-	ImVec2 tilesetImagePos = ImGui::GetCursorScreenPos();
-
-	if (texture) {
-		unsigned glTexId = texture->_glTexture;
-		ImGui::Image((void*)(intptr_t)glTexId, ImVec2(imageSize, imageSize), ImVec2(0, 1), ImVec2(1, 0));
-	}
-
-	// draw grid
-	ImDrawList* draw_list = ImGui::GetWindowDrawList();
-
-	// draw horizontal lines
-	for (int x = 0; x < tiles + 1; ++x) {
-		draw_list->AddLine(ImVec2(tilesetImagePos.x + x * tileSize, tilesetImagePos.y),
-			ImVec2(tilesetImagePos.x + x * tileSize, tilesetImagePos.y + tiles * tileSize),
-			ImColor(255, 255, 255));
-	}
-
-	// draw vertical lines
-	for (int y = 0; y < tiles + 1; ++y) {
-		draw_list->AddLine(ImVec2(tilesetImagePos.x, tilesetImagePos.y + y * tileSize),
-			ImVec2(tilesetImagePos.x + tiles * tileSize, tilesetImagePos.y + y * tileSize),
-			ImColor(255, 255, 255));
-	}
-
-	static int tileMapIndex = 0;
-
-	if (!editor->referenceEntity->HasComponent<Sprite>()) {
-		editor->referenceEntity->AddComponent<Sprite>();
-	}
-
-	//Input selection
-	if (ImGui::IsItemHovered()) {
-		if (Input::GetButtonDown(BUTTONCODE_LEFT)) {
-			Vec2 relMousePos = Vec2(ImGui::GetMousePos().x - tilesetImagePos.x, ImGui::GetMousePos().y - tilesetImagePos.y);
-
-			//Get the right uv coordinates.
-
-			int _i = 0; // Tile index
-			//Iterate through image
-			for (int y = (int)imageSize - tileSize; y > -1; y -= tileSize) {
-				for (int x = 0; x < imageSize; x += tileSize) {
-					//Iterate through every pixel
-					for (int py = 0; py <= tileSize; py++) {
-						for (int px = 0; px <= tileSize; px++) {
-							if ((x + px) == relMousePos.x && (y + py) == relMousePos.y) {
-								editor->referenceEntity->GetComponent<Sprite>()->SetTexture(TextureLoader::LoadTarga(buffer));
-								editor->referenceEntity->GetComponent<Sprite>()->Split(tileSize, _i);
-								tileMapIndex = _i;
-							}
-						}
-					}
-					_i++;
-				}
-			}
-		}
-
-		std::string tileMapIndexText = "Tile Index: " + std::to_string(tileMapIndex);
-		ImGui::Text((char*)tileMapIndexText.c_str());
-	}
-
-	Vec2 mousePos = (Input::GetMousePosition() + SceneManager::GetActiveScene()->GetActiveCamera()->GetPosition());
-	if (Input::GetButton(BUTTONCODE_LEFT) && editor->bSnapToGrid && !ImGui::IsAnyWindowFocused()) {
-		if (editor->grid->GetGridTile(mousePos) && !editor->GetEntityOnTile(editor->grid->GetGridTile(mousePos), SceneManager::GetActiveScene()) && !ImGui::IsWindowFocused()) {
-			Entity* entity = new Entity();
-			entity->AddComponent<Sprite>();
-			entity->GetComponent<Sprite>()->SetTexture(editor->referenceEntity->GetComponent<Sprite>()->GetTexture());
-			entity->GetComponent<Sprite>()->uv = editor->referenceEntity->GetComponent<Sprite>()->uv;
-
-			entity->localScale = Vec2(objectScale);
-
-			entity->localPosition = editor->grid->GetGridTile(mousePos)->position;
-
-			if (childToCurrentSelection && editor->currentSelectedEntity) {
-				editor->currentSelectedEntity->AddChild(entity);
-			}
-			else {
-				SceneManager::GetActiveScene()->AddChild(entity);
-			}
-		}
-	}
-
-	if (Input::GetButton(BUTTONCODE_RIGHT) && editor->bSnapToGrid && !ImGui::IsAnyWindowFocused()) {
-		if (GridTile* tile = editor->grid->GetGridTile(mousePos)) {
-			if (Entity* entity = editor->GetEntityOnTile(tile, SceneManager::GetActiveScene())) {
-				if (entity != nullptr) { delete entity->GetParent()->RemoveChild(entity); }
-			}
-		}
-	}
-
-	ImGui::End();
-
-}
-
 void EditorGridSettings::Handle(Editor* editor) {
 	ImGui::Begin("Grid Settings", &this->active);
 	static float gridSizeValues[2];
@@ -423,21 +278,6 @@ Editor::Editor() {
 	//Todo: Fetch grid settings
 	grid->Construct(Vec2(2048), Vec2(32));
 
-	//Create a reference entity
-	this->referenceEntity = new Entity();
-
-	//Input delegates
-	KeyComboEvent setGridSnappingEvent = KeyComboEvent(KeyCombo{ KeyEvent(KEYCODE_LEFT_CONTROL, KeyEvent_Type::Get), KeyEvent(KEYCODE_S, KeyEvent_Type::GetDown)});
-	setGridSnappingEvent.onActivate.AddLambda([=]() {
-		if (this->bSnapToGrid) {
-			this->bSnapToGrid = false;
-		}
-		else {
-			this->bSnapToGrid = true;
-		}
-	});
-	combos.push_back(setGridSnappingEvent);
-
 	KeyComboEvent copySelectedEvent = KeyComboEvent(KeyCombo{ KeyEvent(KEYCODE_LEFT_CONTROL, KeyEvent_Type::Get), KeyEvent(KEYCODE_V, KeyEvent_Type::GetDown) });
 	copySelectedEvent.onActivate.AddLambda([=]() {
 		if (!currentSelectedEntity) return;
@@ -447,15 +287,15 @@ Editor::Editor() {
 		//Set position to mouse position
 		copy->localPosition = Input::GetMousePosition() + SceneManager::GetActiveScene()->GetActiveCamera()->GetPosition();
 		currentSelectedEntity = copy;
-	});
+		});
 	combos.push_back(copySelectedEvent);
 
-	KeyComboEvent deleteSelectedEvent = KeyComboEvent(KeyCombo{ KeyEvent(KEYCODE_LEFT_CONTROL, KeyEvent_Type::Get), KeyEvent(KEYCODE_DELETE, KeyEvent_Type::GetDown) });
+	KeyComboEvent deleteSelectedEvent = KeyComboEvent(KeyCombo{ KeyEvent(KEYCODE_DELETE, KeyEvent_Type::GetDown) });
 	deleteSelectedEvent.onActivate.AddLambda([=]() {
 		if (!currentSelectedEntity) return;
 		currentSelectedEntity->GetParent()->RemoveChild(GetInstance()->currentSelectedEntity);
 		delete currentSelectedEntity;
-	});
+		});
 	combos.push_back(deleteSelectedEvent);
 }
 
@@ -464,6 +304,28 @@ Editor* Editor::GetInstance() {
 		instance = new Editor();
 	}
 	return instance;
+}
+
+void Editor::HandleInput() {
+	for (size_t i = 0; i < GetInstance()->combos.size(); i++) {
+		GetInstance()->combos[i].Check();
+	}
+
+	//Mouse position
+	Vec2 mousePos = Input::GetMousePosition() + SceneManager::GetActiveScene()->GetActiveCamera()->GetPosition();
+
+	//Mouse input
+	if (Input::GetButtonDown(BUTTONCODE_LEFT)) {
+		SetCurrentSelectedEntityByPosition(SceneManager::GetActiveScene(), mousePos);
+	}
+
+	if (currentSelectedEntity && bHoldingEntity) {
+		currentSelectedEntity->localPosition = mousePos - (GetInstance()->currentSelectedEntity->GetScale() / 2);
+	}
+
+	if (Input::GetButtonUp(BUTTONCODE_LEFT)) {
+		bHoldingEntity = false;
+	}
 }
 
 bool Editor::editorActive = false;
@@ -547,16 +409,6 @@ void Editor::Update() {
 
 	if (ImGui::BeginMenu("Entity")) {
 		if (ImGui::MenuItem("New Entity")) { AddEditorWindow(new EditorCreateEntityWizard()); }
-		if (ImGui::MenuItem("Load Entity Asset")) {
-			EditorInputWindow* window = new EditorInputWindow("Load Asset");
-			window->onApply.AddLambda([=]() {
-				LuaScript::RunFunction(std::string(window->GetBuffer()) + EDITOR_ENTITY_SUFFIX, EDITOR_LUA_LOAD_FUNCNAME);
-			});
-
-			GetInstance()->AddEditorWindow(window);
-		}
-		if (ImGui::MenuItem("Tile Edit")) { AddEditorWindow(new EditorTileEdit()); }
-
 		ImGui::EndMenu();
 	}
 
@@ -577,44 +429,28 @@ void Editor::Update() {
 			GetInstance()->windows.erase(GetInstance()->windows.begin() + i);
 		}
 	}
-
-	//Draw around selected entity for visual
-	if (GetInstance()->currentSelectedEntity) {
-		Debug::DrawCube(GetInstance()->currentSelectedEntity->GetPosition(), GetInstance()->currentSelectedEntity->GetPosition() + GetInstance()->currentSelectedEntity->GetScale(), glm::vec3(1, 0, 1));
-	}
-
-	//Handle Input
-	if (!ImGui::IsAnyWindowFocused()) {
-		for (size_t i = 0; i < GetInstance()->combos.size(); i++) {
-			GetInstance()->combos[i].Check();
+	if (SceneManager::GetActiveScene()) {
+		//Draw all colliders
+		std::vector<Collider*> colliders;
+		SceneManager::GetActiveScene()->GetAllComponentsOfTypeInChildren(colliders);
+		for (size_t i = 0; i < colliders.size(); i++) {
+			colliders[i]->Update();
 		}
 
-		//Set active object by clicking on any entity
-		if (SceneManager::GetActiveScene() && Input::GetKey(KEYCODE_LEFT_CONTROL) && Input::GetButtonDown(BUTTONCODE_LEFT)) {
-			GetInstance()->SetCurrentSelectedEntityByPosition(SceneManager::GetActiveScene(), Input::GetMousePosition() + SceneManager::GetActiveScene()->GetActiveCamera()->GetPosition());
+		//Draw around current selected entity
+		if (GetInstance()->currentSelectedEntity) {
+			Debug::DrawCube(GetInstance()->currentSelectedEntity->GetPosition(),
+				GetInstance()->currentSelectedEntity->GetPosition() + GetInstance()->currentSelectedEntity->GetScale(),
+				glm::vec3(1, 0, 1));
 		}
 
-		if (GetInstance()->bHoldingEntity && GetInstance()->currentSelectedEntity) {
-			Vec2 mousePos = (Input::GetMousePosition() + SceneManager::GetActiveScene()->GetActiveCamera()->GetPosition()) - GetInstance()->currentSelectedEntity->GetParent()->GetPosition();
-
-			if (GetInstance()->bSnapToGrid && GetInstance()->grid->GetGridTile(mousePos)) {
-				GetInstance()->currentSelectedEntity->localPosition = GetInstance()->grid->GetGridTile(mousePos)->position;
-			}
-			else {
-				GetInstance()->currentSelectedEntity->localPosition = (mousePos - GetInstance()->currentSelectedEntity->GetScale() / 2);
-			}
+		//Only execute when there is no window focused
+		if (!ImGui::IsAnyWindowFocused()) {
+			GetInstance()->HandleInput();
 		}
-	}
-
-	if (Input::GetButtonUp(BUTTONCODE_LEFT)) {
-		GetInstance()->bHoldingEntity = false;
 	}
 }
 
 Editor::~Editor() {
 	delete this->grid;
-
-	if (this->referenceEntity) {
-		delete this->referenceEntity;
-	}
 }

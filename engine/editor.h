@@ -7,7 +7,6 @@
 #ifndef EDITOR_H
 #define EDITOR_H
 
-#define EDITOR_ENTITY_SUFFIX ".asset"
 #define EDITOR_SCENE_SUFFIX ".scene"
 
 #define EDITOR_LUA_LOAD_FUNCNAME "Initialize"
@@ -101,11 +100,6 @@ public:
 	void Handle(Editor* editor) override;
 };
 
-class EditorTileEdit : public EditorWindow {
-public:
-	void Handle(Editor* editor) override;
-};
-
 class EditorGridSettings : public EditorWindow {
 public:
 	void Handle(Editor* editor) override;
@@ -128,16 +122,19 @@ private:
 	* Returns the editor instance
 	*/
 	static Editor* GetInstance();
+
+	/**
+	* Handles the input
+	*/
+	void HandleInput();
 public:
 	static bool editorActive; /***If true the editor will be called by core*/
 	Grid* grid; /***< Grid reference*/
 
 	//Instance pointers
 	class Entity* currentSelectedEntity = nullptr;
-	class Entity* referenceEntity = nullptr;
 
 	bool bHoldingEntity; /***< If true the cursor is holding a entity*/
-	bool bSnapToGrid; /***< If true the current selected will try to snap to grid, also the grid will be drawn*/
 
 	//Key Combos
 	std::vector<struct KeyComboEvent> combos;
