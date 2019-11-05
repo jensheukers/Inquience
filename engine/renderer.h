@@ -48,7 +48,7 @@ private:
 	* Renders a entity to the screen
 	*/
 	void RenderEntity(class Entity* entity, class Camera* camera);
-
+public:
 	/**
 	* Draws text to the screen
 	* @param Font* the pointer to the font used in the text
@@ -58,7 +58,7 @@ private:
 	* @param glm::vec3 color
 	*/
 	void RenderText(Font* font, std::string text, Vec2 position, float size, glm::vec3 color);
-public:
+
 	/**
 	* Constructor
 	* @param Vec2 resolution

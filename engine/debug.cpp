@@ -16,6 +16,8 @@
 #include "input.h"
 #include "luascript.h"
 
+#include "graphics/font.h"
+
 Debug* Debug::instance;
 
 bool Debug::consoleActive = false;
@@ -62,6 +64,17 @@ void Debug::DrawCube(Vec2 a, Vec2 b, glm::vec3 color) {
 	Line line1; line1.a = Vec2(b.x, a.y); line1.b = b; line1.color = color; GetInstance()->_lineDrawList.push_back(line1);
 	Line line2; line2.a = b; line2.b = Vec2(a.x, b.y); line2.color = color; GetInstance()->_lineDrawList.push_back(line2);
 	Line line3; line3.a = Vec2(a.x, b.y); line3.b = a; line3.color = color; GetInstance()->_lineDrawList.push_back(line3);
+}
+
+void Debug::DrawText(std::string text, Vec2 position, float size, glm::vec3 color) {
+	static Font* font = FontLoader::LoadFont("fonts/consola.ttf");
+	DebugText debugText;
+	debugText.font = font;
+	debugText.text = text;
+	debugText.position = position;
+	debugText.size = size;
+	debugText.color = color;
+	GetInstance()->_textDrawList.push_back(debugText);
 }
 
 void Debug::ConstructConsole() {
@@ -124,5 +137,9 @@ void Debug::ConstructConsole() {
 void Debug::Clear() {
 	for (size_t i = 0; i < GetInstance()->_lineDrawList.size(); i++) {
 		GetInstance()->_lineDrawList.erase(GetInstance()->_lineDrawList.begin() + i);
+	}
+
+	for (size_t i = 0; i < GetInstance()->_textDrawList.size(); i++) {
+		GetInstance()->_textDrawList.erase(GetInstance()->_textDrawList.begin() + i);
 	}
 }

@@ -317,6 +317,12 @@ Editor::Editor() {
 	});
 	combos.push_back(setScalemodeEvent);
 
+	KeyComboEvent deselectSelected = KeyComboEvent(KeyCombo{ KeyEvent(KEYCODE_ESCAPE, KeyEvent_Type::GetDown) });
+	deselectSelected.onActivate.AddLambda([=]() {
+		currentSelectedEntity = nullptr;
+	});
+	combos.push_back(deselectSelected);
+
 	this->scalemode = Editor_ScaleMode::Both;
 }
 
@@ -343,21 +349,33 @@ void Editor::HandleInput() {
 	if (currentSelectedEntity && bHoldingEntity && Input::GetButton(BUTTONCODE_RIGHT)) {
 		currentSelectedEntity->localPosition = mousePos - (GetInstance()->currentSelectedEntity->GetScale() / 2);
 
+		std::string scaleModeString = "Scale Mode: ";
+
 		//Scale the entity based on scrolling
 		Vec2 extraScale;
 		switch (this->scalemode) {
 		case Editor_ScaleMode::Horizontal:
 			extraScale = Vec2(Input::GetScrollOffset().y, 0);
+			scaleModeString += "Horizontal";
 			break;
 		case Editor_ScaleMode::Vertical:
 			extraScale = Vec2(0, Input::GetScrollOffset().y);
+			scaleModeString += "Vertical";
 			break;
 		case Editor_ScaleMode::Both:
 			extraScale = Vec2(Input::GetScrollOffset().y);
+			scaleModeString += "Horizontal & Vertical";
 			break;
 		}
 
 		currentSelectedEntity->localScale = currentSelectedEntity->localScale + extraScale;
+
+		//Draw to screen
+		Debug::DrawText(scaleModeString, Vec2(0, 100), 0.5f, glm::vec3(1, 0, 0));
+		Debug::DrawText("Left Control + Q to change mode", Vec2(0, 150), 0.5f, glm::vec3(1, 0, 0));
+	}
+	else if (currentSelectedEntity) {
+		Debug::DrawText("Right Click to modify position and scale", Vec2(0, 100), 0.5f, glm::vec3(1, 0, 0));
 	}
 	
 	if (Input::GetButtonUp(BUTTONCODE_RIGHT)) {

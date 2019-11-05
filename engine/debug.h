@@ -26,10 +26,20 @@ struct Line {
 	glm::vec3 color;
 };
 
+//Basicly a holder for text settings
+struct DebugText {
+	struct Font* font;
+	std::string text;
+	Vec2 position;
+	float size;
+	glm::vec3 color;
+};
+
 class Debug {
 private:
 	static Debug* instance;
 	std::vector<Line> _lineDrawList;
+	std::vector<DebugText> _textDrawList; // Note normally text is a component, for debug though we make a exception
 	std::vector<std::string> logs;
 	std::vector<std::string> commands;
 public:
@@ -57,9 +67,19 @@ public:
 	static void DrawCube(Vec2 a, Vec2 b, glm::vec3 color = glm::vec3(1, 1, 1));
 
 	/**
+	* Draws text to the screen
+	*/
+	static void DrawText(std::string text, Vec2 position, float size, glm::vec3 color = glm::vec3(1, 1, 1));
+
+	/**
 	* Returns the line draw list
 	*/
-	static std::vector<Line> GetLineDrawList() { return GetInstance()->_lineDrawList; };
+	static const std::vector<Line> GetLineDrawList() { return GetInstance()->_lineDrawList; };
+
+	/**
+	* Returns the text draw list
+	*/
+	static const std::vector<DebugText> GetTextDrawList() { return GetInstance()->_textDrawList; };
 
 	/**
 	* Constructs the console using ImGui

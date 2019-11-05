@@ -100,7 +100,15 @@ add_custom_command(TARGET Engine POST_BUILD
 add_custom_command(TARGET Engine POST_BUILD 
 					COMMAND ${CMAKE_COMMAND} -E copy_directory
 						${CMAKE_SOURCE_DIR}/engine/shaders $<TARGET_FILE_DIR:Engine>/shaders)
-						
+
+add_custom_command(TARGET Engine POST_BUILD 
+					COMMAND ${CMAKE_COMMAND} -E make_directory
+						$<TARGET_FILE_DIR:Engine>/fonts)
+
+add_custom_command(TARGET Engine POST_BUILD 
+					COMMAND ${CMAKE_COMMAND} -E copy_directory
+						${CMAKE_SOURCE_DIR}/engine/fonts $<TARGET_FILE_DIR:Engine>/fonts)
+					
 add_custom_command(TARGET Engine POST_BUILD 
 					COMMAND ${CMAKE_COMMAND} -E copy
 						${CMAKE_SOURCE_DIR}/external/glfw/lib-vc2015/glfw3.dll $<TARGET_FILE_DIR:Engine>)

@@ -319,6 +319,11 @@ void Core::Update() {
 				Line line = Debug::GetLineDrawList()[i];
 				instance->renderer->DrawLine(line.a, line.b, line.color, SceneManager::GetActiveScene()->GetActiveCamera());
 			}
+
+			for (size_t i = 0; i < Debug::GetTextDrawList().size(); i++) {
+				DebugText text = Debug::GetTextDrawList()[i];
+				instance->renderer->RenderText(text.font, text.text, text.position, text.size, text.color);
+			}
 		}
 		else {
 			Debug::Log("SceneManager has no active camera");
