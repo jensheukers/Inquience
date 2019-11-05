@@ -52,7 +52,7 @@ Axis::Axis(int positiveKey, int negativeKey) {
 }
 
 float Axis::GetValue() {
-	int value = 0;
+	float value = 0;
 	if (Input::GetKey(positiveKey)) value += 1;
 	if (Input::GetKey(negativeKey)) value -= 1;
 	return value;
@@ -85,6 +85,11 @@ void cursor_position_callback(GLFWwindow* window, double xpos, double ypos)
 	Input::SetMousePos(Vec2((float)xpos, (float)ypos));
 }
 
+void scroll_callback(GLFWwindow* window, double xoffset, double yoffset)
+{
+	Input::SetScrollOffset(Vec2((float)xoffset, (float)yoffset));
+}
+
 Input* Input::_instance; // Declare static member
 
 Input* Input::GetInstance() {
@@ -105,6 +110,9 @@ void Input::HandleUpdates() {
 		GetInstance()->_buttonsLast[i] = GetInstance()->_buttons[i];
 	}
 
+	//Reset scrolloffset
+	GetInstance()->_scrollOffset = Vec2(0);
+
 	GetInstance()->lastKey = KEYCODE_EMPTY_KEY;
 }
 
@@ -113,6 +121,7 @@ void Input::Init(GLFWwindow* window) {
 	glfwSetKeyCallback(window, key_callback); // Set key callback
 	glfwSetMouseButtonCallback(window, mouse_button_callback); // Set button callback
 	glfwSetCursorPosCallback(window, cursor_position_callback); // Set mouse pos callback
+	glfwSetScrollCallback(window, scroll_callback);
 }
 
 bool Input::GetKeyDown(int keyCode) {
@@ -156,6 +165,14 @@ void Input::SetMousePos(Vec2 point) {
 
 Vec2 Input::GetMousePosition() {
 	return GetInstance()->_mousePos;
+}
+
+void Input::SetScrollOffset(const Vec2 offset) {
+	GetInstance()->_scrollOffset = offset;
+}
+
+const Vec2 Input::GetScrollOffset() {
+	return GetInstance()->_scrollOffset;
 }
 
 int Input::GetLastKey() {

@@ -22,8 +22,8 @@ void Grid::Construct(Vec2 size, Vec2 tileSize) {
 	for (int x = 0; x < (int)size.x; x += (int)tileSize.x) {
 		for (int y = 0; y < (int)size.y; y += (int)tileSize.y) {
 			GridTile* tile = new GridTile();
-			tile->position = Vec2(x, y);
-			tile->bounds = Vec2(x + tileSize.x, y + tileSize.y);
+			tile->position = Vec2((float)x, (float)y);
+			tile->bounds = Vec2((float)x + tileSize.x, (float)y + tileSize.y);
 
 			gridTiles.push_back(tile);
 		}

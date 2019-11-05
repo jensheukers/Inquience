@@ -64,6 +64,8 @@ int main(int argc, char * argv[]) {
 			break;
 		}*/
 
+		std::cout << Input::GetScrollOffset().y << std::endl;
+
 		Core::Update(); // Handle updates for engine
 	}
 

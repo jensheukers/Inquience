@@ -223,6 +223,7 @@ private:
 	int lastKey; /***< @brief The last key pressed */
 
 	Vec2 _mousePos; /***< @brief Point2 of floats containing Mouse Position */
+	Vec2 _scrollOffset; /***< The mouse scroll offset*/
 
 	/**
 	* Returns the instance if found, else creates a new instance and returns.
@@ -289,6 +290,16 @@ public:
 	* Returns the mouse position as a Point2f
 	*/
 	static Vec2 GetMousePosition();
+
+	/**
+	* Sets the scroll offset
+	*/
+	static void SetScrollOffset(const Vec2 offset);
+
+	/**
+	* Returns the scroll offset
+	*/
+	static const Vec2 GetScrollOffset();
 
 	/**
 	* Returns the last key pressed this frame, if there is no key pressed this frame it returns KEYCODE_EMPTY_KEY
