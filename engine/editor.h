@@ -16,6 +16,12 @@
 #include "math/vec2.h"
 #include "unique_types.h"
 
+enum Editor_ScaleMode {
+	Horizontal,
+	Vertical,
+	Both
+};
+
 struct GridTile {
 	Vec2 position;
 	Vec2 bounds;
@@ -109,6 +115,8 @@ public:
 class Editor {
 private:
 	static Editor* instance;
+
+	Editor_ScaleMode scalemode;
 
 	//Menus
 	std::vector<EditorWindow*> windows;

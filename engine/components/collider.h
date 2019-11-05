@@ -103,20 +103,21 @@ protected:
 
 public:
 	/**
-	* Constructor
+	* Constructor 
 	*/
 	BoxCollider();
 
 	Vec2 outer; /***< The external bounds of the BoxCollider*/
-
-	virtual Collider* New() override { return new BoxCollider(); }
+	bool scaleToOwner; /***< If true the outer scale will be set equal to the entity scale every frame*/
+	
+	virtual void Update() override;
 
 	virtual bool IsColliding(Collider* other) override;
 	virtual bool IsCollidingWithPoint(Vec2 point) override;
 
 	virtual float GetSize() override;
 
-	virtual BoxCollider* New() const { return new BoxCollider(); }
+	virtual Collider* New() override { return new BoxCollider(); }
 	virtual BoxCollider* Copy() const { return new BoxCollider(*this); }
 
 	void OnComponentPropertiesEditor() override;

@@ -287,7 +287,7 @@ Editor::Editor() {
 		//Set position to mouse position
 		copy->localPosition = Input::GetMousePosition() + SceneManager::GetActiveScene()->GetActiveCamera()->GetPosition();
 		currentSelectedEntity = copy;
-		});
+	});
 	combos.push_back(copySelectedEvent);
 
 	KeyComboEvent deleteSelectedEvent = KeyComboEvent(KeyCombo{ KeyEvent(KEYCODE_DELETE, KeyEvent_Type::GetDown) });
@@ -295,8 +295,29 @@ Editor::Editor() {
 		if (!currentSelectedEntity) return;
 		currentSelectedEntity->GetParent()->RemoveChild(GetInstance()->currentSelectedEntity);
 		delete currentSelectedEntity;
-		});
+	});
 	combos.push_back(deleteSelectedEvent);
+
+	KeyComboEvent setScalemodeEvent = KeyComboEvent(KeyCombo{ KeyEvent(KEYCODE_LEFT_CONTROL, KeyEvent_Type::Get), KeyEvent(KEYCODE_Q, KeyEvent_Type::GetDown) });
+	setScalemodeEvent.onActivate.AddLambda([=]() {
+		switch (this->scalemode) {
+		case Editor_ScaleMode::Horizontal:
+			this->scalemode = Editor_ScaleMode::Vertical;
+			break;
+		case Editor_ScaleMode::Vertical:
+			this->scalemode = Editor_ScaleMode::Both;
+			break;
+		case Editor_ScaleMode::Both:
+			this->scalemode = Editor_ScaleMode::Horizontal;
+			break;
+		default:
+			this->scalemode = Editor_ScaleMode::Both;
+			break;
+		}
+	});
+	combos.push_back(setScalemodeEvent);
+
+	this->scalemode = Editor_ScaleMode::Both;
 }
 
 Editor* Editor::GetInstance() {
@@ -319,11 +340,27 @@ void Editor::HandleInput() {
 		SetCurrentSelectedEntityByPosition(SceneManager::GetActiveScene(), mousePos);
 	}
 
-	if (currentSelectedEntity && bHoldingEntity) {
+	if (currentSelectedEntity && bHoldingEntity && Input::GetButton(BUTTONCODE_RIGHT)) {
 		currentSelectedEntity->localPosition = mousePos - (GetInstance()->currentSelectedEntity->GetScale() / 2);
-	}
 
-	if (Input::GetButtonUp(BUTTONCODE_LEFT)) {
+		//Scale the entity based on scrolling
+		Vec2 extraScale;
+		switch (this->scalemode) {
+		case Editor_ScaleMode::Horizontal:
+			extraScale = Vec2(Input::GetScrollOffset().y, 0);
+			break;
+		case Editor_ScaleMode::Vertical:
+			extraScale = Vec2(0, Input::GetScrollOffset().y);
+			break;
+		case Editor_ScaleMode::Both:
+			extraScale = Vec2(Input::GetScrollOffset().y);
+			break;
+		}
+
+		currentSelectedEntity->localScale = currentSelectedEntity->localScale + extraScale;
+	}
+	
+	if (Input::GetButtonUp(BUTTONCODE_RIGHT)) {
 		bHoldingEntity = false;
 	}
 }

@@ -78,6 +78,22 @@ BoxCollider::BoxCollider() {
 	}, [=]() -> StringVector {
 		return { std::to_string(outer.x), std::to_string(outer.y) };
 	});
+
+	AddProperty("ScaleToOwner", [=](std::vector<std::string> args) {
+		scaleToOwner = std::stoi(args[0]);
+	}, [=]() -> StringVector {
+		return { std::to_string(scaleToOwner) };
+	});
+}
+
+void BoxCollider::Update() {
+	if (bDrawDebugLines) {
+		this->DrawDebugLines();
+	}
+
+	if (this->scaleToOwner) {
+		this->outer = GetOwner()->localScale;
+	}
 }
 
 // We check if WE are colliding WITH other
@@ -108,4 +124,6 @@ void BoxCollider::OnComponentPropertiesEditor() {
 
 	ImGui::InputFloat("Outer X", &this->outer.x);
 	ImGui::InputFloat("Outer Y", &this->outer.y);
+
+	ImGui::Checkbox("Scale to Owner", &this->scaleToOwner);
 }
