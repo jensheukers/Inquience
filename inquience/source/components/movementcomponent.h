@@ -10,25 +10,31 @@ class MovementComponent : public Component {
 private:
 	class RigidBody* rigidBody; // Rigidbody instance
 
-	float stepSpeed; // Amount of speed for horizontal movement
-	float jumpForce; // Amount of jumpforce
-	bool grounded; // If true the entity is grounded
+	struct RaycastData* groundRaycast;
+	struct RaycastData* leftRaycast;
+	struct RaycastData* rightRaycast;
+
+	bool grounded;
+	bool canStepRight;
+	bool canStepLeft;
+
 public:
 	MovementComponent();
 
 	void BeginPlay();
 
-	void Step(int side); // Move horizontally
+	void ResetHorizontalVelocity();
+	void StepLeft(float speed);
+	void StepRight(float speed);
+	void Jump(float force);
 
-	void Jump();
-
-	void SetJumpForce(float force);
-	const float GetJumpForce();
-
-	void SetStepSpeed(float speed);
-	const float GetStepSpeed();
+	//Raycast uses a size to determine how far it should check, size should be from center of object to outer bounds
+	void AddRaycasts(const float size);
+	void RemoveRaycasts();
 
 	const bool IsGrounded();
+
+	~MovementComponent();
 };
 
 #endif // !IQ_MOVEMENTCOMPONENT_H

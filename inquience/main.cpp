@@ -37,19 +37,31 @@ int main(int argc, char * argv[]) {
 	player->AddComponent<BoxCollider>()->outer = Vec2(32, 32);
 	player->AddComponent<RigidBody>();
 	player->AddComponent<MovementComponent>();
+	player->GetComponent<MovementComponent>()->AddRaycasts(16);
 
 	SceneManager::GetActiveScene()->AddChild(player);
 
 	while (Core::IsActive()) {
 		if (!player->GetComponent<MovementComponent>()->IsGrounded()) {
-			player->GetComponent<RigidBody>()->AddForce(Vec2(0, 1.f));
+			player->GetComponent<RigidBody>()->AddForce(Vec2(0, 9.f));
 		}
 
 		if (Input::GetKeyDown(KEYCODE_SPACE)) {
-			player->GetComponent<MovementComponent>()->Jump();
+			player->GetComponent<MovementComponent>()->Jump(100.f);
 		}
 
-		player->GetComponent<MovementComponent>()->Step(Input::GetAxis("Horizontal"));
+		float speed = 200;
+		switch ((int)Input::GetAxis("Horizontal")) {
+		case -1:
+			player->GetComponent<MovementComponent>()->StepLeft(speed);
+			break;
+		case 1:
+			player->GetComponent<MovementComponent>()->StepRight(speed);
+			break;
+		default:
+			player->GetComponent<MovementComponent>()->ResetHorizontalVelocity();
+			break;
+		}
 
 		Core::Update(); // Handle updates for engine
 	}

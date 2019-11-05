@@ -95,6 +95,13 @@ bool BoxCollider::IsCollidingWithPoint(Vec2 point) {
 	return Physics::InBounds(point, GetOwner()->GetPosition(), GetOwner()->GetPosition() + this->outer);
 }
 
+float BoxCollider::GetSize() {
+	if (outer.x > outer.y) {
+		return outer.x;
+	}
+	return outer.y;
+}
+
 void BoxCollider::OnComponentPropertiesEditor() {
 	Debug::DrawCube(this->GetOwner()->GetPosition(), this->GetOwner()->GetPosition() + this->outer, glm::vec3(0, 1, 0));
 

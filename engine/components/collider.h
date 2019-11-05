@@ -66,6 +66,11 @@ public:
 	virtual bool IsCollidingWithPoint(Vec2 point) { return true; }
 
 	/**
+	* Returns the size of the collider, should be overwritten
+	*/
+	virtual float GetSize() { return 0; };
+
+	/**
 	* Returns all the colliders currently colliding with this collider
 	*/
 	std::vector<Collider*> const GetHits();
@@ -108,6 +113,8 @@ public:
 
 	virtual bool IsColliding(Collider* other) override;
 	virtual bool IsCollidingWithPoint(Vec2 point) override;
+
+	virtual float GetSize() override;
 
 	virtual BoxCollider* New() const { return new BoxCollider(); }
 	virtual BoxCollider* Copy() const { return new BoxCollider(*this); }

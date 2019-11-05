@@ -12,9 +12,10 @@
 
 #include "collider.h"
 
-RaycastData::RaycastData(Vec2 direction, float lenght) {
+RaycastData::RaycastData(Vec2 direction, float lenght, Vec2 offset) {
 	this->direction = direction;
 	this->lenght = lenght;
+	this->offset = offset;
 }
 
 RigidBody::RigidBody() {
@@ -34,7 +35,7 @@ void RigidBody::Update() {
 
 	//Execute raycasts
 	for (size_t i = 0; i < rayCasts.size(); i++) {
-		if (Physics::Raycast(this->GetOwner()->GetPosition(), rayCasts[i]->direction, rayCasts[i]->lenght, rayCasts[i]->hitData, colliders, { GetOwner()->GetComponent<Collider>() })) {
+		if (Physics::Raycast(this->GetOwner()->GetPosition() + rayCasts[i]->offset, rayCasts[i]->direction, rayCasts[i]->lenght, rayCasts[i]->hitData, colliders, { GetOwner()->GetComponent<Collider>() })) {
 			rayCasts[i]->onRaycastHit.Execute();
 		}
 	}

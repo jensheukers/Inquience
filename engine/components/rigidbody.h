@@ -16,10 +16,11 @@
 struct RaycastData {
 	Vec2 direction;
 	float lenght;
+	Vec2 offset; /***< Offset from localPosition*/
 	RaycastHit hitData;
 	Delegate onRaycastHit;
 
-	RaycastData(Vec2 direction, float lenght);
+	RaycastData(Vec2 direction, float lenght, Vec2 offset = Vec2(0,0));
 };
 
 //Rigidbody has simple physics for "simulation"
