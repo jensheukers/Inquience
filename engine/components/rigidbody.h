@@ -13,11 +13,22 @@
 #include "../math/physics.h"
 #include "../unique_types.h"
 
+struct RaycastData {
+	Vec2 direction;
+	float lenght;
+	RaycastHit hitData;
+	Delegate onRaycastHit;
+
+	RaycastData(Vec2 direction, float lenght);
+};
+
 //Rigidbody has simple physics for "simulation"
 class RigidBody : public Component {
 private:
 	Vec2 velocity; /***< The velocity of the rigidbody, is added to position every frame */
 	Vec2 positionLastFrame; /***< Position last frame */
+
+	std::vector<RaycastData*> rayCasts; /***< Vector of raycasts to execute togheter with the collision check*/
 public:
 	Delegate onBlockedDelegate; /***< Delegate for whenever isBlockedThisFrame is true*/
 
@@ -47,6 +58,16 @@ public:
 	* @return Vec2
 	*/
 	const Vec2 GetVelocity();
+
+	/**
+	* Adds a raycast to check in update
+	*/
+	RaycastData* AddRaycast(RaycastData* rayCastData);
+
+	/**
+	* Removes a raycast from the raycasts vector
+	*/
+	RaycastData* RemoveRaycast(RaycastData* rayCastData);
 
 	virtual RigidBody* New() override { return new RigidBody(); }
 	virtual RigidBody* Copy() const { return new RigidBody(*this); }

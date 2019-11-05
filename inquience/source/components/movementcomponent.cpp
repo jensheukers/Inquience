@@ -6,7 +6,7 @@
 #include <components/rigidbody.h>
 
 MovementComponent::MovementComponent() {
-	this->jumpForce = 200;
+	this->jumpForce = 100;
 	this->stepSpeed = 200;
 	this->grounded = false; // Initialize as false, so gravity will be added
 }
@@ -14,8 +14,13 @@ MovementComponent::MovementComponent() {
 void MovementComponent::BeginPlay() {
 	if (this->rigidBody = GetOwner()->GetComponent<RigidBody>()) {
 		rigidBody->onBlockedDelegate.AddLambda([=]() {
+			rigidBody->SetVelocity(Vec2(0.f, 0.f));
+		});
+
+		RaycastData* groundRayCast = rigidBody->AddRaycast(new RaycastData(Vec2(0, 1), 32));
+		groundRayCast->onRaycastHit.AddLambda([=]() {
 			this->grounded = true;
-			});
+		});
 	}
 	else {
 		Debug::Log("WARNING: MovementComponent added BEFORE rigidbody, Rigidbody should always be added before MovementComponent");

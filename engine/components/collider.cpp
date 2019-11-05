@@ -91,6 +91,10 @@ bool BoxCollider::IsColliding(Collider* other) {
 	return false;
 }
 
+bool BoxCollider::IsCollidingWithPoint(Vec2 point) {
+	return Physics::InBounds(point, GetOwner()->GetPosition(), GetOwner()->GetPosition() + this->outer);
+}
+
 void BoxCollider::OnComponentPropertiesEditor() {
 	Debug::DrawCube(this->GetOwner()->GetPosition(), this->GetOwner()->GetPosition() + this->outer, glm::vec3(0, 1, 0));
 

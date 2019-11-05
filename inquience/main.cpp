@@ -41,11 +41,8 @@ int main(int argc, char * argv[]) {
 	SceneManager::GetActiveScene()->AddChild(player);
 
 	while (Core::IsActive()) {
-		if (player->GetComponent<MovementComponent>()->IsGrounded()) {
-			player->GetComponent<RigidBody>()->SetVelocity(Vec2(player->GetComponent<RigidBody>()->GetVelocity().x, 0));
-		}
-		else {
-			player->GetComponent<RigidBody>()->AddForce(Vec2(0, 9.f));
+		if (!player->GetComponent<MovementComponent>()->IsGrounded()) {
+			player->GetComponent<RigidBody>()->AddForce(Vec2(0, 1.f));
 		}
 
 		if (Input::GetKeyDown(KEYCODE_SPACE)) {

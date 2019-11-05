@@ -61,6 +61,11 @@ public:
 	virtual bool IsColliding(Collider* other) { return false; };
 
 	/**
+	* Returns true if point is inside our collider
+	*/
+	virtual bool IsCollidingWithPoint(Vec2 point) { return true; }
+
+	/**
 	* Returns all the colliders currently colliding with this collider
 	*/
 	std::vector<Collider*> const GetHits();
@@ -101,10 +106,8 @@ public:
 
 	virtual Collider* New() override { return new BoxCollider(); }
 
-	/**
-	* Override IsColliding to do collision check
-	*/
 	virtual bool IsColliding(Collider* other) override;
+	virtual bool IsCollidingWithPoint(Vec2 point) override;
 
 	virtual BoxCollider* New() const { return new BoxCollider(); }
 	virtual BoxCollider* Copy() const { return new BoxCollider(*this); }
