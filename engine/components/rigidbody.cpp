@@ -12,12 +12,6 @@
 
 #include "collider.h"
 
-RaycastData::RaycastData(Vec2 direction, float lenght, Vec2 offset) {
-	this->direction = direction;
-	this->lenght = lenght;
-	this->offset = offset;
-}
-
 RigidBody::RigidBody() {
 	this->velocity = Vec2(0, 0.f);
 	this->positionLastFrame = Vec2(0, 0);
@@ -32,13 +26,6 @@ void RigidBody::Update() {
 	//Search through every entity from top in hierarchy if they have a collider component, then check for collision
 	std::vector<Collider*> colliders;
 	this->GetOwner()->GetHighestEntityInHierarchy()->GetAllComponentsOfTypeInChildren(colliders);
-
-	//Execute raycasts
-	for (size_t i = 0; i < rayCasts.size(); i++) {
-		if (Physics::Raycast(this->GetOwner()->GetPosition() + rayCasts[i]->offset, rayCasts[i]->direction, rayCasts[i]->lenght, rayCasts[i]->hitData, colliders, { GetOwner()->GetComponent<Collider>() })) {
-			rayCasts[i]->onRaycastHit.Execute();
-		}
-	}
 
 	//Check for collision, only rigidbody objects should do collision checks
 	GetOwner()->GetComponent<Collider>()->CheckCollision(colliders);
@@ -65,19 +52,4 @@ void RigidBody::SetVelocity(Vec2 velocity) {
 
 const Vec2 RigidBody::GetVelocity() {
 	return velocity;
-}
-
-RaycastData* RigidBody::AddRaycast(RaycastData* rayCastData) {
-	rayCasts.push_back(rayCastData);
-	return rayCastData;
-}
-
-RaycastData* RigidBody::RemoveRaycast(RaycastData* rayCastData) {
-	for (size_t i = 0; i < rayCasts.size(); i++) {
-		if (rayCasts[i] == rayCastData) {
-			rayCasts.erase(rayCasts.begin() + i);
-		}
-	}
-
-	return rayCastData;
 }

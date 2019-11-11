@@ -10,10 +10,6 @@ class MovementComponent : public Component {
 private:
 	class RigidBody* rigidBody; // Rigidbody instance
 
-	struct RaycastData* groundRaycast;
-	struct RaycastData* leftRaycast;
-	struct RaycastData* rightRaycast;
-
 	bool grounded;
 	bool canStepRight;
 	bool canStepLeft;
@@ -28,13 +24,7 @@ public:
 	void StepRight(float speed);
 	void Jump(float force);
 
-	//Raycast uses a size to determine how far it should check, size should be from center of object to outer bounds
-	void AddRaycasts(const float size);
-	void RemoveRaycasts();
-
 	const bool IsGrounded();
-
-	~MovementComponent();
 };
 
 #endif // !IQ_MOVEMENTCOMPONENT_H
