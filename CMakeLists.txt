@@ -59,6 +59,7 @@ set ( ALL_LIBS
 #	Add Engine
 #------------------------------------------------------
 add_library(Engine
+	#Source files
 	engine/camera.cpp
 	engine/component.cpp
 	engine/component_register.cpp
@@ -85,11 +86,41 @@ add_library(Engine
 	engine/math/physics.cpp
 	engine/math/vec2.cpp
 	
+	#Headers
+	engine/camera.h
+	engine/component.h
+	engine/component_register.h
+	engine/core.h
+	engine/debug.h
+	engine/editor.h
+	engine/entity.h
+	engine/input.h
+	engine/luascript.h
+	engine/renderer.h
+	engine/scene.h
+	engine/scenemanager.h
+	engine/sound.h
+	engine/soundmanager.h
+	engine/texture.h
+	engine/unique_types.h
+	engine/components/animator.h
+	engine/components/collider.h
+	engine/components/rigidbody.h
+	engine/components/sprite.h
+	engine/components/ui.h
+	engine/graphics/font.h
+	engine/graphics/shader.h
+	engine/math/physics.h
+	engine/math/vec2.h
+	
 	#ImGui
 	external/imgui/imgui.cpp
+	external/imgui/imgui.h
 	external/imgui/imgui_draw.cpp
 	external/imgui/imgui_impl_glfw.cpp
+	external/imgui/imgui_impl_glfw.h
 	external/imgui/imgui_impl_opengl3.cpp
+	external/imgui/imgui_impl_opengl3.h
 	external/imgui/imgui_widgets.cpp
 )
 
