@@ -6,8 +6,16 @@
 // Written by Jens Heukers, November 2019
 #include <core.h>
 
+#include "source/gamestate.h"
+
 int main(int argc, char * argv[]) {
 	Core::Initialize(argc, argv, Vec2(1280, 720), "Inquience");
+
+	GameState* state = new GameState(std::vector<std::string> { 
+		"res/scenes/default.scene" 
+	});
+	
+	state->Initialize();
 
 	while (Core::IsActive()) {
 		Core::Update(); // Handle updates for engine
