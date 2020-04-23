@@ -9,9 +9,14 @@
 #include "entity.h"
 #include "camera.h"
 
+//Unique types for KeyValuePairs
+#include "unique_types.h"
+#include <vector>
+
 class Scene : public Entity {
 private:
 	Camera * activeCamera; /***< The currently active Camera*/
+	std::vector<KeyValuePair> keyValuePairs; /***< All key value pairs stored in scene*/
 public:
 	/**
 	* Constructor
@@ -28,12 +33,31 @@ public:
 	* @param Camera*
 	*/
 	void SetActiveCamera(Camera* camera);
-
 	/**
 	* Returns the active camera
 	* @return Camera*
 	*/
 	Camera* GetActiveCamera();
+
+	/**
+	* Adds a KVP to the scene KVP List
+	*/
+	void AddKVP(KeyValuePair kvp);
+
+	/**
+	* Removes a KVP from the scene KVP List by key
+	*/
+	void RemoveKVP(std::string key);
+
+	/**
+	* Returns the key value pairs list
+	*/
+	std::vector<KeyValuePair> GetKeyValuePairList() { return this->keyValuePairs; }
+
+	/**
+	* Gets KVP Value from kvp list
+	*/
+	std::string GetKeyValue(std::string key);
 
 	/**
 	* Writes the scene to a luascript file instance, including children components and properties

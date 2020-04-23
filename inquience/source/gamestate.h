@@ -27,6 +27,9 @@ public:
 
 	//Loads the next level
 	void NextLevel();
+
+	//Loads the level with given index
+	void LoadLevel(int index);
 };
 
 #endif // !IQ_GAMESTATE_H

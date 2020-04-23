@@ -100,6 +100,14 @@ void Core::Initialize(int argc, char* argv[], Vec2 resolution, std::string title
 		return 0;
 	});
 
+	//Adds a keyvaluepair to scene kvp list
+	LuaScript::AddNativeFunction("AddKVP", [](lua_State* state) -> int {
+		if (SceneManager::GetActiveScene()) {
+			SceneManager::GetActiveScene()->AddKVP(KeyValuePair(lua_tostring(state, -2), lua_tostring(state, -1)));
+		}
+		return 0;
+	});
+
 	//Implement Lua functions for UI Handling
 
 	//The pointer to the current element being edited

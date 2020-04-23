@@ -15,6 +15,17 @@
 
 #include <thread>
 
+//KVP's are stored as std::string
+struct KeyValuePair {
+	std::string key;
+	std::string value;
+
+	KeyValuePair(std::string key, std::string value) {
+		this->key = key;
+		this->value = value;
+	}
+};
+
 struct Delegate {
 private:
 	std::vector<std::function<void()>> executionList;

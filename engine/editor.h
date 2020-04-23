@@ -65,7 +65,7 @@ public:
 };
 
 class EditorInputWindow : public EditorWindow {
-private:
+protected:
 	const char* title; /***< The title of the input window*/
 	char buffer[256] = ""; /***< Buffer holds string*/
 public:
@@ -76,12 +76,24 @@ public:
 	*/
 	EditorInputWindow(const char* title = "InputWindow");
 
-	void Handle(Editor* editor) override;
+	virtual void Handle(Editor* editor) override;
 
 	/**
 	* Returns the buffer
 	*/
 	const char* GetBuffer() { return this->buffer; }
+};
+
+class EditorTwoInputWindow : public EditorInputWindow {
+protected:
+	char buffer2[256] = ""; /***< Buffer holds string*/
+public:
+	virtual void Handle(Editor* editor) override;
+
+	/**
+	* Returns the second buffer
+	*/
+	const char* GetSecondBuffer() { return this->buffer2; }
 };
 
 class EditorHierarchy : public EditorWindow {
@@ -102,6 +114,11 @@ public:
 };
 
 class EditorCreateEntityWizard : public EditorWindow {
+public:
+	void Handle(Editor* editor) override;
+};
+
+class EditorKeyValuePairWizard : public EditorWindow {
 public:
 	void Handle(Editor* editor) override;
 };

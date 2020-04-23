@@ -3,7 +3,7 @@
 // Copyright (C) Jens Heukers - All Rights Reserved
 // Unauthorized copying of this file, via any medium is strictly prohibited
 // Proprietary and confidential
-// Written by Jens Heukers, October 2019
+// Written by Jens Heukers, April 2020
 #include "editor.h"
 
 
@@ -58,6 +58,17 @@ void EditorInputWindow::Handle(Editor* editor) {
 	ImGui::Begin(this->title, &this->active);
 	ImGui::InputText("", this->buffer, sizeof(this->buffer));
 	ImGui::SameLine();
+	if (ImGui::Button("Apply")) {
+		this->onApply.Execute();
+		this->active = false;
+	}
+	ImGui::End();
+}
+
+void EditorTwoInputWindow::Handle(Editor* editor) {
+	ImGui::Begin(this->title, &this->active);
+	ImGui::InputText("##0", this->buffer, sizeof(this->buffer));
+	ImGui::InputText("##1", this->buffer2, sizeof(this->buffer2));
 	if (ImGui::Button("Apply")) {
 		this->onApply.Execute();
 		this->active = false;
@@ -250,6 +261,37 @@ void EditorCreateEntityWizard::Handle(Editor* editor) {
 		this->active = false;
 	}
 
+	ImGui::End();
+}
+
+void EditorKeyValuePairWizard::Handle(Editor* editor) {
+	ImGui::Begin("Key Value Pairs", &this->active);
+
+	if (!SceneManager::GetActiveScene()) {
+		ImGui::Text("No active scene");
+		ImGui::End();
+		return;
+	}
+
+	std::vector<KeyValuePair> kvps = SceneManager::GetActiveScene()->GetKeyValuePairList();
+
+	for (size_t i = 0; i < kvps.size(); i++) {
+		ImGui::Text(("[Key: " + kvps[i].key + "] - [Value: " + kvps[i].value + "]").c_str());
+		ImGui::SameLine();
+		if (ImGui::Button("Delete")) {
+			SceneManager::GetActiveScene()->RemoveKVP(kvps[i].key);
+		}
+	}
+
+	// add a new KVP
+	if (ImGui::Button("Add KVP")) {
+		EditorTwoInputWindow* inputWindow = new EditorTwoInputWindow();
+		inputWindow->onApply.AddLambda([=]() {
+			SceneManager::GetActiveScene()->AddKVP(KeyValuePair(inputWindow->GetBuffer(), inputWindow->GetSecondBuffer()));
+			});
+
+		editor->AddEditorWindow(inputWindow);
+	}
 	ImGui::End();
 }
 
@@ -462,8 +504,9 @@ void Editor::Update() {
 		ImGui::EndMenu();
 	}
 
-	if (ImGui::BeginMenu("Entity")) {
+	if (ImGui::BeginMenu("Scene")) {
 		if (ImGui::MenuItem("New Entity")) { AddEditorWindow(new EditorCreateEntityWizard()); }
+		if (ImGui::MenuItem("KVP Wizard")) { AddEditorWindow(new EditorKeyValuePairWizard()); }
 		ImGui::EndMenu();
 	}
 

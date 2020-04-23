@@ -11,10 +11,11 @@
 int main(int argc, char * argv[]) {
 	Core::Initialize(argc, argv, Vec2(1280, 720), "Inquience");
 
+	//Create GameState and insert levels as parameter
 	GameState* state = new GameState(std::vector<std::string> { 
-		"res/scenes/default.scene" 
+		"res/scenes/default.scene",
 	});
-	
+
 	state->Initialize();
 
 	while (Core::IsActive()) {
