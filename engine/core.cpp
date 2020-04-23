@@ -32,6 +32,8 @@ void Core::Initialize(int argc, char* argv[], Vec2 resolution, std::string title
 	}
 	else return; // Else return as instance is already set, thus the engine is already initialized
 
+	instance->requestExit = false;
+
 	//Determine executable directory path
 	std::string _exeDirArg = argv[0]; // Get the executable path directory from arguments
 	std::size_t found = _exeDirArg.find_last_of("/\\"); // Get position of character
@@ -76,6 +78,11 @@ void Core::Initialize(int argc, char* argv[], Vec2 resolution, std::string title
 		}
 
 		LuaScript::RunFunction(fileName, functionName, params);
+		return 0;
+	});
+
+	LuaScript::AddNativeFunction("RequestExit", [](lua_State* state) -> int {
+		instance->RequestExit();
 		return 0;
 	});
 
@@ -362,13 +369,19 @@ void Core::Update() {
 	Input::HandleUpdates();
 
 	//If window should not close, we poll events, swap buffers and clear, else we set active to false
-	if (!glfwWindowShouldClose(instance->renderer->GetWindow())) {
+	if (!glfwWindowShouldClose(instance->renderer->GetWindow()) && !instance->requestExit) {
 		instance->renderer->PollEvents();
 		instance->renderer->SwapBuffers();
 		instance->renderer->Clear();
 
 		//Clear debug
 		Debug::Clear();
+
+		//Execute late frame functions
+		for (size_t i = 0; i < instance->LateFrameFunctionList.size(); i++) {
+			instance->LateFrameFunctionList[i]();
+			instance->LateFrameFunctionList.erase(instance->LateFrameFunctionList.begin() + i);
+		}
 	}
 	else {
 		Core::Destroy();
@@ -403,6 +416,14 @@ std::string Core::GetExecutableDirectoryPath() {
 
 Renderer* Core::GetRendererInstance() {
 	return instance->renderer;
+}
+
+void Core::RequestExit() {
+	instance->requestExit = true;
+}
+
+void Core::ExecuteLateFrame(std::function<void()> func) {
+	instance->LateFrameFunctionList.push_back(func);
 }
 
 float Core::CalculateDeltaTime() {

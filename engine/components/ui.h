@@ -1,11 +1,9 @@
 // Header file for User Interface Elements.
 //
-// Version: 2/5/2019
-//
 // Copyright (C) Jens Heukers - All Rights Reserved
 // Unauthorized copying of this file, via any medium is strictly prohibited
 // Proprietary and confidential
-// Written by Jens Heukers, May 2019
+// Written by Jens Heukers, April 2020
 #ifndef UI_H
 #define UI_H
 
@@ -27,10 +25,16 @@ private:
 	StringVector onEnterReturnVector;
 	StringVector onStayReturnVector;
 	StringVector onLeaveReturnVector;
+	StringVector onRightClickReturnVector;
+	StringVector onLeftClickReturnVector;
+	StringVector onMiddleClickReturnVector;
 public:
 	Delegate OnEnterDelegate;
 	Delegate OnLeaveDelegate;
 	Delegate OnStayDelegate;
+	Delegate OnRightClickDelegate;
+	Delegate OnLeftClickDelegate;
+	Delegate OnMiddleClickDelegate;
 
 	/*
 	* Constructor
@@ -40,17 +44,22 @@ public:
 	/**
 	* Triggered whenever the mouse enters the element
 	*/
-	void OnEnter() { OnEnterDelegate.Execute(); };
+	virtual void OnEnter() { OnEnterDelegate.Execute(); };
 
 	/**
 	* Triggered whenever the mouse leaves the element
 	*/
-	void OnLeave() { OnLeaveDelegate.Execute(); };
+	virtual void OnLeave() { OnLeaveDelegate.Execute(); };
 
 	/**
 	* Triggered whenever the mouse is on the element
 	*/
-	void OnStay() { OnStayDelegate.Execute(); };
+	virtual void OnStay() { OnStayDelegate.Execute(); };
+
+	/**
+	* Triggered whenever the mouse is clicked on the element
+	*/
+	virtual void OnClick(int mouseIndex);
 
 	/**
 	* Overwritten update method

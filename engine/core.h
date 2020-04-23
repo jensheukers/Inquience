@@ -31,6 +31,10 @@ private:
 	float fps; /***< The amount of frames per second*/
 	float frame; /***< The Current frame*/
 	float timeElapsed; /***< The time in seconds since the program started*/
+
+	bool requestExit; /***< If true the applications requests to be exited*/
+
+	std::vector<std::function<void()>> LateFrameFunctionList; /***< List of functions to be executed after the frame is done*/
 public:
 	/**
 	* Initalizes the Core of the engine
@@ -91,6 +95,16 @@ public:
 	* @return Renderer*
 	*/
 	static Renderer* GetRendererInstance();
+
+	/**
+	* Requests a exit
+	*/
+	static void RequestExit();
+
+	/**
+	* Adds a function that is to be executed once at the end of this frame
+	*/
+	static void ExecuteLateFrame(std::function<void()> func);
 
 	//Local methods
 
