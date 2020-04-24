@@ -32,3 +32,11 @@ void GameState::LoadLevel(int index) {
 	Debug::Log("Level index  set to (" + std::to_string(this->currentLevel) + ") loading next level (" + std::to_string(index) + ")");
 	this->NextLevel();
 }
+
+void GameState::LoadLevel(std::string path) {
+	for (size_t i = 0; i < levels.size(); i++) {
+		if (levels[i] == path) {
+			this->LoadLevel(i);
+		}
+	}
+}

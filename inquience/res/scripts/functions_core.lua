@@ -11,8 +11,3 @@ end
 function NextLevel()
 	NextLevel_Internal()
 end
-
---Loads the given scene/level safely
-function LoadLevel(Index)
-	LoadLevel_Internal(Index)
-end

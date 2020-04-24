@@ -30,6 +30,9 @@ public:
 
 	//Loads the level with given index
 	void LoadLevel(int index);
+
+	//Loads the level with given path
+	void LoadLevel(std::string path);
 };
 
 #endif // !IQ_GAMESTATE_H

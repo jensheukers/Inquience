@@ -28,13 +28,6 @@ int main(int argc, char * argv[]) {
 			});
 			return 0;
 		});
-		
-		LuaScript::AddNativeFunction("LoadLevel_Internal", [](lua_State* state) -> int {
-			Core::ExecuteLateFrame([=]() {
-				gameState->LoadLevel(lua_tonumber(state, -1));
-			});
-			return 0;
-		});
 	}
 	
 
