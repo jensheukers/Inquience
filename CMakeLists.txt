@@ -177,6 +177,8 @@ add_executable( Inquience
 	#Source files
 	inquience/source/creature.cpp
 	inquience/source/creature.h
+	inquience/source/gamestate.cpp
+	inquience/source/gamestate.h
 	
 	inquience/source/components/healthcomponent.cpp
 	inquience/source/components/healthcomponent.h
