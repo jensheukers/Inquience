@@ -1,0 +1,5 @@
+function Initialize()
+	NewScene(true)
+	SetCameraPosition(0.000000,0.000000)
+	AddKVP("BeginGameplay","True")
+end

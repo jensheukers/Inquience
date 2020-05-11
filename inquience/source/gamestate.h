@@ -7,6 +7,11 @@
 //The function inside lua script to load scenes
 #define IQ_SCENELOAD_FUNCTIONNAME "Initialize"
 
+//Definitions to load gameplay
+#define IQ_SCENELOAD_GAMEPLAY_KEYNAME "BeginGameplay"
+#define IQ_SCENELOAD_GAMEPLAY_POSITIVE_KEYVALUE "True"
+#define IQ_SCENELOAD_GAMEPLAY_NEGATIVE_KEYVALUE "False"
+
 #include <scenemanager.h>
 #include <vector>
 #include <string>
@@ -19,6 +24,10 @@ private:
 
 	//Holders
 	Scene* currentScene;
+
+protected:
+	//Triggered when specific KVP is set in scene file
+	virtual void BeginGameplay();
 public:
 	GameState(std::vector<std::string> levels);
 

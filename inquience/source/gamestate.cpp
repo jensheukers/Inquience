@@ -1,6 +1,14 @@
 #include "gamestate.h"
 
 #include <luascript.h>
+#include "creatures/player.h"
+
+void GameState::BeginGameplay() {
+	Debug::Log("Starting Gameplay");
+
+	Player* player = new Player();
+	SceneManager::GetActiveScene()->AddChild(player);
+}
 
 GameState::GameState(std::vector<std::string> levels) {
 	this->currentLevel = -1;
@@ -24,6 +32,11 @@ void GameState::NextLevel() {
 	}
 
 	Debug::Log("Next Level (" + levels[this->currentLevel] + ") Loaded!");
+
+	//Check if gameplay should be started
+	if (SceneManager::GetActiveScene()->GetKeyValue(IQ_SCENELOAD_GAMEPLAY_KEYNAME) == IQ_SCENELOAD_GAMEPLAY_POSITIVE_KEYVALUE) {
+		this->BeginGameplay();
+	}
 }
 
 void GameState::LoadLevel(int index) {
