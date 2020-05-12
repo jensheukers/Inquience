@@ -4,10 +4,12 @@
 #include <entity.h>
 
 #include <source/components/healthcomponent.h>
+#include <components/sprite.h>
 
 class Creature : public Entity {
 private:
 	HealthComponent* healthComponent;
+	Sprite* sprite;
 public:
 	Creature();
 

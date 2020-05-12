@@ -8,6 +8,12 @@ void GameState::BeginGameplay() {
 
 	Player* player = new Player();
 	SceneManager::GetActiveScene()->AddChild(player);
+
+	//Try to retrieve x and y values from KeyValuePairs for spawn location
+	float x = std::stof(SceneManager::GetActiveScene()->GetKeyValue("x"));
+	float y = std::stof(SceneManager::GetActiveScene()->GetKeyValue("y"));
+
+	player->localPosition = Vec2(x, y); // Set spawn location
 }
 
 GameState::GameState(std::vector<std::string> levels) {
