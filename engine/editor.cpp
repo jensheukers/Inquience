@@ -337,6 +337,7 @@ Editor::Editor() {
 		if (!currentSelectedEntity) return;
 		currentSelectedEntity->GetParent()->RemoveChild(GetInstance()->currentSelectedEntity);
 		delete currentSelectedEntity;
+		currentSelectedEntity = nullptr;
 	});
 	combos.push_back(deleteSelectedEvent);
 
@@ -390,6 +391,11 @@ void Editor::HandleInput() {
 
 	if (currentSelectedEntity && bHoldingEntity && Input::GetButton(BUTTONCODE_RIGHT)) {
 		currentSelectedEntity->localPosition = mousePos - (GetInstance()->currentSelectedEntity->GetScale() / 2);
+
+		//Try to set on grid tile if possible
+		if (GridTile* tile = grid->GetGridTile(currentSelectedEntity->localPosition)) {
+			currentSelectedEntity->localPosition = tile->position;
+		}
 
 		std::string scaleModeString = "Scale Mode: ";
 
