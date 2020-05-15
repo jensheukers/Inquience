@@ -15,6 +15,10 @@
 RigidBody::RigidBody() {
 	this->velocity = Vec2(0, 0.f);
 	this->positionLastFrame = Vec2(0, 0);
+
+	this->bPreventSinkingBodies = true;
+	this->bSimulateGravity = true;
+	this->bSimulateDrag = true;
 }
 
 void RigidBody::Update() {
@@ -37,6 +41,32 @@ void RigidBody::Update() {
 	}
 
 	positionLastFrame = GetOwner()->localPosition;
+
+	if (this->bSimulateGravity) {
+		velocity = velocity + Vec2(0, RIGIDBODY_GRAVITY_IMPLIER);
+	}
+
+	if (this->bSimulateDrag) {
+		if (velocity.x > 0) {
+			velocity = velocity - Vec2(RIGIDBODY_DRAG_IMPLIER, 0);
+		}
+
+		if (velocity.x < 0) {
+			velocity = velocity + Vec2(RIGIDBODY_DRAG_IMPLIER, 0);
+		}
+	}
+
+	//Raycast checks to prevent sinking bodies
+	if (this->bPreventSinkingBodies) {
+		Vec2 downRight = this->GetOwner()->GetPosition() + Vec2(this->GetOwner()->GetScale().x, this->GetOwner()->GetScale().y);
+		Vec2 downLeft = this->GetOwner()->GetPosition() + Vec2(0, this->GetOwner()->GetScale().y);
+
+		//Reset y velocity if true
+		if (Physics::Raycast(downRight, Vec2(0, 1), 2, RaycastHit(), colliders, { GetOwner()->GetComponent<Collider>() }) ||
+			Physics::Raycast(downLeft, Vec2(0, 1), 2, RaycastHit(), colliders, { GetOwner()->GetComponent<Collider>() })) {
+			velocity = Vec2(velocity.x, 0);
+		}
+	}
 
 	//Add velocity to position
 	GetOwner()->localPosition = GetOwner()->localPosition + (velocity * Core::GetDeltaTime());

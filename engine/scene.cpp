@@ -64,7 +64,7 @@ void Scene::WriteToLuaFile(LuaScriptFile& file, std::string funcName) {
 
 		//Key value pairs
 		for (size_t i = 0; i < this->keyValuePairs.size(); i++) {
-			lines.push_back(LuaParsableLine(LuaScriptFile::CreateLuaFunctionCallString("AddKVP", StringVector{ this->keyValuePairs[i].key, this->keyValuePairs[i].value }), 1));
+			lines.push_back(LuaParsableLine(LuaScriptFile::CreateLuaFunctionCallString("AddKVP", StringVector{ '"' + this->keyValuePairs[i].key + '"', '"' + this->keyValuePairs[i].value  + '"'}), 1));
 		}
 	}
 	else {

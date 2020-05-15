@@ -19,7 +19,6 @@ public:
 
 	void BeginPlay();
 
-	void ResetHorizontalVelocity();
 	void StepLeft(float speed);
 	void StepRight(float speed);
 	void Jump(float force);

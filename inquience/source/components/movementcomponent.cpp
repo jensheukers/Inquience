@@ -17,10 +17,6 @@ void MovementComponent::BeginPlay() {
 	}
 }
 
-void MovementComponent::ResetHorizontalVelocity() {
-	rigidBody->SetVelocity(Vec2(0, rigidBody->GetVelocity().y));
-}
-
 void MovementComponent::StepLeft(float speed) {
 	if (!this->canStepLeft) return;
 	rigidBody->SetVelocity(Vec2(-(float)speed, rigidBody->GetVelocity().y));
