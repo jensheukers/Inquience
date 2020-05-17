@@ -124,6 +124,7 @@ void BoxCollider::OnComponentPropertiesEditor() {
 
 	ImGui::InputFloat("Outer X", &this->outer.x);
 	ImGui::InputFloat("Outer Y", &this->outer.y);
-
+	
 	ImGui::Checkbox("Scale to Owner", &this->scaleToOwner);
+	ImGui::Checkbox("Draw Debug Lines", &this->bDrawDebugLines);
 }
