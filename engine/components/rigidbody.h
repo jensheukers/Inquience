@@ -57,6 +57,8 @@ public:
 
 	virtual RigidBody* New() override { return new RigidBody(); }
 	virtual RigidBody* Copy() const { return new RigidBody(*this); }
+
+	virtual void OnComponentPropertiesEditor() override;
 };
 
 #endif // !RIGIDBODY_H

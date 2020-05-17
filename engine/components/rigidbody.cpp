@@ -56,15 +56,33 @@ void RigidBody::Update() {
 		}
 	}
 
-	//Raycast checks to prevent sinking bodies
+	//Raycast checks to prevent sinking bodies, Size of entity will be used to determine bounds
 	if (this->bPreventSinkingBodies) {
 		Vec2 downRight = this->GetOwner()->GetPosition() + Vec2(this->GetOwner()->GetScale().x, this->GetOwner()->GetScale().y);
 		Vec2 downLeft = this->GetOwner()->GetPosition() + Vec2(0, this->GetOwner()->GetScale().y);
+		Vec2 upRight = this->GetOwner()->GetPosition() + Vec2(this->GetOwner()->GetScale().x, 0);
+		Vec2 upLeft = this->GetOwner()->GetPosition();
 
-		//Reset y velocity if true
+		//Downwards casting
 		if (Physics::Raycast(downRight, Vec2(0, 1), 2, RaycastHit(), colliders, { GetOwner()->GetComponent<Collider>() }) ||
 			Physics::Raycast(downLeft, Vec2(0, 1), 2, RaycastHit(), colliders, { GetOwner()->GetComponent<Collider>() })) {
 			velocity = Vec2(velocity.x, 0);
+		}
+
+		//Right casting
+		if (Physics::Raycast(upRight, Vec2(1, 0), 2, RaycastHit(), colliders, { GetOwner()->GetComponent<Collider>() }) ||
+			Physics::Raycast(downRight, Vec2(1, 0), 2, RaycastHit(), colliders, { GetOwner()->GetComponent<Collider>() })) {
+			if (velocity.x > 0) {
+				velocity = Vec2(0, velocity.y);
+			}
+		}
+
+		//Left casting
+		if (Physics::Raycast(upLeft, Vec2(-1, 0), 2, RaycastHit(), colliders, { GetOwner()->GetComponent<Collider>() }) ||
+			Physics::Raycast(downLeft, Vec2(-1, 0), 2, RaycastHit(), colliders, { GetOwner()->GetComponent<Collider>() })) {\
+			if (velocity.x < 0) {
+				velocity = Vec2(0, velocity.y);
+			}
 		}
 	}
 
@@ -82,4 +100,10 @@ void RigidBody::SetVelocity(Vec2 velocity) {
 
 const Vec2 RigidBody::GetVelocity() {
 	return velocity;
+}
+
+void RigidBody::OnComponentPropertiesEditor() {
+	ImGui::Checkbox("Prevent Sinking Bodies", &bPreventSinkingBodies);
+	ImGui::Checkbox("Simulate Gravity", &bSimulateGravity);
+	ImGui::Checkbox("Simulate Drag", &bSimulateDrag);
 }
