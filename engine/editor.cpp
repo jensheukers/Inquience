@@ -503,7 +503,8 @@ void Editor::Update() {
 	ImGui::BeginMainMenuBar();
 
 	if (ImGui::BeginMenu("File")) {
-		if (ImGui::MenuItem("New")) { 
+		if (ImGui::MenuItem("New")) {
+			GetInstance()->currentSelectedEntity = nullptr;
 			if (SceneManager::GetActiveScene()) {
 				delete SceneManager::GetActiveScene();
 			}

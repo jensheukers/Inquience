@@ -10,8 +10,8 @@ class MovementComponent : public Component {
 private:
 	class RigidBody* rigidBody; // Rigidbody instance
 public:
-	float movementSpeed = 100.f;
-	float jumpForce = 200.f;
+	float movementSpeed = 200.f;
+	float jumpForce = 400.f;
 
 	void BeginPlay();
 

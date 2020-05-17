@@ -1,0 +1,1 @@
+Prefabs will be written to scene file on save, so these files are only usefull in the editor

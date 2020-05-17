@@ -126,6 +126,10 @@ void RigidBody::Update() {
 		if (velocity.x < 0) {
 			velocity = velocity + Vec2(dragAmount, 0);
 		}
+
+		if (velocity.x > -RIGIDBODY_VELOCITY_MIN_CUT_TO_ZERO && velocity.x < RIGIDBODY_VELOCITY_MIN_CUT_TO_ZERO) {
+			velocity = Vec2(0, velocity.y);
+		}
 	}
 
 	//Raycast checks to prevent sinking bodies, Size of entity will be used to determine bounds

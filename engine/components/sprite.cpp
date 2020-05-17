@@ -49,7 +49,7 @@ Sprite::Sprite() {
 }
 
 Sprite::Sprite(const Sprite& sprite) {
-	this->uv = UV(sprite.uv);
+	this->uv = sprite.uv;
 	this->texture = sprite.texture;
 }
 
