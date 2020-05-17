@@ -24,7 +24,6 @@ Sprite::Sprite() {
 		SetTexture(TextureLoader::LoadTarga((char*)args[0].c_str()));
 	}, [=]() -> StringVector {
 		if (!this->GetTexture()) return {};
-		std::cout << this->GetTexture()->path << std::endl;
 		return { "\"" + std::string(this->GetTexture()->path) + "\"" };
 	});
 	
@@ -47,6 +46,11 @@ Sprite::Sprite() {
 			std::to_string(this->uv.rightDown.x), std::to_string(this->uv.rightDown.y)
 		};
 	});
+}
+
+Sprite::Sprite(const Sprite& sprite) {
+	this->uv = UV(sprite.uv);
+	this->texture = sprite.texture;
 }
 
 Texture* Sprite::SetTexture(Texture* texture) {
@@ -122,5 +126,17 @@ void Sprite::OnComponentPropertiesEditor()
 	ImGui::SameLine();
 	if (ImGui::Button("Set/Load Texture")) {
 		this->SetTexture(TextureLoader::LoadTarga(buffer));
+	}
+	
+	ImGui::Spacing();
+	ImGui::Text("Options to slice a tilemap, by pressing split the uv coordinates will be updated");
+
+	static int pixelsPerTileEditor;
+	static int tileMapIndexEditor;
+	ImGui::InputInt("Pixels Per Tile", &pixelsPerTileEditor);
+	ImGui::InputInt("Tile Map Index", &tileMapIndexEditor);
+
+	if (ImGui::Button("Split")) {
+		this->Split(pixelsPerTileEditor, tileMapIndexEditor);
 	}
 }

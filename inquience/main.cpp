@@ -16,6 +16,7 @@ int main(int argc, char * argv[]) {
 	//Create GameState and insert levels as parameter
 	static GameState* gameState = new GameState(std::vector<std::string> { 
 		"res/scenes/mainmenu.scene",
+		"res/scenes/test_world.scene",
 		"res/scenes/levels/level_0.scene"
 	});
 	gameState->Initialize();
