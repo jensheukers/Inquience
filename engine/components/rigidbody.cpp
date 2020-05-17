@@ -21,6 +21,67 @@ RigidBody::RigidBody() {
 	this->bSimulateDrag = true;
 	this->gravityAmount = RIGIDBODY_GRAVITY_IMPLIER_DEFAULT;
 	this->dragAmount = RIGIDBODY_DRAG_IMPLIER_DEFAULT;
+
+	//Add Properties
+	AddProperty("PreventSinkingBodies", [=](StringVector args) {
+		if (args[0] == "True") {
+			bPreventSinkingBodies = true;
+		}
+		else {
+			bPreventSinkingBodies = false;
+		}
+	}, [=]() -> StringVector {
+		if (bPreventSinkingBodies) {
+			return { "\"" + std::string("True") + "\"" };
+		}
+		else {
+			return { "\"" + std::string("False") + "\"" };
+		}
+	});
+
+	AddProperty("SimulateGravity", [=](StringVector args) {
+		if (args[0] == "True") {
+			bSimulateGravity = true;
+		}
+		else {
+			bSimulateGravity = false;
+		}
+	}, [=]() -> StringVector {
+		if (bSimulateGravity) {
+			return { "\"" + std::string("True") + "\"" };
+		}
+		else {
+			return { "\"" + std::string("False") + "\"" };
+		}
+	});
+
+	AddProperty("SimulateDrag", [=](StringVector args) {
+		if (args[0] == "True") {
+			bSimulateDrag = true;
+		}
+		else {
+			bSimulateDrag = false;
+		}
+	}, [=]() -> StringVector {
+		if (bSimulateDrag) {
+			return { "\"" + std::string("True") + "\"" };
+		}
+		else {
+			return { "\"" + std::string("False") + "\"" };
+		}
+	});
+
+	AddProperty("GravityAmount", [=](StringVector args) {
+		gravityAmount = std::stof(args[0]);
+	}, [=]() -> StringVector {
+		return {std::to_string(gravityAmount) };
+	});
+
+	AddProperty("DragAmount", [=](StringVector args) {
+		dragAmount = std::stof(args[0]);
+	}, [=]() -> StringVector {
+		return { std::to_string(dragAmount) };
+	});
 }
 
 void RigidBody::Update() {
