@@ -16,15 +16,15 @@ void MovementComponent::BeginPlay() {
 
 void MovementComponent::Update() {
 	if (Input::GetKey(KEYCODE_D)) {
-		this->StepRight(50.f);
+		this->StepRight(movementSpeed);
 	}
 
 	if (Input::GetKey(KEYCODE_A)) {
-		this->StepLeft(50.f);
+		this->StepLeft(movementSpeed);
 	}
 
 	if (Input::GetKeyDown(KEYCODE_SPACE)) {
-		this->Jump(50.f);
+		this->Jump(jumpForce);
 	}
 }
 
