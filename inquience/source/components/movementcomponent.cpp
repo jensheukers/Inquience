@@ -5,11 +5,8 @@
 #include <entity.h>
 #include <components/rigidbody.h>
 
-MovementComponent::MovementComponent() {
-	this->canStepLeft = true;
-	this->canStepRight = true;
-	this->grounded = false;
-}
+//Get Input
+#include <input.h>
 
 void MovementComponent::BeginPlay() {
 	if (!(this->rigidBody = GetOwner()->GetComponent<RigidBody>())) {
@@ -17,26 +14,31 @@ void MovementComponent::BeginPlay() {
 	}
 }
 
-void MovementComponent::StepLeft(float speed) {
-	if (!this->canStepLeft) return;
-	rigidBody->SetVelocity(Vec2(-(float)speed, rigidBody->GetVelocity().y));
+void MovementComponent::Update() {
+	if (Input::GetKey(KEYCODE_D)) {
+		this->StepRight(50.f);
+	}
 
-	this->canStepRight = true;
+	if (Input::GetKey(KEYCODE_A)) {
+		this->StepLeft(50.f);
+	}
+
+	if (Input::GetKeyDown(KEYCODE_SPACE)) {
+		this->Jump(50.f);
+	}
+}
+
+void MovementComponent::StepLeft(float speed) {
+	if (rigidBody->LeftCastPositive()) return;
+	rigidBody->SetVelocity(Vec2(-(float)speed, rigidBody->GetVelocity().y));
 }
 
 void MovementComponent::StepRight(float speed) {
-	if (!this->canStepRight) return;
+	if (rigidBody->RightCastPositive()) return;
 	rigidBody->SetVelocity(Vec2((float)speed, rigidBody->GetVelocity().y));
-
-	this->canStepLeft = true;
 }
 
 void MovementComponent::Jump(float force) {
-	if (!this->grounded) return;
+	if (!rigidBody->DownCastPositive()) return;
 	rigidBody->AddForce(Vec2(0, -force));
-	this->grounded = false;
-}
-
-const bool MovementComponent::IsGrounded() {
-	return this->grounded;
 }

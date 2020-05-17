@@ -13,12 +13,14 @@
 #include "collider.h"
 
 RigidBody::RigidBody() {
-	this->velocity = Vec2(0, 0.f);
+	this->velocity = Vec2(0.f, 0.f);
 	this->positionLastFrame = Vec2(0, 0);
 
 	this->bPreventSinkingBodies = true;
 	this->bSimulateGravity = true;
 	this->bSimulateDrag = true;
+	this->gravityAmount = RIGIDBODY_GRAVITY_IMPLIER_DEFAULT;
+	this->dragAmount = RIGIDBODY_DRAG_IMPLIER_DEFAULT;
 }
 
 void RigidBody::Update() {
@@ -26,6 +28,11 @@ void RigidBody::Update() {
 		Debug::Log("A RigidBody requires a Collider component, please add one to parent entity");
 		return;
 	}
+
+	//Reset booleans
+	bDownCastPositive = false;
+	bRightCastPositive = false;
+	bLeftCastPositive = false;
 
 	//Search through every entity from top in hierarchy if they have a collider component, then check for collision
 	std::vector<Collider*> colliders;
@@ -36,6 +43,10 @@ void RigidBody::Update() {
 
 	if (GetOwner()->GetComponent<Collider>()->CollisionEntered()) {
 		GetOwner()->localPosition = positionLastFrame;
+
+		//Devide velocity by 2
+		velocity = velocity / 2;
+
 		onBlockedDelegate.Execute();
 		return;
 	}
@@ -43,16 +54,16 @@ void RigidBody::Update() {
 	positionLastFrame = GetOwner()->localPosition;
 
 	if (this->bSimulateGravity) {
-		velocity = velocity + Vec2(0, RIGIDBODY_GRAVITY_IMPLIER);
+		velocity = velocity + Vec2(0, gravityAmount);
 	}
 
 	if (this->bSimulateDrag) {
 		if (velocity.x > 0) {
-			velocity = velocity - Vec2(RIGIDBODY_DRAG_IMPLIER, 0);
+			velocity = velocity - Vec2(dragAmount, 0);
 		}
 
 		if (velocity.x < 0) {
-			velocity = velocity + Vec2(RIGIDBODY_DRAG_IMPLIER, 0);
+			velocity = velocity + Vec2(dragAmount, 0);
 		}
 	}
 
@@ -66,14 +77,16 @@ void RigidBody::Update() {
 		//Downwards casting
 		if (Physics::Raycast(downRight, Vec2(0, 1), 2, RaycastHit(), colliders, { GetOwner()->GetComponent<Collider>() }) ||
 			Physics::Raycast(downLeft, Vec2(0, 1), 2, RaycastHit(), colliders, { GetOwner()->GetComponent<Collider>() })) {
-			velocity = Vec2(velocity.x, 0);
+			if (velocity.y > 0) {
+				velocity = Vec2(velocity.x, 0); bDownCastPositive = true;
+			}
 		}
 
 		//Right casting
 		if (Physics::Raycast(upRight, Vec2(1, 0), 2, RaycastHit(), colliders, { GetOwner()->GetComponent<Collider>() }) ||
 			Physics::Raycast(downRight, Vec2(1, 0), 2, RaycastHit(), colliders, { GetOwner()->GetComponent<Collider>() })) {
 			if (velocity.x > 0) {
-				velocity = Vec2(0, velocity.y);
+				velocity = Vec2(0, velocity.y); bRightCastPositive = true;
 			}
 		}
 
@@ -81,7 +94,7 @@ void RigidBody::Update() {
 		if (Physics::Raycast(upLeft, Vec2(-1, 0), 2, RaycastHit(), colliders, { GetOwner()->GetComponent<Collider>() }) ||
 			Physics::Raycast(downLeft, Vec2(-1, 0), 2, RaycastHit(), colliders, { GetOwner()->GetComponent<Collider>() })) {\
 			if (velocity.x < 0) {
-				velocity = Vec2(0, velocity.y);
+				velocity = Vec2(0, velocity.y); bLeftCastPositive = true;
 			}
 		}
 	}
@@ -106,4 +119,7 @@ void RigidBody::OnComponentPropertiesEditor() {
 	ImGui::Checkbox("Prevent Sinking Bodies", &bPreventSinkingBodies);
 	ImGui::Checkbox("Simulate Gravity", &bSimulateGravity);
 	ImGui::Checkbox("Simulate Drag", &bSimulateDrag);
+	ImGui::Spacing();
+	ImGui::InputFloat("Gravity Amount", &gravityAmount);
+	ImGui::InputFloat("Drag Amount", &dragAmount);
 }

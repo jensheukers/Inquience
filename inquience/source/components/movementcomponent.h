@@ -9,21 +9,14 @@
 class MovementComponent : public Component {
 private:
 	class RigidBody* rigidBody; // Rigidbody instance
-
-	bool grounded;
-	bool canStepRight;
-	bool canStepLeft;
-
 public:
-	MovementComponent();
-
 	void BeginPlay();
+
+	void Update() override;
 
 	void StepLeft(float speed);
 	void StepRight(float speed);
 	void Jump(float force);
-
-	const bool IsGrounded();
 };
 
 #endif // !IQ_MOVEMENTCOMPONENT_H

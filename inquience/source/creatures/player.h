@@ -11,8 +11,6 @@ private:
 	BoxCollider* collider;
 	RigidBody* rigidBody;
 	MovementComponent* movementComponent;
-protected:
-	void Update() override;
 public:
 	Player();
 };
