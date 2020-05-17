@@ -131,6 +131,17 @@ void EditorHierarchy::ConstructTreenode(Editor* editor, Entity* entity) {
 					if (!Editor::AnyWindowOfTypeActive<EditorInspector>()) Editor::AddEditorWindow(new EditorInspector());
 				}
 
+				if (ImGui::MenuItem("Export as .prefab")) {
+					editor->currentSelectedEntity = entity;
+
+					EditorInputWindow* window = new EditorInputWindow();
+					window->onApply.AddLambda([=]() {
+						editor->currentSelectedEntity->WriteToLuaFile(LuaScriptFile::LuaScriptFile(std::string(window->GetBuffer() + std::string(EDITOR_PREFAB_SUFFIX))), EDITOR_LUA_LOAD_FUNCNAME);
+					});
+
+					Editor::AddEditorWindow(window);
+				}
+
 				ImGui::EndPopup();
 			}
 		}
@@ -513,6 +524,15 @@ void Editor::Update() {
 	if (ImGui::BeginMenu("Scene")) {
 		if (ImGui::MenuItem("New Entity")) { AddEditorWindow(new EditorCreateEntityWizard()); }
 		if (ImGui::MenuItem("KVP Wizard")) { AddEditorWindow(new EditorKeyValuePairWizard()); }
+		if (ImGui::MenuItem("New Prefab")) {
+			EditorInputWindow* window = new EditorInputWindow();
+			window->onApply.AddLambda([=]() {
+				LuaScript::RunFunction(std::string(window->GetBuffer()) + EDITOR_PREFAB_SUFFIX, EDITOR_LUA_LOAD_FUNCNAME);
+			});
+
+			Editor::AddEditorWindow(window);
+		}
+
 		ImGui::EndMenu();
 	}
 

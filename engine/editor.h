@@ -8,6 +8,7 @@
 #define EDITOR_H
 
 #define EDITOR_SCENE_SUFFIX ".scene"
+#define EDITOR_PREFAB_SUFFIX ".prefab"
 
 #define EDITOR_LUA_LOAD_FUNCNAME "Initialize"
 
