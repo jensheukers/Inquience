@@ -184,6 +184,9 @@ add_executable( Inquience
 	inquience/source/components/healthcomponent.h
 	inquience/source/components/movementcomponent.cpp
 	inquience/source/components/movementcomponent.h
+	
+	inquience/source/creatures/player.cpp
+	inquience/source/creatures/player.h
 )
 
 target_link_libraries(Inquience
