@@ -22,7 +22,6 @@ include_directories(
 	${CMAKE_SOURCE_DIR}/external/glm
 	${CMAKE_SOURCE_DIR}/external/steam
 	${CMAKE_SOURCE_DIR}/external/freetype/include
-	${CMAKE_SOURCE_DIR}/external/lua/include
 	${CMAKE_SOURCE_DIR}/external/openal/include
 	${CMAKE_SOURCE_DIR}/external/oggvorbis/include
 	${CMAKE_SOURCE_DIR}/external/imgui
@@ -34,7 +33,6 @@ link_directories (
 	${CMAKE_SOURCE_DIR}/external/glew/lib/Win32 
 	${CMAKE_SOURCE_DIR}/external/steam/lib 
 	${CMAKE_SOURCE_DIR}/external/freetype/win32 
-	${CMAKE_SOURCE_DIR}/external/lua/lib 
 	${CMAKE_SOURCE_DIR}/external/openal/libs/Win32 
 	${CMAKE_SOURCE_DIR}/external/oggvorbis/lib/Win32
 )
@@ -48,7 +46,6 @@ set ( ALL_LIBS
 	sdkencryptedappticket.lib 
 	steam_api.lib 
 	freetype.lib 
-	LuaLib.lib
 	OpenAL32.lib 
 	libogg.lib 
 	libvorbis.lib 

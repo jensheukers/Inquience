@@ -63,11 +63,6 @@ protected:
 	* @return void
 	*/
 	virtual void Update() {};
-
-	/**
-	* Returns a vector of LuaParsableLines, containing all child's properties and components
-	*/
-	std::vector<struct LuaParsableLine> GetChildLines(Entity* child, unsigned tabs = 0);
 public:
 	Vec2 localPosition; /***< The local position of the Entity*/
 	Vec2 localScale; /***< The local scale of the Entity*/
@@ -276,11 +271,6 @@ public:
 	* Moves child down by 1 in children array
 	*/
 	void MoveChildDown(Entity* child);
-
-	/**
-	* Writes the entity to a lua file as a asset
-	*/
-	virtual void WriteToLuaFile(struct LuaScriptFile& file, std::string funcName);
 
 	/**
 	* Fills vector of Entity pointers that are x distance from given position

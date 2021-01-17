@@ -60,11 +60,6 @@ public:
 	std::string GetKeyValue(std::string key);
 
 	/**
-	* Writes the scene to a luascript file instance, including children components and properties
-	*/
-	void WriteToLuaFile(struct LuaScriptFile& file, std::string funcName) override;
-
-	/**
 	* Destructor
 	*/
 	~Scene();

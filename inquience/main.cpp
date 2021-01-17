@@ -6,31 +6,19 @@
 // Written by Jens Heukers, April 2020
 #include <core.h>
 
-#include <luascript.h>
 
 #include "source/gamestate.h"
 
 int main(int argc, char * argv[]) {
 	Core::Initialize(argc, argv, Vec2(1280, 720), "Inquience");
 
-	//Create GameState and insert levels as parameter
+	/*//Create GameState and insert levels as parameter
 	static GameState* gameState = new GameState(std::vector<std::string> { 
 		"res/scenes/mainmenu.scene",
 		"res/scenes/test_world.scene",
 		"res/scenes/levels/level_0.scene"
 	});
-	gameState->Initialize();
-
-	//Native Luascript functions (Game)
-	{
-		LuaScript::AddNativeFunction("NextLevel_Internal", [](lua_State* state) -> int {
-			Core::ExecuteLateFrame([=]() {
-				gameState->NextLevel();
-			});
-			return 0;
-		});
-	}
-	
+	gameState->Initialize();*/
 
 	while (Core::IsActive()) {
 		Core::Update(); // Handle updates for engine

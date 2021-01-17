@@ -15,7 +15,6 @@
 
 #include "../entity.h"
 
-#include "../luascript.h"
 
 UIComponent::UIComponent() {
 	std::function<void(Delegate& d, StringVector v)> AddDelegateLambda = 
@@ -29,7 +28,7 @@ UIComponent::UIComponent() {
 					a.push_back(v[i]);
 				}
 
-				LuaScript::RunFunction(fileName, funcName, a);
+				//LuaScript::RunFunction(fileName, funcName, a);
 			});
 		}
 	};

@@ -1,6 +1,5 @@
 #include "gamestate.h"
 
-#include <luascript.h>
 #include "creatures/player.h"
 
 void GameState::BeginGameplay() {
@@ -30,7 +29,7 @@ void GameState::NextLevel() {
 	this->currentLevel++;
 
 	//State expects .scene file
-	LuaScript::RunFunction(levels[this->currentLevel], IQ_SCENELOAD_FUNCTIONNAME);
+	//LuaScript::RunFunction(levels[this->currentLevel], IQ_SCENELOAD_FUNCTIONNAME);
 
 	if (this->currentScene == SceneManager::GetActiveScene() || !(this->currentScene = SceneManager::GetActiveScene())) {
 		Debug::Log("Failed to load level, GetActiveScene() returned nullptr OR scene did not change");

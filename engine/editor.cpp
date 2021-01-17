@@ -10,7 +10,6 @@
 #include "imgui.h"
 
 #include "scenemanager.h"
-#include "luascript.h"
 #include "input.h"
 
 #include "component_register.h"
@@ -136,7 +135,7 @@ void EditorHierarchy::ConstructTreenode(Editor* editor, Entity* entity) {
 
 					EditorInputWindow* window = new EditorInputWindow();
 					window->onApply.AddLambda([=]() {
-						editor->currentSelectedEntity->WriteToLuaFile(LuaScriptFile::LuaScriptFile(std::string(window->GetBuffer() + std::string(EDITOR_PREFAB_SUFFIX))), EDITOR_LUA_LOAD_FUNCNAME);
+						//editor->currentSelectedEntity->WriteToLuaFile(LuaScriptFile::LuaScriptFile(std::string(window->GetBuffer() + std::string(EDITOR_PREFAB_SUFFIX))), EDITOR_LUA_LOAD_FUNCNAME);
 					});
 
 					Editor::AddEditorWindow(window);
@@ -515,7 +514,7 @@ void Editor::Update() {
 		if (ImGui::MenuItem("Load")) { 
 			EditorInputWindow* window = new EditorInputWindow("Load");
 			window->onApply.AddLambda([=]() {
-				LuaScript::RunFunction(std::string(window->GetBuffer()) + EDITOR_SCENE_SUFFIX, EDITOR_LUA_LOAD_FUNCNAME);
+				//LuaScript::RunFunction(std::string(window->GetBuffer()) + EDITOR_SCENE_SUFFIX, EDITOR_LUA_LOAD_FUNCNAME);
 			});
 
 			GetInstance()->AddEditorWindow(window);
@@ -524,7 +523,7 @@ void Editor::Update() {
 		if (ImGui::MenuItem("Save")) { 
 			EditorInputWindow* window = new EditorInputWindow("Save");
 			window->onApply.AddLambda([=]() {
-				SceneManager::GetActiveScene()->WriteToLuaFile(LuaScriptFile::LuaScriptFile(std::string(window->GetBuffer() + std::string(EDITOR_SCENE_SUFFIX))), EDITOR_LUA_LOAD_FUNCNAME);
+				//SceneManager::GetActiveScene()->WriteToLuaFile(LuaScriptFile::LuaScriptFile(std::string(window->GetBuffer() + std::string(EDITOR_SCENE_SUFFIX))), EDITOR_LUA_LOAD_FUNCNAME);
 			});
 
 			GetInstance()->AddEditorWindow(window);
@@ -546,7 +545,7 @@ void Editor::Update() {
 		if (ImGui::MenuItem("New Prefab")) {
 			EditorInputWindow* window = new EditorInputWindow();
 			window->onApply.AddLambda([=]() {
-				LuaScript::RunFunction(std::string(window->GetBuffer()) + EDITOR_PREFAB_SUFFIX, EDITOR_LUA_LOAD_FUNCNAME);
+				//LuaScript::RunFunction(std::string(window->GetBuffer()) + EDITOR_PREFAB_SUFFIX, EDITOR_LUA_LOAD_FUNCNAME);
 			});
 
 			Editor::AddEditorWindow(window);

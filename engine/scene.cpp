@@ -13,7 +13,6 @@
 #include <fstream>
 #include <sstream>
 
-#include "luascript.h"
 #include "unique_types.h"
 
 Scene::Scene() {
@@ -52,33 +51,6 @@ std::string Scene::GetKeyValue(std::string key) {
 	}
 
 	return "";
-}
-
-void Scene::WriteToLuaFile(LuaScriptFile& file, std::string funcName) {
-	LuaParsableLineVector lines;
-
-	if (GetActiveCamera()) {
-		lines.push_back(LuaParsableLine(LuaScriptFile::CreateLuaFunctionCallString("NewScene", StringVector{ "true" }), 1));
-		lines.push_back(LuaParsableLine(LuaScriptFile::CreateLuaFunctionCallString("SetCameraPosition", 
-						StringVector{ std::to_string(GetActiveCamera()->GetPosition().x), std::to_string(GetActiveCamera()->GetPosition().y) }), 1));
-
-		//Key value pairs
-		for (size_t i = 0; i < this->keyValuePairs.size(); i++) {
-			lines.push_back(LuaParsableLine(LuaScriptFile::CreateLuaFunctionCallString("AddKVP", StringVector{ '"' + this->keyValuePairs[i].key + '"', '"' + this->keyValuePairs[i].value  + '"'}), 1));
-		}
-	}
-	else {
-		lines.push_back(LuaParsableLine(LuaScriptFile::CreateLuaFunctionCallString("NewScene", StringVector{ "false" }), 1));
-	}
-
-
-
-	for (size_t i = 0; i < GetChildren().size(); i++) {
-		LuaParsableLineVector childLines = GetChildLines(GetChildren()[i], 1);
-		lines.insert(lines.end(), childLines.begin(), childLines.end());
-	}
-
-	file.ParseFunction(funcName, StringVector{}, lines);
 }
 
 Scene::~Scene() {
