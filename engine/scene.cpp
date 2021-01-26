@@ -53,6 +53,10 @@ std::string Scene::GetKeyValue(std::string key) {
 	return "";
 }
 
+void Scene::WriteToFile(std::string destination) {
+
+}
+
 Scene::~Scene() {
 	if (activeCamera) {
 		delete activeCamera;

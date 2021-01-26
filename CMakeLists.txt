@@ -65,7 +65,7 @@ add_library(Engine
 	engine/editor.cpp
 	engine/entity.cpp
 	engine/input.cpp
-	engine/luascript.cpp
+	engine/parser.cpp
 	engine/renderer.cpp
 	engine/scene.cpp
 	engine/scenemanager.cpp
@@ -92,7 +92,7 @@ add_library(Engine
 	engine/editor.h
 	engine/entity.h
 	engine/input.h
-	engine/luascript.h
+	engine/parser.h
 	engine/renderer.h
 	engine/scene.h
 	engine/scenemanager.h

@@ -59,6 +59,12 @@ public:
 	*/
 	std::string GetKeyValue(std::string key);
 
+	/*
+	* Writes scene data & children data to a file
+	* @param path
+	*/
+	void WriteToFile(std::string destination);
+
 	/**
 	* Destructor
 	*/
