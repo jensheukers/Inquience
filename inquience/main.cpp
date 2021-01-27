@@ -13,13 +13,6 @@
 int main(int argc, char * argv[]) {
 	Core::Initialize(argc, argv, Vec2(1280, 720), "Inquience");
 
-	Parser* parser = new Parser(Core::GetExecutableDirectoryPath() + "test.txt", false, true);
-	parser->WriteLine("testline");
-	parser->WriteLine("2");
-	parser->WriteLine("5");
-	parser->WriteLine("4");
-	delete parser;
-
 	/*//Create GameState and insert levels as parameter
 	static GameState* gameState = new GameState(std::vector<std::string> { 
 		"res/scenes/mainmenu.scene",

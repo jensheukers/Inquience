@@ -5,10 +5,22 @@
 
 Parser::Parser(std::string destination, bool read, bool debug) {
 	this->destination = destination;
-
-	this->_file.open(destination);
+	this->_file = std::fstream(destination);
 	this->_read = read;
 	this->debug = debug;
+
+	//Create file if not exist
+	if (!this->_file.good()) {
+		if (!read) {
+			std::ofstream __file(destination);
+			__file.close();
+
+			this->_file = std::fstream(destination);
+		}
+		else {
+			Debug::Log("Parser : File`" + destination + " does not exist");
+		}
+	}
 }
 
 bool Parser::fileIsOpen() {
