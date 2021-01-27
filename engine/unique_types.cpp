@@ -17,7 +17,7 @@ void Delegate::AddLambda(std::function<void()> func) {
 }
 
 void Delegate::Execute() {
-	for each (auto func in executionList) {
+	for (auto func : executionList) {
 		func();
 	}
 }

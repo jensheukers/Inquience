@@ -82,7 +82,7 @@ Entity::Entity(const Entity& entity) {
 void Entity::SetActive(bool state) {
 	this->active = state;
 
-	for each (Entity* child in children) {
+	for (Entity* child : children) {
 		child->SetActive(state);
 	}
 }
