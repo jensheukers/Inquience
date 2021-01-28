@@ -8,7 +8,7 @@
 
 #include "../entity.h"
 
-void Collider::BeginPlay() {
+Collider::Collider() {
 	bDrawDebugLines = false;
 	debugDrawColor = glm::vec3(0, 1, 0);
 

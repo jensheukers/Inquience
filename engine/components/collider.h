@@ -41,9 +41,9 @@ public:
 	glm::vec3 debugDrawColor; /***< The color to draw in, default is (0, 1, 0)*/
 
 	/**
-	* BeginPlay
+	* Constructor
 	*/
-	virtual void BeginPlay() override;
+	Collider();
 
 	/**
 	* Update
