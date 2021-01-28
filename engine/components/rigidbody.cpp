@@ -24,51 +24,21 @@ RigidBody::RigidBody() {
 
 	//Add Properties
 	AddProperty("PreventSinkingBodies", [=](StringVector args) {
-		if (args[0] == "True") {
-			bPreventSinkingBodies = true;
-		}
-		else {
-			bPreventSinkingBodies = false;
-		}
+		bPreventSinkingBodies = std::stoi(args[0]);
 	}, [=]() -> StringVector {
-		if (bPreventSinkingBodies) {
-			return { "\"" + std::string("True") + "\"" };
-		}
-		else {
-			return { "\"" + std::string("False") + "\"" };
-		}
+		return { std::to_string(bPreventSinkingBodies) };
 	});
 
 	AddProperty("SimulateGravity", [=](StringVector args) {
-		if (args[0] == "True") {
-			bSimulateGravity = true;
-		}
-		else {
-			bSimulateGravity = false;
-		}
+		bSimulateGravity = std::stoi(args[0]);
 	}, [=]() -> StringVector {
-		if (bSimulateGravity) {
-			return { "\"" + std::string("True") + "\"" };
-		}
-		else {
-			return { "\"" + std::string("False") + "\"" };
-		}
+		return { std::to_string(bSimulateGravity) };
 	});
 
 	AddProperty("SimulateDrag", [=](StringVector args) {
-		if (args[0] == "True") {
-			bSimulateDrag = true;
-		}
-		else {
-			bSimulateDrag = false;
-		}
+		bSimulateDrag = std::stoi(args[0]);
 	}, [=]() -> StringVector {
-		if (bSimulateDrag) {
-			return { "\"" + std::string("True") + "\"" };
-		}
-		else {
-			return { "\"" + std::string("False") + "\"" };
-		}
+		return { std::to_string(bSimulateDrag) };
 	});
 
 	AddProperty("GravityAmount", [=](StringVector args) {

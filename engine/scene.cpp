@@ -90,8 +90,6 @@ void Scene::WriteToJsonFile(std::string destination) {
 						value += ",";
 					}
 				}
-				
-				Debug::Log(value);
 
 				propertyJsonObject[p->key] = value;
 				propertyJsonArray.push_back(propertyJsonObject);
