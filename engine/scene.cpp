@@ -26,8 +26,8 @@ Scene::Scene() {
 	this->activeCamera = nullptr; // Set active camera to nullptr
 }
 
-void Scene::Update() {
-	this->UpdateChildren(); 
+void Scene::UpdateScene(bool gamePaused) {
+	this->UpdateChildren(gamePaused); 
 }
 
 void Scene::SetActiveCamera(Camera* camera) {

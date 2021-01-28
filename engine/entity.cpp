@@ -29,15 +29,17 @@ void Entity::HandleParentTransformations() {
 	}
 }
 
-void Entity::UpdateChildren() {
+void Entity::UpdateChildren(bool gamePaused) {
 	for (Entity* child : children) {
 		if (child->active) {
-			child->Update(); // Update child
-			child->UpdateComponents(); // Update components
+			if (!gamePaused) {
+				child->Update(); // Update child
+				child->UpdateComponents(); // Update components
+			}
 			child->HandleParentTransformations(); // Handle the parent transformations
 		}
 
-		child->UpdateChildren(); // Update their children
+		child->UpdateChildren(gamePaused); // Update their children
 	}
 }
 

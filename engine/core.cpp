@@ -78,14 +78,19 @@ void Core::Update() {
 	//Update editor if active
 	if (Editor::editorActive) {
 		Editor::Update();
+
+		Core::PauseGame();
+	}
+	else {
+		Core::ContinueGame();
 	}
 
 	//Update Entities
 	if (SceneManager::GetActiveScene()) {
 
 		//Update Scene
-		SceneManager::GetActiveScene()->Update();
 
+		SceneManager::GetActiveScene()->UpdateScene(instance->gamePaused);
 
 		if (SceneManager::GetActiveScene()->GetActiveCamera()) {
 			instance->renderer->RenderScene(SceneManager::GetActiveScene(), SceneManager::GetActiveScene()->GetActiveCamera());
@@ -181,6 +186,14 @@ Renderer* Core::GetRendererInstance() {
 
 void Core::RequestExit() {
 	instance->requestExit = true;
+}
+
+void Core::PauseGame() {
+	instance->gamePaused = true;
+}
+
+void Core::ContinueGame() {
+	instance->gamePaused = false;
 }
 
 void Core::ExecuteLateFrame(std::function<void()> func) {

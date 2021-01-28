@@ -26,7 +26,7 @@ public:
 	/**
 	* Updates all the scene children
 	*/
-	void Update() override;
+	void UpdateScene(bool gamePaused);
 
 	/**
 	* Sets the active camera

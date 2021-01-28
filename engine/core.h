@@ -33,6 +33,7 @@ private:
 	float timeElapsed; /***< The time in seconds since the program started*/
 
 	bool requestExit; /***< If true the applications requests to be exited*/
+	bool gamePaused; /***< If true entity updates and component updates will not be processed in the frame*/
 
 	std::vector<std::function<void()>> LateFrameFunctionList; /***< List of functions to be executed after the frame is done*/
 public:
@@ -100,6 +101,16 @@ public:
 	* Requests a exit
 	*/
 	static void RequestExit();
+
+	/**
+	* Pauses the game
+	*/
+	static void PauseGame();
+
+	/**
+	* Continues the game
+	*/
+	static void ContinueGame();
 
 	/**
 	* Adds a function that is to be executed once at the end of this frame

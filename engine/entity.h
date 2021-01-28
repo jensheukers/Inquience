@@ -51,7 +51,7 @@ protected:
 	/**
 	* Updates all children's transformations, should be called by parent
 	*/
-	void UpdateChildren();
+	void UpdateChildren(bool gamePaused);
 
 	/**
 	* Updates all components
