@@ -48,6 +48,11 @@ public:
 	std::vector<std::string> SplitLine(char c);
 
 	/**
+	* Returns the file
+	*/
+	std::fstream& GetFile();
+
+	/**
 	* Destructor
 	*/
 	~Parser();

@@ -24,12 +24,7 @@ Sprite::Sprite() {
 		SetTexture(TextureLoader::LoadTarga((char*)args[0].c_str()));
 	}, [=]() -> StringVector {
 		if (!this->GetTexture()) return {};
-		return { "\"" + std::string(this->GetTexture()->path) + "\"" };
-	});
-	
-	//Property to split
-	AddProperty("Split", [=](StringVector args) {
-		Split(std::stoi(args[0]), std::stoi(args[1]));
+		return { std::string(this->GetTexture()->path) };
 	});
 
 	//Property to set uv

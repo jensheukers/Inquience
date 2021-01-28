@@ -60,10 +60,16 @@ public:
 	std::string GetKeyValue(std::string key);
 
 	/*
-	* Writes scene data & children data to a file
+	* Writes scene data & children data to a JSON file
 	* @param path
 	*/
-	void WriteToFile(std::string destination);
+	void WriteToJsonFile(std::string destination);
+
+	/**
+	* Reads scene data & children data from a JSON file
+	* @param path
+	*/
+	void ReadFromJsonFile(std::string path);
 
 	/**
 	* Destructor

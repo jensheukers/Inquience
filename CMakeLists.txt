@@ -92,6 +92,7 @@ add_library(Engine
 	engine/editor.h
 	engine/entity.h
 	engine/input.h
+	engine/json.hpp
 	engine/parser.h
 	engine/renderer.h
 	engine/scene.h

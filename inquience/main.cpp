@@ -21,6 +21,10 @@ int main(int argc, char * argv[]) {
 	});
 	gameState->Initialize();*/
 
+	Scene* scene = new Scene();
+	SceneManager::SetActiveScene(scene);
+	SceneManager::GetActiveScene()->SetActiveCamera(new Camera());
+
 	while (Core::IsActive()) {
 		Core::Update(); // Handle updates for engine
 	}

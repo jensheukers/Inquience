@@ -74,6 +74,10 @@ std::vector<std::string> Parser::SplitLine(char c) {
 	return this->SplitLine(this->_curLine, c);
 }
 
+std::fstream& Parser::GetFile() {
+	return this->_file;
+}
+
 Parser::~Parser() {
 	if (fileIsOpen()) {
 		this->_file.close();
