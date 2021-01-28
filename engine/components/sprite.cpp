@@ -19,13 +19,26 @@ UV::UV() {
 
 Sprite::Sprite() {
 	this->texture = nullptr;
+
+	
+	this->AddProperties();
+}
+
+Sprite::Sprite(const Sprite& sprite) {
+	this->uv = sprite.uv;
+	this->texture = sprite.texture;
+
+	this->AddProperties();
+}
+
+void Sprite::AddProperties() {
 	//Property to set texture
 	AddProperty("Texture", [=](StringVector args) {
 		SetTexture(TextureLoader::LoadTarga((char*)args[0].c_str()));
-	}, [=]() -> StringVector {
-		if (!this->GetTexture()) return {};
-		return { std::string(this->GetTexture()->path) };
-	});
+		}, [=]() -> StringVector {
+			if (!this->GetTexture()) return {};
+			return { std::string(this->GetTexture()->path) };
+		});
 
 	//Property to set uv
 	AddProperty("SetUV", [=](StringVector args) {
@@ -33,19 +46,14 @@ Sprite::Sprite() {
 		this->uv.rightUp = Vec2(std::stof(args[2]), std::stof(args[3])); // 1, 1
 		this->uv.leftDown = Vec2(std::stof(args[4]), std::stof(args[5])); // 0, 0
 		this->uv.rightDown = Vec2(std::stof(args[6]), std::stof(args[7])); // 1, 0
-	}, [=]() -> StringVector {
-		return {
-			std::to_string(this->uv.leftUp.x), std::to_string(this->uv.leftUp.y),
-			std::to_string(this->uv.rightUp.x), std::to_string(this->uv.rightUp.y),
-			std::to_string(this->uv.leftDown.x), std::to_string(this->uv.leftDown.y),
-			std::to_string(this->uv.rightDown.x), std::to_string(this->uv.rightDown.y)
-		};
+		}, [=]() -> StringVector {
+			return {
+				std::to_string(this->uv.leftUp.x), std::to_string(this->uv.leftUp.y),
+				std::to_string(this->uv.rightUp.x), std::to_string(this->uv.rightUp.y),
+				std::to_string(this->uv.leftDown.x), std::to_string(this->uv.leftDown.y),
+				std::to_string(this->uv.rightDown.x), std::to_string(this->uv.rightDown.y)
+			};
 	});
-}
-
-Sprite::Sprite(const Sprite& sprite) {
-	this->uv = sprite.uv;
-	this->texture = sprite.texture;
 }
 
 Texture* Sprite::SetTexture(Texture* texture) {

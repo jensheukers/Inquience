@@ -14,9 +14,6 @@
 #include "../texture.h"
 #include "../math/vec2.h"
 
-//Forward declare
-class Sprite;
-
 //Used to determine sprite uv coordinates
 struct UV {
 	Vec2 leftUp; /***< The leftUp texture coordinate*/
@@ -46,6 +43,11 @@ public:
 	* Copy constructor
 	*/
 	Sprite(const Sprite& sprite);
+
+	/**
+	* Adds properties to sprite
+	*/
+	void AddProperties();
 
 	/**
 	* Sets the texture of the sprite, then returns that texture
