@@ -106,12 +106,12 @@ void Scene::WriteToJsonFile(std::string destination) {
 		jsonData[std::to_string(e->uniqueId)]["components"] = componentsJsonArray;
 	}
 
-	std::ofstream o(destination);
+	std::ofstream o(Core::GetExecutableDirectoryPath() + destination);
 	o << std::setw(4) << jsonData << std::endl;
 }
 
 void Scene::ReadFromJsonFile(std::string path) {
-	Parser* parser = new Parser(path, true, true);
+	Parser* parser = new Parser(Core::GetExecutableDirectoryPath() + path, true, true);
 
 	nlohmann::json jsonData = nlohmann::json::parse(parser->GetFile());
 	for (auto& e : jsonData) {

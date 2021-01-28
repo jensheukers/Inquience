@@ -514,7 +514,13 @@ void Editor::Update() {
 		if (ImGui::MenuItem("Load")) { 
 			EditorInputWindow* window = new EditorInputWindow("Load");
 			window->onApply.AddLambda([=]() {
-				//LuaScript::RunFunction(std::string(window->GetBuffer()) + EDITOR_SCENE_SUFFIX, EDITOR_LUA_LOAD_FUNCNAME);
+				Scene* newScene = new Scene();
+				newScene->SetActiveCamera(new Camera());
+				newScene->ReadFromJsonFile(window->GetBuffer());
+
+				delete SceneManager::GetActiveScene();
+
+				SceneManager::SetActiveScene(newScene);
 			});
 
 			GetInstance()->AddEditorWindow(window);
@@ -523,7 +529,7 @@ void Editor::Update() {
 		if (ImGui::MenuItem("Save")) { 
 			EditorInputWindow* window = new EditorInputWindow("Save");
 			window->onApply.AddLambda([=]() {
-				//SceneManager::GetActiveScene()->WriteToLuaFile(LuaScriptFile::LuaScriptFile(std::string(window->GetBuffer() + std::string(EDITOR_SCENE_SUFFIX))), EDITOR_LUA_LOAD_FUNCNAME);
+				SceneManager::GetActiveScene()->WriteToJsonFile(window->GetBuffer());
 			});
 
 			GetInstance()->AddEditorWindow(window);
