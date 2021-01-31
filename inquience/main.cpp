@@ -19,7 +19,7 @@ int main(int argc, char * argv[]) {
 		/*"res/scenes/test_world.scene",*/
 		/*"res/scenes/levels/level_0.scene"*/
 	});
-	//gameState->Initialize();
+	gameState->Initialize();
 
 	while (Core::IsActive()) {
 		Core::Update(); // Handle updates for engine

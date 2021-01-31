@@ -118,8 +118,10 @@ void Scene::WriteToJsonFile(std::string destination) {
 		entityJsonArray.push_back(entityJsonObject);
 	}
 
-	jsonData["kvps"] = kvpJsonArray;
 	jsonData["entities"] = entityJsonArray;
+	jsonData["kvps"] = kvpJsonArray;
+
+	jsonData["camerapos"] = { this->activeCamera->GetPosition().x, this->activeCamera->GetPosition().y };
 
 	std::ofstream o(Core::GetExecutableDirectoryPath() + destination);
 	o << std::setw(4) << jsonData << std::endl;
@@ -129,6 +131,10 @@ void Scene::ReadFromJsonFile(std::string path) {
 	Parser* parser = new Parser(Core::GetExecutableDirectoryPath() + path, true, true);
 
 	nlohmann::json jsonData = nlohmann::json::parse(parser->GetFile());
+
+	this->SetActiveCamera(new Camera());
+	this->GetActiveCamera()->SetPosition(Vec2(jsonData["camerapos"][0], jsonData["camerapos"][1]));
+
 	for (auto& kvps : jsonData["kvps"]) {
 		this->AddKVP(KeyValuePair(kvps["keyname"], kvps["value"]));
 	}
