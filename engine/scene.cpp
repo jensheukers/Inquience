@@ -151,6 +151,7 @@ void Scene::ReadFromJsonFile(std::string path) {
 			for (auto& p : c["properties"]) {
 				for (auto& i : p.items()) {
 					std::string value = i.value();
+					if (value == "") continue;
 
 					if (value.find(',') != std::string::npos) {
 						std::string segment;

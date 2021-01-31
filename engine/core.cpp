@@ -10,6 +10,7 @@
 #include "scenemanager.h"
 #include "input.h"
 #include "soundmanager.h"
+#include "luascript.h"
 #include "editor.h"
 
 #include "math/physics.h"
@@ -55,6 +56,33 @@ void Core::Initialize(int argc, char* argv[], Vec2 resolution, std::string title
 	if (SteamAPI_Init()) {
 		Debug::Log("Steam Initialized");
 	}
+
+	//Implement luascript native functions
+	LuaScript::AddNativeFunction("Log", [](lua_State* state) -> int {
+		Debug::Log(lua_tostring(state, -1));
+		return 0;
+	});
+
+	//Runs a function from a native lua file from c++
+	LuaScript::AddNativeFunction("RunFunction", [](lua_State* state) -> int {
+		int top = -lua_gettop(state);
+
+		std::string fileName = lua_tostring(state, top);
+		std::string functionName = lua_tostring(state, top + 1);
+
+		std::vector<std::string> params;
+		for (size_t i = top + 2; i < 0; i++) {
+			params.push_back(lua_tostring(state, i));
+		}
+
+		LuaScript::RunFunction(fileName, functionName, params);
+		return 0;
+	});
+
+	LuaScript::AddNativeFunction("RequestExit", [](lua_State* state) -> int {
+		instance->RequestExit();
+		return 0;
+	});
 
 	Debug::Log("Engine Initialized");
 }

@@ -9,8 +9,8 @@
 
 //Definitions to load gameplay
 #define IQ_SCENELOAD_GAMEPLAY_KEYNAME "BeginGameplay"
-#define IQ_SCENELOAD_GAMEPLAY_POSITIVE_KEYVALUE "True"
-#define IQ_SCENELOAD_GAMEPLAY_NEGATIVE_KEYVALUE "False"
+#define IQ_SCENELOAD_GAMEPLAY_POSITIVE_KEYVALUE "true"
+#define IQ_SCENELOAD_GAMEPLAY_NEGATIVE_KEYVALUE "false"
 
 #include <scenemanager.h>
 #include <vector>

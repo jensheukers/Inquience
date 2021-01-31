@@ -27,6 +27,53 @@
                 720.0
             ],
             "tag": "Background"
+        },
+        {
+            "components": [
+                {
+                    "name": "class Sprite",
+                    "properties": [
+                        {
+                            "Texture": "res/textures/placeholder.tga"
+                        },
+                        {
+                            "SetUV": "0.000000,0.000000,1.000000,0.000000,0.000000,1.000000,1.000000,1.000000"
+                        }
+                    ]
+                },
+                {
+                    "name": "class UIComponent",
+                    "properties": [
+                        {
+                            "OnEnter": ""
+                        },
+                        {
+                            "OnStay": ""
+                        },
+                        {
+                            "OnLeave": ""
+                        },
+                        {
+                            "OnLeftClick": "res/scripts/functions_core.lua,NextLevel"
+                        },
+                        {
+                            "OnMiddleClick": ""
+                        },
+                        {
+                            "OnRightClick": ""
+                        }
+                    ]
+                }
+            ],
+            "position": [
+                487.0,
+                200.0
+            ],
+            "scale": [
+                300.0,
+                100.0
+            ],
+            "tag": "Entity"
         }
     ],
     "kvps": []

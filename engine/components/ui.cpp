@@ -15,6 +15,8 @@
 
 #include "../entity.h"
 
+#include "luascript.h"
+
 
 UIComponent::UIComponent() {
 	std::function<void(Delegate& d, StringVector v)> AddDelegateLambda = 
@@ -28,7 +30,7 @@ UIComponent::UIComponent() {
 					a.push_back(v[i]);
 				}
 
-				//LuaScript::RunFunction(fileName, funcName, a);
+				LuaScript::RunFunction(fileName, funcName, a);
 			});
 		}
 	};
@@ -40,7 +42,7 @@ UIComponent::UIComponent() {
 		}, [&]() -> StringVector {
 			StringVector v;
 			for (size_t i = 0; i < onEnterReturnVector.size(); i++) {
-				v.push_back("\"" + onEnterReturnVector[i] + "\"");
+				v.push_back(onEnterReturnVector[i]);
 			}
 			return v;
 		});
@@ -51,7 +53,7 @@ UIComponent::UIComponent() {
 		}, [&]() -> StringVector {
 			StringVector v;
 			for (size_t i = 0; i < onStayReturnVector.size(); i++) {
-				v.push_back("\"" + onStayReturnVector[i] + "\"");
+				v.push_back(onStayReturnVector[i]);
 			}
 			return v;
 		});
@@ -62,7 +64,7 @@ UIComponent::UIComponent() {
 		}, [&]() -> StringVector {
 			StringVector v;
 			for (size_t i = 0; i < onLeaveReturnVector.size(); i++) {
-				v.push_back("\"" + onLeaveReturnVector[i] + "\"");
+				v.push_back(onLeaveReturnVector[i]);
 			}
 			return v;
 		});
@@ -73,7 +75,7 @@ UIComponent::UIComponent() {
 		}, [&]() -> StringVector {
 			StringVector v;
 			for (size_t i = 0; i < onLeftClickReturnVector.size(); i++) {
-				v.push_back("\"" + onLeftClickReturnVector[i] + "\"");
+				v.push_back(onLeftClickReturnVector[i]);
 			}
 			return v;
 		});
@@ -84,7 +86,7 @@ UIComponent::UIComponent() {
 		}, [&]() -> StringVector {
 			StringVector v;
 			for (size_t i = 0; i < onMiddleClickReturnVector.size(); i++) {
-				v.push_back("\"" + onMiddleClickReturnVector[i] + "\"");
+				v.push_back(onMiddleClickReturnVector[i]);
 			}
 			return v;
 		});
@@ -95,7 +97,7 @@ UIComponent::UIComponent() {
 		}, [&]() -> StringVector {
 			StringVector v;
 			for (size_t i = 0; i < onRightClickReturnVector.size(); i++) {
-				v.push_back("\"" + onRightClickReturnVector[i] + "\"");
+				v.push_back(onRightClickReturnVector[i]);
 			}
 			return v;
 		});
