@@ -8,7 +8,6 @@
 #include <parser.h>
 #include <luascript.h>
 
-
 #include "source/gamestate.h"
 
 int main(int argc, char * argv[]) {
@@ -16,8 +15,8 @@ int main(int argc, char * argv[]) {
 
 	//Create GameState and insert levels as parameter
 	static GameState* gameState = new GameState(std::vector<std::string> { 
-		"res/scenes/mainmenu.json"
-		/*"res/scenes/test_world.scene",*/
+		"res/scenes/mainmenu.json",
+		"res/scenes/test_world.json"
 		/*"res/scenes/levels/level_0.scene"*/
 	});
 	gameState->Initialize();

@@ -28,6 +28,10 @@ void GameState::Initialize() {
 void GameState::NextLevel() {
 	this->currentLevel++;
 
+	if (this->levels.size() <= this->currentLevel) {
+		this->currentLevel = this->levels.size() - 1;
+	}
+
 	Debug::Log("Loading Scene: " + this->levels[this->currentLevel] );
 
 	Scene* scene = new Scene();

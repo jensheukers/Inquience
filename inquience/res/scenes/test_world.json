@@ -1,0 +1,136 @@
+{
+    "camerapos": [
+        0.0,
+        0.0
+    ],
+    "entities": [
+        {
+            "components": [
+                {
+                    "name": "class BoxCollider",
+                    "properties": [
+                        {
+                            "DrawDebug": "1"
+                        },
+                        {
+                            "Outer": "300.000000,100.000000"
+                        },
+                        {
+                            "ScaleToOwner": "205"
+                        }
+                    ]
+                },
+                {
+                    "name": "class Sprite",
+                    "properties": [
+                        {
+                            "Texture": "res/textures/placeholder.tga"
+                        },
+                        {
+                            "SetUV": "0.000000,0.000000,1.000000,0.000000,0.000000,1.000000,1.000000,1.000000"
+                        }
+                    ]
+                }
+            ],
+            "position": [
+                96.0,
+                416.0
+            ],
+            "scale": [
+                300.0,
+                100.0
+            ],
+            "tag": "Entity"
+        },
+        {
+            "components": [
+                {
+                    "name": "class BoxCollider",
+                    "properties": [
+                        {
+                            "DrawDebug": "1"
+                        },
+                        {
+                            "Outer": "300.000000,100.000000"
+                        },
+                        {
+                            "ScaleToOwner": "205"
+                        }
+                    ]
+                },
+                {
+                    "name": "class Sprite",
+                    "properties": [
+                        {
+                            "Texture": "res/textures/placeholder.tga"
+                        },
+                        {
+                            "SetUV": "0.000000,0.000000,1.000000,0.000000,0.000000,1.000000,1.000000,1.000000"
+                        }
+                    ]
+                }
+            ],
+            "position": [
+                416.0,
+                192.0
+            ],
+            "scale": [
+                300.0,
+                100.0
+            ],
+            "tag": "Entity"
+        },
+        {
+            "components": [
+                {
+                    "name": "class BoxCollider",
+                    "properties": [
+                        {
+                            "DrawDebug": "1"
+                        },
+                        {
+                            "Outer": "300.000000,100.000000"
+                        },
+                        {
+                            "ScaleToOwner": "205"
+                        }
+                    ]
+                },
+                {
+                    "name": "class Sprite",
+                    "properties": [
+                        {
+                            "Texture": "res/textures/placeholder.tga"
+                        },
+                        {
+                            "SetUV": "0.000000,0.000000,1.000000,0.000000,0.000000,1.000000,1.000000,1.000000"
+                        }
+                    ]
+                }
+            ],
+            "position": [
+                448.0,
+                544.0
+            ],
+            "scale": [
+                300.0,
+                100.0
+            ],
+            "tag": "Entity"
+        }
+    ],
+    "kvps": [
+        {
+            "keyname": "BeginGameplay",
+            "value": "true"
+        },
+        {
+            "keyname": "x",
+            "value": "35"
+        },
+        {
+            "keyname": "y",
+            "value": "45"
+        }
+    ]
+}
