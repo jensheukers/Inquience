@@ -13,19 +13,13 @@
 int main(int argc, char * argv[]) {
 	Core::Initialize(argc, argv, Vec2(1280, 720), "Inquience");
 
-	/*//Create GameState and insert levels as parameter
+	//Create GameState and insert levels as parameter
 	static GameState* gameState = new GameState(std::vector<std::string> { 
-		"res/scenes/mainmenu.scene",
-		"res/scenes/test_world.scene",
-		"res/scenes/levels/level_0.scene"
+		"res/scenes/mainmenu.scene"
+		/*"res/scenes/test_world.scene",*/
+		/*"res/scenes/levels/level_0.scene"*/
 	});
-	gameState->Initialize();*/
-
-	Scene* scene = new Scene();
-	SceneManager::SetActiveScene(scene);
-	SceneManager::GetActiveScene()->SetActiveCamera(new Camera());
-
-	scene->ReadFromJsonFile("res/scenes/mainmenu.json");
+	gameState->Initialize();
 
 	while (Core::IsActive()) {
 		Core::Update(); // Handle updates for engine

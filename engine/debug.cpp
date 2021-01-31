@@ -14,6 +14,8 @@
 
 #include "editor.h"
 #include "input.h"
+#include "luascript.h"
+
 
 #include "graphics/font.h"
 
@@ -101,7 +103,7 @@ void Debug::ConstructConsole() {
 			GetInstance()->logs.push_back(buffer);
 
 			//Run  on lua
-			//LuaScript::Run(buffer);
+			LuaScript::Run(buffer);
 			
 			GetInstance()->commands.push_back(buffer);
 

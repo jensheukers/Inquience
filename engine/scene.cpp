@@ -63,10 +63,23 @@ std::string Scene::GetKeyValue(std::string key) {
 void Scene::WriteToJsonFile(std::string destination) {
 	nlohmann::json jsonData;
 
+	//Kvps
+	nlohmann::json kvpJsonArray = nlohmann::json::array();
+	for (KeyValuePair kvp : this->keyValuePairs) {
+		nlohmann::json kvpJsonObject;
+		kvpJsonObject["keyname"] = kvp.key;
+		kvpJsonObject["value"] = kvp.value;
+		kvpJsonArray.push_back(kvpJsonObject);
+	}
+
+	nlohmann::json entityJsonArray = nlohmann::json::array();
+
 	for (Entity* e : this->GetChildren()) {
-		jsonData[std::to_string(e->uniqueId)]["tag"] = e->tag;
-		jsonData[std::to_string(e->uniqueId)]["position"] = { e->localPosition.x, e->localPosition.y };
-		jsonData[std::to_string(e->uniqueId)]["scale"] = { e->localScale.x, e->localScale.y };
+		nlohmann::json entityJsonObject;
+
+		entityJsonObject["tag"] = e->tag;
+		entityJsonObject["position"] = { e->localPosition.x, e->localPosition.y };
+		entityJsonObject["scale"] = { e->localScale.x, e->localScale.y };
 
 		//Components array
 		nlohmann::json componentsJsonArray = nlohmann::json::array();
@@ -100,9 +113,13 @@ void Scene::WriteToJsonFile(std::string destination) {
 
 			componentsJsonArray.push_back(componentJsonObject);
 		}
+		entityJsonObject["components"] = componentsJsonArray;
 
-		jsonData[std::to_string(e->uniqueId)]["components"] = componentsJsonArray;
+		entityJsonArray.push_back(entityJsonObject);
 	}
+
+	jsonData["kvps"] = kvpJsonArray;
+	jsonData["entities"] = entityJsonArray;
 
 	std::ofstream o(Core::GetExecutableDirectoryPath() + destination);
 	o << std::setw(4) << jsonData << std::endl;
@@ -112,7 +129,11 @@ void Scene::ReadFromJsonFile(std::string path) {
 	Parser* parser = new Parser(Core::GetExecutableDirectoryPath() + path, true, true);
 
 	nlohmann::json jsonData = nlohmann::json::parse(parser->GetFile());
-	for (auto& e : jsonData) {
+	for (auto& kvps : jsonData["kvps"]) {
+		this->AddKVP(KeyValuePair(kvps["keyname"], kvps["value"]));
+	}
+
+	for (auto& e : jsonData["entities"]) {
 		Entity* entity = new Entity();
 		entity->tag = e["tag"];
 		entity->localPosition = Vec2(e["position"][0], e["position"][1]);
