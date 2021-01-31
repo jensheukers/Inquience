@@ -25,7 +25,7 @@ int main(int argc, char * argv[]) {
 	SceneManager::SetActiveScene(scene);
 	SceneManager::GetActiveScene()->SetActiveCamera(new Camera());
 
-	//scene->ReadFromJsonFile("t.json");
+	scene->ReadFromJsonFile("res/scenes/mainmenu.json");
 
 	while (Core::IsActive()) {
 		Core::Update(); // Handle updates for engine

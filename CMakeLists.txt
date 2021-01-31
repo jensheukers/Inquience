@@ -21,6 +21,7 @@ include_directories(
 	${CMAKE_SOURCE_DIR}/external/glew/include
 	${CMAKE_SOURCE_DIR}/external/glm
 	${CMAKE_SOURCE_DIR}/external/steam
+	${CMAKE_SOURCE_DIR}/external/lua/include
 	${CMAKE_SOURCE_DIR}/external/freetype/include
 	${CMAKE_SOURCE_DIR}/external/openal/include
 	${CMAKE_SOURCE_DIR}/external/oggvorbis/include
@@ -32,6 +33,7 @@ link_directories (
 	${CMAKE_SOURCE_DIR}/external/glfw/lib-vc2015 
 	${CMAKE_SOURCE_DIR}/external/glew/lib/Win32 
 	${CMAKE_SOURCE_DIR}/external/steam/lib 
+	${CMAKE_SOURCE_DIR}/external/lua/lib 
 	${CMAKE_SOURCE_DIR}/external/freetype/win32 
 	${CMAKE_SOURCE_DIR}/external/openal/libs/Win32 
 	${CMAKE_SOURCE_DIR}/external/oggvorbis/lib/Win32
@@ -45,6 +47,7 @@ set ( ALL_LIBS
 	glew32s.lib 
 	sdkencryptedappticket.lib 
 	steam_api.lib 
+	LuaLib.lib
 	freetype.lib 
 	OpenAL32.lib 
 	libogg.lib 
@@ -65,6 +68,7 @@ add_library(Engine
 	engine/editor.cpp
 	engine/entity.cpp
 	engine/input.cpp
+	engine/luascript.cpp
 	engine/parser.cpp
 	engine/renderer.cpp
 	engine/scene.cpp
@@ -93,6 +97,7 @@ add_library(Engine
 	engine/entity.h
 	engine/input.h
 	engine/json.hpp
+	engine/luascript.h
 	engine/parser.h
 	engine/renderer.h
 	engine/scene.h
