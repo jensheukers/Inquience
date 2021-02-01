@@ -28,6 +28,11 @@ Scene::Scene() {
 
 void Scene::UpdateScene(bool gamePaused) {
 	this->UpdateChildren(gamePaused); 
+
+	//Update camera
+	if (this->activeCamera && !gamePaused) {
+		this->activeCamera->Update();
+	}
 }
 
 void Scene::SetActiveCamera(Camera* camera) {
@@ -133,7 +138,7 @@ void Scene::ReadFromJsonFile(std::string path) {
 	nlohmann::json jsonData = nlohmann::json::parse(parser->GetFile());
 
 	this->SetActiveCamera(new Camera());
-	this->GetActiveCamera()->SetPosition(Vec2(jsonData["camerapos"][0], jsonData["camerapos"][1]));
+	this->GetActiveCamera()->position = Vec2(jsonData["camerapos"][0], jsonData["camerapos"][1]);
 
 	for (auto& kvps : jsonData["kvps"]) {
 		this->AddKVP(KeyValuePair(kvps["keyname"], kvps["value"]));

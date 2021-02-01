@@ -5,25 +5,24 @@
 // Copyright (C) Jens Heukers - All Rights Reserved
 // Unauthorized copying of this file, via any medium is strictly prohibited
 // Proprietary and confidential
-// Written by Jens Heukers, May 2019
+// Written by Jens Heukers, 2021
 #ifndef CAMERA_H
 #define CAMERA_H
 #include "math/vec2.h"
 
-class Camera {
-private:
-	Vec2 position; /***< The position of the camera*/
-public:
-	/**
-	* Set the position of the camera
-	* @param Vec2
-	*/
-	void SetPosition(Vec2 position);
 
-	/**
-	* Return the position of the camera
-	* @return Vec2
-	*/
+class Camera : Vec2{
+private:
+	class Entity* target; /***< Target camera can focus on*/
+public:
+	Vec2 position;
+
+	Camera();
+
+	void Update();
+
+	void SetTarget(class Entity* target);
+
 	Vec2 GetPosition();
 };
 

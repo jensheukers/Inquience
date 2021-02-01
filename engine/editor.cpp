@@ -394,19 +394,19 @@ void Editor::HandleInput() {
 	Camera* camera = SceneManager::GetActiveScene()->GetActiveCamera();
 	//Camera input
 	if (Input::GetKey(KEYCODE_KP_2)) {
-		camera->SetPosition(camera->GetPosition() + Vec2(0, 1));
+		camera->position = camera->position + Vec2(0, 1);
 	}
 
 	if (Input::GetKey(KEYCODE_KP_4)) {
-		camera->SetPosition(camera->GetPosition() + Vec2(-1, 0));
+		camera->position = camera->position + Vec2(-1, 0);
 	}
 
 	if (Input::GetKey(KEYCODE_KP_6)) {
-		camera->SetPosition(camera->GetPosition() + Vec2(1, 0));
+		camera->position = camera->position + Vec2(1, 0);
 	}
 
 	if (Input::GetKey(KEYCODE_KP_8)) {
-		camera->SetPosition(camera->GetPosition() + Vec2(0, -1));
+		camera->position = camera->position + Vec2(0, -1);
 	}
 
 	//Mouse position

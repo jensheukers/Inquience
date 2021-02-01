@@ -5,11 +5,26 @@
 // Copyright (C) Jens Heukers - All Rights Reserved
 // Unauthorized copying of this file, via any medium is strictly prohibited
 // Proprietary and confidential
-// Written by Jens Heukers, May 2019
+// Written by Jens Heukers, 2021
 #include "camera.h"
+#include "entity.h"
+#include "core.h"
 
-void Camera::SetPosition(Vec2 position) {
-	this->position = position;
+
+Camera::Camera() {
+	this->target = nullptr;
+}
+
+void Camera::Update() {
+	if (this->target) {
+		Vec2 center = this->target->GetPosition() + this->target->GetScale();
+
+		this->position = center - Vec2(Core::GetRendererInstance()->GetResolution().x / 2, Core::GetRendererInstance()->GetResolution().y / 2);
+	}
+}
+
+void Camera::SetTarget(Entity* target) {
+	this->target = target;
 }
 
 Vec2 Camera::GetPosition() {
