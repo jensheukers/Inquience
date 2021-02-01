@@ -1,82 +1,594 @@
 {
     "camerapos": [
-        0.0,
-        0.0
+        1.0,
+        -10.0
     ],
     "entities": [
         {
             "components": [
                 {
-                    "name": "class BoxCollider",
+                    "name": "class Sprite",
                     "properties": [
                         {
-                            "DrawDebug": "1"
+                            "Texture": "res/textures/spritesheet.tga"
                         },
                         {
-                            "Outer": "300.000000,100.000000"
-                        },
-                        {
-                            "ScaleToOwner": "205"
+                            "SetUV": "0.062500,0.937500,0.125000,0.937500,0.062500,1.000000,0.125000,1.000000"
                         }
                     ]
-                },
+                }
+            ],
+            "position": [
+                256.0,
+                320.0
+            ],
+            "scale": [
+                32.0,
+                32.0
+            ],
+            "tag": "Entity"
+        },
+        {
+            "components": [
                 {
                     "name": "class Sprite",
                     "properties": [
                         {
-                            "Texture": "res/textures/placeholder.tga"
+                            "Texture": "res/textures/spritesheet.tga"
                         },
                         {
-                            "SetUV": "0.000000,0.000000,1.000000,0.000000,0.000000,1.000000,1.000000,1.000000"
+                            "SetUV": "0.062500,0.937500,0.125000,0.937500,0.062500,1.000000,0.125000,1.000000"
+                        }
+                    ]
+                }
+            ],
+            "position": [
+                288.0,
+                320.0
+            ],
+            "scale": [
+                32.0,
+                32.0
+            ],
+            "tag": "Entity"
+        },
+        {
+            "components": [
+                {
+                    "name": "class Sprite",
+                    "properties": [
+                        {
+                            "Texture": "res/textures/spritesheet.tga"
+                        },
+                        {
+                            "SetUV": "0.062500,0.937500,0.125000,0.937500,0.062500,1.000000,0.125000,1.000000"
+                        }
+                    ]
+                }
+            ],
+            "position": [
+                320.0,
+                320.0
+            ],
+            "scale": [
+                32.0,
+                32.0
+            ],
+            "tag": "Entity"
+        },
+        {
+            "components": [
+                {
+                    "name": "class Sprite",
+                    "properties": [
+                        {
+                            "Texture": "res/textures/spritesheet.tga"
+                        },
+                        {
+                            "SetUV": "0.062500,0.937500,0.125000,0.937500,0.062500,1.000000,0.125000,1.000000"
+                        }
+                    ]
+                }
+            ],
+            "position": [
+                352.0,
+                320.0
+            ],
+            "scale": [
+                32.0,
+                32.0
+            ],
+            "tag": "Entity"
+        },
+        {
+            "components": [
+                {
+                    "name": "class Sprite",
+                    "properties": [
+                        {
+                            "Texture": "res/textures/spritesheet.tga"
+                        },
+                        {
+                            "SetUV": "0.062500,0.937500,0.125000,0.937500,0.062500,1.000000,0.125000,1.000000"
+                        }
+                    ]
+                }
+            ],
+            "position": [
+                384.0,
+                320.0
+            ],
+            "scale": [
+                32.0,
+                32.0
+            ],
+            "tag": "Entity"
+        },
+        {
+            "components": [
+                {
+                    "name": "class Sprite",
+                    "properties": [
+                        {
+                            "Texture": "res/textures/spritesheet.tga"
+                        },
+                        {
+                            "SetUV": "0.062500,0.937500,0.125000,0.937500,0.062500,1.000000,0.125000,1.000000"
+                        }
+                    ]
+                }
+            ],
+            "position": [
+                224.0,
+                320.0
+            ],
+            "scale": [
+                32.0,
+                32.0
+            ],
+            "tag": "Entity"
+        },
+        {
+            "components": [
+                {
+                    "name": "class Sprite",
+                    "properties": [
+                        {
+                            "Texture": "res/textures/spritesheet.tga"
+                        },
+                        {
+                            "SetUV": "0.062500,0.937500,0.125000,0.937500,0.062500,1.000000,0.125000,1.000000"
+                        }
+                    ]
+                }
+            ],
+            "position": [
+                192.0,
+                320.0
+            ],
+            "scale": [
+                32.0,
+                32.0
+            ],
+            "tag": "Entity"
+        },
+        {
+            "components": [
+                {
+                    "name": "class Sprite",
+                    "properties": [
+                        {
+                            "Texture": "res/textures/spritesheet.tga"
+                        },
+                        {
+                            "SetUV": "0.062500,0.937500,0.125000,0.937500,0.062500,1.000000,0.125000,1.000000"
+                        }
+                    ]
+                }
+            ],
+            "position": [
+                160.0,
+                320.0
+            ],
+            "scale": [
+                32.0,
+                32.0
+            ],
+            "tag": "Entity"
+        },
+        {
+            "components": [
+                {
+                    "name": "class Sprite",
+                    "properties": [
+                        {
+                            "Texture": "res/textures/spritesheet.tga"
+                        },
+                        {
+                            "SetUV": "0.062500,0.937500,0.125000,0.937500,0.062500,1.000000,0.125000,1.000000"
+                        }
+                    ]
+                }
+            ],
+            "position": [
+                128.0,
+                320.0
+            ],
+            "scale": [
+                32.0,
+                32.0
+            ],
+            "tag": "Entity"
+        },
+        {
+            "components": [
+                {
+                    "name": "class Sprite",
+                    "properties": [
+                        {
+                            "Texture": "res/textures/spritesheet.tga"
+                        },
+                        {
+                            "SetUV": "0.062500,0.937500,0.125000,0.937500,0.062500,1.000000,0.125000,1.000000"
                         }
                     ]
                 }
             ],
             "position": [
                 96.0,
-                416.0
+                320.0
             ],
             "scale": [
-                300.0,
-                100.0
+                32.0,
+                32.0
             ],
             "tag": "Entity"
         },
         {
             "components": [
                 {
-                    "name": "class BoxCollider",
+                    "name": "class Sprite",
                     "properties": [
                         {
-                            "DrawDebug": "1"
+                            "Texture": "res/textures/spritesheet.tga"
                         },
                         {
-                            "Outer": "300.000000,100.000000"
-                        },
-                        {
-                            "ScaleToOwner": "205"
+                            "SetUV": "0.000000,0.937500,0.062500,0.937500,0.000000,1.000000,0.062500,1.000000"
                         }
                     ]
-                },
+                }
+            ],
+            "position": [
+                64.0,
+                320.0
+            ],
+            "scale": [
+                32.0,
+                32.0
+            ],
+            "tag": "Entity"
+        },
+        {
+            "components": [
                 {
                     "name": "class Sprite",
                     "properties": [
                         {
-                            "Texture": "res/textures/placeholder.tga"
+                            "Texture": "res/textures/spritesheet.tga"
                         },
                         {
-                            "SetUV": "0.000000,0.000000,1.000000,0.000000,0.000000,1.000000,1.000000,1.000000"
+                            "SetUV": "0.000000,0.812500,0.062500,0.812500,0.000000,0.875000,0.062500,0.875000"
+                        }
+                    ]
+                }
+            ],
+            "position": [
+                64.0,
+                352.0
+            ],
+            "scale": [
+                32.0,
+                32.0
+            ],
+            "tag": "Entity"
+        },
+        {
+            "components": [
+                {
+                    "name": "class Sprite",
+                    "properties": [
+                        {
+                            "Texture": "res/textures/spritesheet.tga"
+                        },
+                        {
+                            "SetUV": "0.062500,0.812500,0.125000,0.812500,0.062500,0.875000,0.125000,0.875000"
+                        }
+                    ]
+                }
+            ],
+            "position": [
+                96.0,
+                352.0
+            ],
+            "scale": [
+                32.0,
+                32.0
+            ],
+            "tag": "Entity"
+        },
+        {
+            "components": [
+                {
+                    "name": "class Sprite",
+                    "properties": [
+                        {
+                            "Texture": "res/textures/spritesheet.tga"
+                        },
+                        {
+                            "SetUV": "0.062500,0.812500,0.125000,0.812500,0.062500,0.875000,0.125000,0.875000"
+                        }
+                    ]
+                }
+            ],
+            "position": [
+                128.0,
+                352.0
+            ],
+            "scale": [
+                32.0,
+                32.0
+            ],
+            "tag": "Entity"
+        },
+        {
+            "components": [
+                {
+                    "name": "class Sprite",
+                    "properties": [
+                        {
+                            "Texture": "res/textures/spritesheet.tga"
+                        },
+                        {
+                            "SetUV": "0.062500,0.812500,0.125000,0.812500,0.062500,0.875000,0.125000,0.875000"
+                        }
+                    ]
+                }
+            ],
+            "position": [
+                160.0,
+                352.0
+            ],
+            "scale": [
+                32.0,
+                32.0
+            ],
+            "tag": "Entity"
+        },
+        {
+            "components": [
+                {
+                    "name": "class Sprite",
+                    "properties": [
+                        {
+                            "Texture": "res/textures/spritesheet.tga"
+                        },
+                        {
+                            "SetUV": "0.062500,0.812500,0.125000,0.812500,0.062500,0.875000,0.125000,0.875000"
+                        }
+                    ]
+                }
+            ],
+            "position": [
+                192.0,
+                352.0
+            ],
+            "scale": [
+                32.0,
+                32.0
+            ],
+            "tag": "Entity"
+        },
+        {
+            "components": [
+                {
+                    "name": "class Sprite",
+                    "properties": [
+                        {
+                            "Texture": "res/textures/spritesheet.tga"
+                        },
+                        {
+                            "SetUV": "0.062500,0.812500,0.125000,0.812500,0.062500,0.875000,0.125000,0.875000"
+                        }
+                    ]
+                }
+            ],
+            "position": [
+                224.0,
+                352.0
+            ],
+            "scale": [
+                32.0,
+                32.0
+            ],
+            "tag": "Entity"
+        },
+        {
+            "components": [
+                {
+                    "name": "class Sprite",
+                    "properties": [
+                        {
+                            "Texture": "res/textures/spritesheet.tga"
+                        },
+                        {
+                            "SetUV": "0.062500,0.812500,0.125000,0.812500,0.062500,0.875000,0.125000,0.875000"
+                        }
+                    ]
+                }
+            ],
+            "position": [
+                256.0,
+                352.0
+            ],
+            "scale": [
+                32.0,
+                32.0
+            ],
+            "tag": "Entity"
+        },
+        {
+            "components": [
+                {
+                    "name": "class Sprite",
+                    "properties": [
+                        {
+                            "Texture": "res/textures/spritesheet.tga"
+                        },
+                        {
+                            "SetUV": "0.062500,0.812500,0.125000,0.812500,0.062500,0.875000,0.125000,0.875000"
+                        }
+                    ]
+                }
+            ],
+            "position": [
+                288.0,
+                352.0
+            ],
+            "scale": [
+                32.0,
+                32.0
+            ],
+            "tag": "Entity"
+        },
+        {
+            "components": [
+                {
+                    "name": "class Sprite",
+                    "properties": [
+                        {
+                            "Texture": "res/textures/spritesheet.tga"
+                        },
+                        {
+                            "SetUV": "0.062500,0.812500,0.125000,0.812500,0.062500,0.875000,0.125000,0.875000"
+                        }
+                    ]
+                }
+            ],
+            "position": [
+                320.0,
+                352.0
+            ],
+            "scale": [
+                32.0,
+                32.0
+            ],
+            "tag": "Entity"
+        },
+        {
+            "components": [
+                {
+                    "name": "class Sprite",
+                    "properties": [
+                        {
+                            "Texture": "res/textures/spritesheet.tga"
+                        },
+                        {
+                            "SetUV": "0.062500,0.812500,0.125000,0.812500,0.062500,0.875000,0.125000,0.875000"
+                        }
+                    ]
+                }
+            ],
+            "position": [
+                352.0,
+                352.0
+            ],
+            "scale": [
+                32.0,
+                32.0
+            ],
+            "tag": "Entity"
+        },
+        {
+            "components": [
+                {
+                    "name": "class Sprite",
+                    "properties": [
+                        {
+                            "Texture": "res/textures/spritesheet.tga"
+                        },
+                        {
+                            "SetUV": "0.062500,0.812500,0.125000,0.812500,0.062500,0.875000,0.125000,0.875000"
+                        }
+                    ]
+                }
+            ],
+            "position": [
+                384.0,
+                352.0
+            ],
+            "scale": [
+                32.0,
+                32.0
+            ],
+            "tag": "Entity"
+        },
+        {
+            "components": [
+                {
+                    "name": "class Sprite",
+                    "properties": [
+                        {
+                            "Texture": "res/textures/spritesheet.tga"
+                        },
+                        {
+                            "SetUV": "0.125000,0.812500,0.187500,0.812500,0.125000,0.875000,0.187500,0.875000"
                         }
                     ]
                 }
             ],
             "position": [
                 416.0,
-                192.0
+                352.0
             ],
             "scale": [
-                300.0,
-                100.0
+                32.0,
+                32.0
+            ],
+            "tag": "Entity"
+        },
+        {
+            "components": [],
+            "position": [
+                0.0,
+                0.0
+            ],
+            "scale": [
+                0.0,
+                0.0
+            ],
+            "tag": "Island"
+        },
+        {
+            "components": [
+                {
+                    "name": "class Sprite",
+                    "properties": [
+                        {
+                            "Texture": "res/textures/spritesheet.tga"
+                        },
+                        {
+                            "SetUV": "0.125000,0.937500,0.187500,0.937500,0.125000,1.000000,0.187500,1.000000"
+                        }
+                    ]
+                }
+            ],
+            "position": [
+                416.0,
+                320.0
+            ],
+            "scale": [
+                32.0,
+                32.0
             ],
             "tag": "Entity"
         },
@@ -86,37 +598,26 @@
                     "name": "class BoxCollider",
                     "properties": [
                         {
-                            "DrawDebug": "1"
+                            "DrawDebug": "0"
                         },
                         {
-                            "Outer": "300.000000,100.000000"
+                            "Outer": "350.000000,32.000000"
                         },
                         {
                             "ScaleToOwner": "205"
                         }
                     ]
-                },
-                {
-                    "name": "class Sprite",
-                    "properties": [
-                        {
-                            "Texture": "res/textures/placeholder.tga"
-                        },
-                        {
-                            "SetUV": "0.000000,0.000000,1.000000,0.000000,0.000000,1.000000,1.000000,1.000000"
-                        }
-                    ]
                 }
             ],
             "position": [
-                448.0,
-                544.0
+                81.0,
+                337.0
             ],
             "scale": [
-                300.0,
-                100.0
+                350.0,
+                32.0
             ],
-            "tag": "Entity"
+            "tag": "Collider"
         }
     ],
     "kvps": [
@@ -126,11 +627,11 @@
         },
         {
             "keyname": "x",
-            "value": "35"
+            "value": "50"
         },
         {
             "keyname": "y",
-            "value": "45"
+            "value": "100"
         }
     ]
 }
