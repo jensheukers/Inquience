@@ -10,7 +10,31 @@
                     "name": "class Sprite",
                     "properties": [
                         {
-                            "Texture": "res/textures/menu/mainmenubg.tga"
+                            "Texture": "res/textures/enviorment/cloud_00.tga"
+                        },
+                        {
+                            "SetUV": "0.000000,0.000000,1.000000,0.000000,0.000000,1.000000,1.000000,1.000000"
+                        }
+                    ]
+                }
+            ],
+            "position": [
+                672.0,
+                192.0
+            ],
+            "scale": [
+                512.0,
+                512.0
+            ],
+            "tag": "Cloud"
+        },
+        {
+            "components": [
+                {
+                    "name": "class Sprite",
+                    "properties": [
+                        {
+                            "Texture": "res/textures/enviorment/cloud_00.tga"
                         },
                         {
                             "SetUV": "0.000000,0.000000,1.000000,0.000000,0.000000,1.000000,1.000000,1.000000"
@@ -23,10 +47,10 @@
                 0.0
             ],
             "scale": [
-                1280.0,
-                720.0
+                512.0,
+                512.0
             ],
-            "tag": "Background"
+            "tag": "Cloud"
         },
         {
             "components": [
@@ -57,7 +81,7 @@
                             "OnLeftClick": "res/scripts/functions_core.lua,NextLevel"
                         },
                         {
-                            "OnMiddleClick": ""
+                            "OnMiddleClick": "res/scripts/functions_core.lua,NextLevel"
                         },
                         {
                             "OnRightClick": ""

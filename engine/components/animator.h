@@ -28,7 +28,7 @@ private:
 	int currentFrameIndex; /***< The index of the current frame*/
 public:
 	float frameTime; /***< The time between frames, default set to DEFAULT_FRAME_TIME*/
-	char name[128]; /***< The name of the animation, so we can reference it*/
+	std::string name; /***< The name of the animation, so we can reference it*/
 
 	/**
 	* Constructor, takes in vector containing all frames* @param std::vector<UV>

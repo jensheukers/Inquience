@@ -16,6 +16,8 @@ Animation::Animation(std::vector<UV*> frames) {
 	this->frames = frames;
 	this->frameTime = DEFAULT_FRAME_TIME;
 
+	this->name = "Animation";
+
 	this->currentFrameIndex = 0;
 }
 
@@ -86,13 +88,12 @@ Animator::Animator() {
 	// Even though this is not the cleanest way of doing it it is currently the best way since SetProperty() has its limitations
 	this->AddProperty("Animations", [=](StringVector args) {
 		for (size_t i = 0; i < args.size(); i++) {
-			StringVector animationData = Essentials::Split(args[i], ',');
+			StringVector animationData = Essentials::Split(args[i], '$');
 			Animation* animation = new Animation();
 
 			//Animation specifics
 			animation->frameTime = std::stof(animationData[0]);
-
-			strcpy(animation->name, animationData[1].c_str());
+			animation->name =  animationData[1];
 
 			for (size_t ii = 2; ii < animationData.size(); ii++) {
 				StringVector frameData = Essentials::Split(animationData[ii], '%');
@@ -111,10 +112,8 @@ Animator::Animator() {
 		StringVector returnVector;
 		for (size_t i = 0; i < animations.size(); i++) {
 			std::string dataString;
-			dataString += "\"";
-
-			dataString += std::to_string(this->animations[i]->frameTime) + ",";
-			dataString += std::string(this->animations[i]->name) + ",";
+			dataString += std::to_string(this->animations[i]->frameTime) + "";
+			dataString += std::string(this->animations[i]->name) + "$";
 
 			//Frames
 			for (size_t ii = 0; ii < animations[i]->GetFrames().size(); ii++) {
@@ -129,7 +128,6 @@ Animator::Animator() {
 				}
 			}
 
- 			dataString += "\"";
 			returnVector.push_back(dataString);
 		}
 
@@ -184,11 +182,15 @@ void Animator::OnComponentPropertiesEditor() {
 
 	ImGui::BeginChild("Animations");
 	for (size_t i = 0; i < this->animations.size(); i++) {
-		ImGui::Text(this->animations[i]->name); ImGui::SameLine();
+		ImGui::Text(this->animations[i]->name.c_str()); ImGui::SameLine();
 		if (ImGui::Button(std::string("Select" + std::string("##") + std::to_string(i)).c_str())) {
 			this->currentAnimation = this->animations[i];
 		} ImGui::SameLine();
 		if (ImGui::Button(std::string("Remove" + std::string("##") + std::to_string(i)).c_str())) {
+			if (this->animations[i] == this->currentAnimation) {
+				this->currentAnimation = nullptr;
+			}
+
 			delete this->RemoveAnimation(this->animations[i]);
 		}
 	}
@@ -222,7 +224,7 @@ void Animator::OnComponentPropertiesEditor() {
 			ImGui::InputFloat("Frame Time", &this->currentAnimation->frameTime);
 
 
-			ImGui::InputText("Name", this->currentAnimation->name, sizeof(this->currentAnimation->name));
+			ImGui::InputText("Name", (char*)this->currentAnimation->name.c_str(), sizeof(this->currentAnimation->name));
 
 			ImGui::Text("Timeline: ");
 			if (ImGui::Button("Add Frame")) {
