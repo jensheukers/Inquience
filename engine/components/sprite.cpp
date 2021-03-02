@@ -20,6 +20,10 @@ UV::UV() {
 Sprite::Sprite() {
 	this->texture = nullptr;
 
+	this->_imguiColorBuffer[0] = (float)(this->blendColor._r / 255);
+	this->_imguiColorBuffer[1] = (float)(this->blendColor._g / 255);
+	this->_imguiColorBuffer[2] = (float)(this->blendColor._b / 255);
+	this->_imguiColorBuffer[3] = (float)(this->blendColor._a / 255);
 	
 	this->AddProperties();
 }
@@ -27,6 +31,11 @@ Sprite::Sprite() {
 Sprite::Sprite(const Sprite& sprite) {
 	this->uv = sprite.uv;
 	this->texture = sprite.texture;
+
+	this->_imguiColorBuffer[0] = (float)(this->blendColor._r / 255);
+	this->_imguiColorBuffer[1] = (float)(this->blendColor._g / 255);
+	this->_imguiColorBuffer[2] = (float)(this->blendColor._b / 255);
+	this->_imguiColorBuffer[3] = (float)(this->blendColor._a / 255);
 
 	this->AddProperties();
 }
@@ -142,4 +151,9 @@ void Sprite::OnComponentPropertiesEditor()
 	if (ImGui::Button("Split")) {
 		this->Split(pixelsPerTileEditor, tileMapIndexEditor);
 	}
+
+	ImGui::ColorPicker4("Blend Color", _imguiColorBuffer);
+
+	this->blendColor = ColorRGBA((unsigned int) (_imguiColorBuffer[0] * 255), (unsigned int)(_imguiColorBuffer[1] * 255),
+								 (unsigned int)(_imguiColorBuffer[2] * 255), (unsigned int)(_imguiColorBuffer[3] * 255));
 }

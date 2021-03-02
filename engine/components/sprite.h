@@ -33,6 +33,8 @@ struct UV {
 class Sprite : public Component {
 private:
 	Texture* texture; /***< The texture the sprite uses*/
+
+	float _imguiColorBuffer[4]; /***< Buffer for imgui color picker*/
 public:
 	UV uv; /***< The UV Coordinates of the sprite*/
 	ColorRGBA blendColor; /***< Blend Color*/
