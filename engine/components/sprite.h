@@ -14,6 +14,8 @@
 #include "../texture.h"
 #include "../math/vec2.h"
 
+#include "../graphics/color.h"
+
 //Used to determine sprite uv coordinates
 struct UV {
 	Vec2 leftUp; /***< The leftUp texture coordinate*/
@@ -33,6 +35,7 @@ private:
 	Texture* texture; /***< The texture the sprite uses*/
 public:
 	UV uv; /***< The UV Coordinates of the sprite*/
+	ColorRGBA blendColor; /***< Blend Color*/
 
 	/**
 	* Constructor

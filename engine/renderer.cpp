@@ -70,6 +70,9 @@ void Renderer::RenderEntity(Entity* entity, Camera* camera) {
 			glActiveTexture(GL_TEXTURE0);
 			glBindTexture(GL_TEXTURE_2D, sprite->GetTexture()->_glTexture);
 
+			//Blend Color
+			defaultShader->SetVec4("blendColor", glm::vec4(sprite->blendColor._r / 255.f, sprite->blendColor._g / 255.f, sprite->blendColor._b / 255.f, sprite->blendColor._a / 255.f));
+
 			//Draw and unbind
 			glDrawArrays(GL_TRIANGLES, 0, 6);
 			glBindVertexArray(0);

@@ -113,6 +113,7 @@ add_library(Engine
 	engine/components/ui.h
 	engine/graphics/font.h
 	engine/graphics/shader.h
+	engine/graphics/color.h
 	engine/math/physics.h
 	engine/math/vec2.h
 	
