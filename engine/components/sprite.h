@@ -35,6 +35,11 @@ private:
 	Texture* texture; /***< The texture the sprite uses*/
 
 	float _imguiColorBuffer[4]; /***< Buffer for imgui color picker*/
+
+	/**
+	* Sets the imgui color buffer to blendcolor
+	*/
+	void SetImGuiColorBuffer(ColorRGBA blendColor);
 public:
 	UV uv; /***< The UV Coordinates of the sprite*/
 	ColorRGBA blendColor; /***< Blend Color*/

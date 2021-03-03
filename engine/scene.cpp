@@ -17,10 +17,100 @@
 #include "unique_types.h"
 #include "parser.h"
 
-//Include json
-#include "json.hpp"
-
 #include "component_register.h"
+
+void Scene::BufferEntityToJsonArray(Entity* e, nlohmann::json& _array) {
+	nlohmann::json entityJsonObject;
+
+	entityJsonObject["tag"] = e->tag;
+	entityJsonObject["position"] = { e->localPosition.x, e->localPosition.y };
+	entityJsonObject["scale"] = { e->localScale.x, e->localScale.y };
+
+	//Components array
+	nlohmann::json componentsJsonArray = nlohmann::json::array();
+	for (Component* c : e->GetComponents()) {
+		nlohmann::json componentJsonObject;
+
+		componentJsonObject["name"] = c->GetName();
+
+		//Property array
+		nlohmann::json propertyJsonArray = nlohmann::json::array();
+		for (ComponentProperty* p : c->GetProperties()) {
+			nlohmann::json propertyJsonObject;
+
+			StringVector valueVector = p->getCallback();
+			std::string value;
+
+			for (size_t i = 0; i < valueVector.size(); i++) {
+				value += valueVector[i];
+
+				if (i + 1 != valueVector.size()) {
+					value += ",";
+				}
+			}
+
+			propertyJsonObject[p->key] = value;
+			propertyJsonArray.push_back(propertyJsonObject);
+		}
+
+
+		componentJsonObject["properties"] = propertyJsonArray;
+
+		componentsJsonArray.push_back(componentJsonObject);
+	}
+	entityJsonObject["components"] = componentsJsonArray;
+
+	nlohmann::json entityJsonArray = nlohmann::json::array();
+	for (size_t i = 0; i < e->GetChildren().size(); i++) {
+		BufferEntityToJsonArray(e->GetChild(i), entityJsonArray);
+	}
+
+	entityJsonObject["entities"] = entityJsonArray;
+
+	_array.push_back(entityJsonObject);
+}
+
+void Scene::ReadEntityFromJsonData(nlohmann::json& jsonData, Entity* parent) {
+	Entity* entity = new Entity();
+	entity->tag = jsonData["tag"];
+	entity->localPosition = Vec2(jsonData["position"][0], jsonData["position"][1]);
+	entity->localScale = Vec2(jsonData["scale"][0], jsonData["scale"][1]);
+
+	for (nlohmann::json& c : jsonData["components"]) {
+		Component* component = Component_Register::GetNewComponentInstance(c["name"]);
+
+		for (auto& p : c["properties"]) {
+			for (auto& i : p.items()) {
+				std::string value = i.value();
+				if (value == "") continue;
+
+				if (value.find(',') != std::string::npos) {
+					std::string segment;
+					StringVector strv;
+					std::stringstream ss(value);
+
+					//SPLIT AT COMMA
+					while (std::getline(ss, segment, ',')) {
+						strv.push_back(segment);
+					}
+
+					component->SetProperty(i.key(), strv);
+				}
+				else {
+					component->SetProperty(i.key(), StringVector{ i.value() });
+				}
+			}
+		}
+
+		entity->AddExistingComponentInstance(component);
+	}
+
+	for (auto& e : jsonData["entities"]) {
+		ReadEntityFromJsonData(e, entity);
+	}
+
+	parent->AddChild(entity);
+}
 
 Scene::Scene() {
 	this->activeCamera = nullptr; // Set active camera to nullptr
@@ -80,47 +170,7 @@ void Scene::WriteToJsonFile(std::string destination) {
 	nlohmann::json entityJsonArray = nlohmann::json::array();
 
 	for (Entity* e : this->GetChildren()) {
-		nlohmann::json entityJsonObject;
-
-		entityJsonObject["tag"] = e->tag;
-		entityJsonObject["position"] = { e->localPosition.x, e->localPosition.y };
-		entityJsonObject["scale"] = { e->localScale.x, e->localScale.y };
-
-		//Components array
-		nlohmann::json componentsJsonArray = nlohmann::json::array();
-		for (Component* c : e->GetComponents()) {
-			nlohmann::json componentJsonObject;
-
-			componentJsonObject["name"] = c->GetName();
-
-			//Property array
-			nlohmann::json propertyJsonArray = nlohmann::json::array();
-			for (ComponentProperty* p : c->GetProperties()) {
-				nlohmann::json propertyJsonObject;
-
-				StringVector valueVector = p->getCallback();
-				std::string value;
-
-				for (size_t i = 0; i < valueVector.size(); i++) {
-					value += valueVector[i];
-
-					if (i + 1 != valueVector.size()) {
-						value += ",";
-					}
-				}
-
-				propertyJsonObject[p->key] = value;
-				propertyJsonArray.push_back(propertyJsonObject);
-			}
-			
-
-			componentJsonObject["properties"] = propertyJsonArray;
-
-			componentsJsonArray.push_back(componentJsonObject);
-		}
-		entityJsonObject["components"] = componentsJsonArray;
-
-		entityJsonArray.push_back(entityJsonObject);
+		BufferEntityToJsonArray(e, entityJsonArray);
 	}
 
 	jsonData["entities"] = entityJsonArray;
@@ -145,42 +195,33 @@ void Scene::ReadFromJsonFile(std::string path) {
 	}
 
 	for (auto& e : jsonData["entities"]) {
-		Entity* entity = new Entity();
-		entity->tag = e["tag"];
-		entity->localPosition = Vec2(e["position"][0], e["position"][1]);
-		entity->localScale = Vec2(e["scale"][0], e["scale"][1]);
-
-		for (auto& c : e["components"]) {
-			Component* component = Component_Register::GetNewComponentInstance(c["name"]);
-
-			for (auto& p : c["properties"]) {
-				for (auto& i : p.items()) {
-					std::string value = i.value();
-					if (value == "") continue;
-
-					if (value.find(',') != std::string::npos) {
-						std::string segment;
-						StringVector strv;
-						std::stringstream ss(value);
-
-						//SPLIT AT COMMA
-						while (std::getline(ss, segment, ',')) {
-							strv.push_back(segment);
-						}
-
-						component->SetProperty(i.key(), strv);
-					}
-					else {
-						component->SetProperty(i.key(), StringVector{ i.value() });
-					}
-				}
-			}
-
-			entity->AddExistingComponentInstance(component);
-		}
-
-		this->AddChild(entity);
+		ReadEntityFromJsonData(e, this);
 	}
+
+	delete parser;
+}
+
+void Scene::WriteJsonPrefab(std::string destination, Entity* parent) {
+	nlohmann::json jsonData;
+
+	nlohmann::json entityJsonArray = nlohmann::json::array();
+	BufferEntityToJsonArray(parent, entityJsonArray);
+
+	jsonData["prefab"] = entityJsonArray;
+
+	std::ofstream o(Core::GetExecutableDirectoryPath() + destination);
+	o << std::setw(4) << jsonData << std::endl;
+}
+
+void Scene::ReadJsonPrefab(std::string path) {
+	Parser* parser = new Parser(Core::GetExecutableDirectoryPath() + path, true, true);
+	nlohmann::json jsonData = nlohmann::json::parse(parser->GetFile());
+
+	for (auto& e : jsonData["prefab"]) {
+		ReadEntityFromJsonData(e, this);
+	}
+
+
 
 	delete parser;
 }

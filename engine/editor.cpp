@@ -130,12 +130,13 @@ void EditorHierarchy::ConstructTreenode(Editor* editor, Entity* entity) {
 					if (!Editor::AnyWindowOfTypeActive<EditorInspector>()) Editor::AddEditorWindow(new EditorInspector());
 				}
 
-				if (ImGui::MenuItem("Export as .prefab")) {
+				if (ImGui::MenuItem("Export as prefab")) {
 					editor->currentSelectedEntity = entity;
 
 					EditorInputWindow* window = new EditorInputWindow();
 					window->onApply.AddLambda([=]() {
 						//editor->currentSelectedEntity->WriteToLuaFile(LuaScriptFile::LuaScriptFile(std::string(window->GetBuffer() + std::string(EDITOR_PREFAB_SUFFIX))), EDITOR_LUA_LOAD_FUNCNAME);
+						SceneManager::GetActiveScene()->WriteJsonPrefab(std::string(window->GetBuffer()), editor->currentSelectedEntity);
 					});
 
 					Editor::AddEditorWindow(window);
@@ -552,6 +553,7 @@ void Editor::Update() {
 			EditorInputWindow* window = new EditorInputWindow();
 			window->onApply.AddLambda([=]() {
 				//LuaScript::RunFunction(std::string(window->GetBuffer()) + EDITOR_PREFAB_SUFFIX, EDITOR_LUA_LOAD_FUNCNAME);
+				SceneManager::GetActiveScene()->ReadJsonPrefab(std::string(window->GetBuffer()));
 			});
 
 			Editor::AddEditorWindow(window);

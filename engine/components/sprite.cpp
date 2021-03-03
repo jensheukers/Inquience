@@ -17,14 +17,17 @@ UV::UV() {
 	this->rightDown = Vec2(1, 1); // 1, 0
 }
 
+void Sprite::SetImGuiColorBuffer(ColorRGBA blendColor) {
+	this->_imguiColorBuffer[0] = (float)(blendColor._r / 255);
+	this->_imguiColorBuffer[1] = (float)(blendColor._g / 255);
+	this->_imguiColorBuffer[2] = (float)(blendColor._b / 255);
+	this->_imguiColorBuffer[3] = (float)(blendColor._a / 255);
+}
+
 Sprite::Sprite() {
 	this->texture = nullptr;
 
-	this->_imguiColorBuffer[0] = (float)(this->blendColor._r / 255);
-	this->_imguiColorBuffer[1] = (float)(this->blendColor._g / 255);
-	this->_imguiColorBuffer[2] = (float)(this->blendColor._b / 255);
-	this->_imguiColorBuffer[3] = (float)(this->blendColor._a / 255);
-	
+	this->SetImGuiColorBuffer(this->blendColor);
 	this->AddProperties();
 }
 
@@ -32,11 +35,7 @@ Sprite::Sprite(const Sprite& sprite) {
 	this->uv = sprite.uv;
 	this->texture = sprite.texture;
 
-	this->_imguiColorBuffer[0] = (float)(this->blendColor._r / 255);
-	this->_imguiColorBuffer[1] = (float)(this->blendColor._g / 255);
-	this->_imguiColorBuffer[2] = (float)(this->blendColor._b / 255);
-	this->_imguiColorBuffer[3] = (float)(this->blendColor._a / 255);
-
+	this->SetImGuiColorBuffer(this->blendColor);
 	this->AddProperties();
 }
 
@@ -61,6 +60,23 @@ void Sprite::AddProperties() {
 				std::to_string(this->uv.rightUp.x), std::to_string(this->uv.rightUp.y),
 				std::to_string(this->uv.leftDown.x), std::to_string(this->uv.leftDown.y),
 				std::to_string(this->uv.rightDown.x), std::to_string(this->uv.rightDown.y)
+			};
+	});
+
+	//Property to set blendcolor
+	AddProperty("SetBlendColor", [=](StringVector args) {
+		this->blendColor._r = std::stoi(args[0]);
+		this->blendColor._g = std::stoi(args[1]);
+		this->blendColor._b = std::stoi(args[2]);
+		this->blendColor._a = std::stoi(args[3]);
+		SetImGuiColorBuffer(this->blendColor);
+		}, [=]() -> StringVector {
+			return {
+				std::to_string(this->blendColor._r),
+				std::to_string(this->blendColor._g),
+				std::to_string(this->blendColor._b),
+				std::to_string(this->blendColor._a)
+
 			};
 	});
 }
