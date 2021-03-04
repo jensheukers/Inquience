@@ -13,23 +13,10 @@
 #include "unique_types.h"
 #include <vector>
 
-//Include json
-#include "json.hpp"
-
 class Scene : public Entity {
 private:
 	Camera * activeCamera; /***< The currently active Camera*/
 	std::vector<KeyValuePair> keyValuePairs; /***< All key value pairs stored in scene*/
-	
-	/**
-	* Writes a entity to a json array
-	*/
-	void BufferEntityToJsonArray(Entity* e, nlohmann::json& _array);
-
-	/**
-	* Reads a entity entry in a json file and creates a instance
-	*/
-	void ReadEntityFromJsonData(nlohmann::json& jsonData, Entity* parent);
 
 public:
 	/**
@@ -72,28 +59,6 @@ public:
 	* Gets KVP Value from kvp list
 	*/
 	std::string GetKeyValue(std::string key);
-
-	/*
-	* Writes scene data & children data to a JSON file
-	* @param path
-	*/
-	void WriteToJsonFile(std::string destination);
-
-	/**
-	* Reads scene data & children data from a JSON file
-	* @param path
-	*/
-	void ReadFromJsonFile(std::string path);
-
-	/**
-	* Writes a json prefab
-	*/
-	void WriteJsonPrefab(std::string destination, Entity* parent);
-
-	/**
-	* Reads a prefab from a jsonfile (basicly a encapsulated entity tree), and initializes it in the world
-	*/
-	void ReadJsonPrefab(std::string path);
 
 	/**
 	* Destructor

@@ -40,6 +40,11 @@ public:
 	*/
 	static Scene* SwapScene(Scene* scene);
 
+	/*
+	* Reads a scene from file, and swaps the scene
+	**/
+	static Scene* ReadFromFileAndSwap(std::string path);
+
 
 	/**
 	* Terminates the SceneManager

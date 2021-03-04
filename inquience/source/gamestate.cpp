@@ -36,9 +36,7 @@ void GameState::NextLevel() {
 
 	Debug::Log("Loading Scene: " + this->levels[this->currentLevel] );
 
-	Scene* scene = new Scene();
-	scene->ReadFromJsonFile(this->levels[this->currentLevel]);
-	SceneManager::SwapScene(scene);
+	SceneManager::ReadFromFileAndSwap(this->levels[this->currentLevel]);
 
 	if (this->currentScene == SceneManager::GetActiveScene() || !(this->currentScene = SceneManager::GetActiveScene())) {
 		Debug::Log("Failed to load level, GetActiveScene() returned nullptr OR scene did not change");

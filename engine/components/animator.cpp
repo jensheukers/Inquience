@@ -17,6 +17,23 @@ Animation::Animation(std::vector<UV*> frames) {
 	this->frameTime = DEFAULT_FRAME_TIME;
 
 	this->name = "Animation";
+	this->filePath = "";
+
+	this->currentFrameIndex = 0;
+}
+
+Animation::Animation(std::string filePath) {
+	this->frameTime = DEFAULT_FRAME_TIME;
+	this->name = "Animation";
+	this->filePath = filePath;
+
+	this->currentFrameIndex = 0;
+}
+
+Animation::Animation() {
+	this->frameTime = DEFAULT_FRAME_TIME;
+	this->name = "Animation";
+	this->filePath = "";
 
 	this->currentFrameIndex = 0;
 }
@@ -84,55 +101,15 @@ Animator::Animator() {
 	this->currentAnimation = nullptr; // Set to nullptr
 	this->lastPlayTime = Core::GetTimeElapsed();
 
-	// Animation data is encapsulated between different sort of characters, all animation data can be read from one string
-	// Even though this is not the cleanest way of doing it it is currently the best way since SetProperty() has its limitations
-	this->AddProperty("Animations", [=](StringVector args) {
+	/*this->AddProperty("Animations", [=](StringVector args) {
 		for (size_t i = 0; i < args.size(); i++) {
-			StringVector animationData = Essentials::Split(args[i], '$');
-			Animation* animation = new Animation();
-
-			//Animation specifics
-			animation->frameTime = std::stof(animationData[0]);
-			animation->name =  animationData[1];
-
-			for (size_t ii = 2; ii < animationData.size(); ii++) {
-				StringVector frameData = Essentials::Split(animationData[ii], '%');
-
-				UV uv;
-				uv.rightUp = Vec2(std::stof(frameData[0]), std::stof(frameData[1]));
-				uv.leftUp = Vec2(std::stof(frameData[2]), std::stof(frameData[3]));
-				uv.rightDown = Vec2(std::stof(frameData[4]), std::stof(frameData[5]));
-				uv.leftDown = Vec2(std::stof(frameData[6]), std::stof(frameData[7]));
-
-				animation->AddFrame(uv);
-			}
-			this->AddAnimation(animation);
+			//Read animation from file
 		}
 	}, [=]() -> StringVector {
-		StringVector returnVector;
 		for (size_t i = 0; i < animations.size(); i++) {
-			std::string dataString;
-			dataString += std::to_string(this->animations[i]->frameTime) + "";
-			dataString += std::string(this->animations[i]->name) + "$";
-
-			//Frames
-			for (size_t ii = 0; ii < animations[i]->GetFrames().size(); ii++) {
-				UV* uv = animations[i]->GetFrames()[ii];
-				dataString += std::to_string(uv->rightUp.x) + "%" + std::to_string(uv->rightUp.y) + "%";
-				dataString += std::to_string(uv->leftUp.x) + "%" + std::to_string(uv->leftUp.y) + "%";
-				dataString += std::to_string(uv->rightDown.x) + "%" + std::to_string(uv->rightDown.y) + "%";
-				dataString += std::to_string(uv->leftDown.x) + "%" + std::to_string(uv->leftDown.y);
-
-				if (ii + 1 != animations[i]->GetFrames().size()) {
-					dataString += ",";
-				}
-			}
-
-			returnVector.push_back(dataString);
+			
 		}
-
-		return returnVector;
-	});
+	});*/
 }
 
 Animation* Animator::AddAnimation(Animation* animation) {

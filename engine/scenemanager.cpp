@@ -10,6 +10,7 @@
 #include "scenemanager.h"
 #include <debug.h>
 
+#include "parser.h"
 
 SceneManager* SceneManager::instance; // Declare instance
 
@@ -42,6 +43,13 @@ Scene* SceneManager::SwapScene(Scene* scene) {
 	Debug::Log("SceneManager : Swapped Scene");
 
 	return SceneManager::GetActiveScene();
+}
+
+Scene* SceneManager::ReadFromFileAndSwap(std::string path) {
+	Parser* parser = new Parser(path, true);
+	Scene* scene = SceneManager::SwapScene(parser->ReadSceneFromFile());
+	delete parser;
+	return scene;
 }
 
 void SceneManager::Terminate() {

@@ -1,9 +1,17 @@
 #ifndef PARSER_H
 #define PARSER_H
 
+//Define filetype extensions
+#define FILETYPE_SCENE ".scene"
+#define FILETYPE_PREFAB ".prefab"
+#define FILETYPE_ANIMATION ".animation"
+
 #include <iostream>
 #include <fstream>
 #include <vector>
+
+//Include json
+#include "json.hpp"
 
 class Parser {
 private:
@@ -15,6 +23,17 @@ private:
 	bool _read;
 
 	bool debug;
+
+	/**
+	* Writes a entity to a json array
+	*/
+	void BufferEntityToJsonArray(class Entity* e, nlohmann::json& _array);
+
+	/**
+	* Reads a entity entry in a json file and creates a instance
+	*/
+	class Entity* ReadEntityFromJsonData(nlohmann::json& jsonData);
+
 public:
 	/**
 	* Constructor, if read is true we can read from file, if not we can write
@@ -51,6 +70,30 @@ public:
 	* Returns the file
 	*/
 	std::fstream& GetFile();
+
+	/**
+	* Writes a scene to a .scene file
+	*/
+	void WriteSceneToFile(class Scene* scene);
+
+	/**
+	* Read a scene from a .scene file
+	* @return Scene*
+	*/
+	Scene* ReadSceneFromFile();
+
+
+	/**
+	* Writes a entity and its children to a .prefab file
+	*/
+	void WritePrefabToFile(Entity* e);
+
+	/**
+	* Reads a json prefab and returns the top parent as a Entity*
+	* @return Entity*
+	*/
+	Entity* ReadPrefabFromFile();
+
 
 	/**
 	* Destructor

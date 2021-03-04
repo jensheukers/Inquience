@@ -15,9 +15,8 @@ int main(int argc, char * argv[]) {
 
 	//Create GameState and insert levels as parameter
 	static GameState* gameState = new GameState(std::vector<std::string> { 
-		"res/scenes/mainmenu.json",
-		"res/scenes/test_world.json"
-		/*"res/scenes/levels/level_0.scene"*/
+		"res/scenes/mainmenu.scene",
+		"res/scenes/test_world.scene"
 	});
 	gameState->Initialize();
 

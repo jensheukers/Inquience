@@ -17,6 +17,8 @@
 
 #include "math/physics.h"
 
+#include "parser.h"
+
 void Grid::Construct(Vec2 size, Vec2 tileSize) {
 	for (int x = 0; x < (int)size.x; x += (int)tileSize.x) {
 		for (int y = 0; y < (int)size.y; y += (int)tileSize.y) {
@@ -135,8 +137,9 @@ void EditorHierarchy::ConstructTreenode(Editor* editor, Entity* entity) {
 
 					EditorInputWindow* window = new EditorInputWindow();
 					window->onApply.AddLambda([=]() {
-						//editor->currentSelectedEntity->WriteToLuaFile(LuaScriptFile::LuaScriptFile(std::string(window->GetBuffer() + std::string(EDITOR_PREFAB_SUFFIX))), EDITOR_LUA_LOAD_FUNCNAME);
-						SceneManager::GetActiveScene()->WriteJsonPrefab(std::string(window->GetBuffer()), editor->currentSelectedEntity);
+						Parser* parser = new Parser(std::string(window->GetBuffer()), false);
+						parser->WritePrefabToFile(editor->currentSelectedEntity);
+						delete parser;
 					});
 
 					Editor::AddEditorWindow(window);
@@ -515,13 +518,10 @@ void Editor::Update() {
 		if (ImGui::MenuItem("Load")) { 
 			EditorInputWindow* window = new EditorInputWindow("Load");
 			window->onApply.AddLambda([=]() {
-				Scene* newScene = new Scene();
-				newScene->SetActiveCamera(new Camera());
-				newScene->ReadFromJsonFile(window->GetBuffer());
-
-				delete SceneManager::GetActiveScene();
-
-				SceneManager::SetActiveScene(newScene);
+				Parser* parser = new Parser(std::string(window->GetBuffer()), true);
+				Scene* scene = parser->ReadSceneFromFile();
+				SceneManager::SwapScene(scene);
+				delete parser;
 			});
 
 			GetInstance()->AddEditorWindow(window);
@@ -530,7 +530,9 @@ void Editor::Update() {
 		if (ImGui::MenuItem("Save")) { 
 			EditorInputWindow* window = new EditorInputWindow("Save");
 			window->onApply.AddLambda([=]() {
-				SceneManager::GetActiveScene()->WriteToJsonFile(window->GetBuffer());
+				Parser* parser = new Parser(std::string(window->GetBuffer()), false);
+				parser->WriteSceneToFile(SceneManager::GetActiveScene());
+				delete parser;
 			});
 
 			GetInstance()->AddEditorWindow(window);
@@ -552,8 +554,11 @@ void Editor::Update() {
 		if (ImGui::MenuItem("New Prefab")) {
 			EditorInputWindow* window = new EditorInputWindow();
 			window->onApply.AddLambda([=]() {
-				//LuaScript::RunFunction(std::string(window->GetBuffer()) + EDITOR_PREFAB_SUFFIX, EDITOR_LUA_LOAD_FUNCNAME);
-				SceneManager::GetActiveScene()->ReadJsonPrefab(std::string(window->GetBuffer()));
+				Parser* parser = new Parser(window->GetBuffer(), true);
+				Entity* prefab = parser->ReadPrefabFromFile();
+				SceneManager::GetActiveScene()->AddChild(prefab);
+
+				delete parser;
 			});
 
 			Editor::AddEditorWindow(window);
