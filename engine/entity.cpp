@@ -54,6 +54,8 @@ Entity::Entity() {
 	this->position = Vec2(0,0);
 	this->scale = Vec2(0, 0);
 	this->tag = "Entity";
+	this->isPrefab = false;
+	this->prefabFilePath = "";
 
 	this->GenerateUniqueID();
 	
@@ -67,6 +69,8 @@ Entity::Entity(const Entity& entity) {
 	this->scale = entity.scale;
 	this->localScale = entity.localScale;
 	this->tag = entity.tag;
+	this->isPrefab = entity.isPrefab;
+	this->prefabFilePath = entity.prefabFilePath;
 
 	this->GenerateUniqueID();
 

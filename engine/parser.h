@@ -27,7 +27,7 @@ private:
 	/**
 	* Writes a entity to a json array
 	*/
-	void BufferEntityToJsonArray(class Entity* e, nlohmann::json& _array);
+	nlohmann::json BufferEntityToJsonArray(class Entity* e, bool bufferingPrefab = false);
 
 	/**
 	* Reads a entity entry in a json file and creates a instance

@@ -21,12 +21,18 @@
 
 #include <sstream>
 
-void Parser::BufferEntityToJsonArray(Entity* e, nlohmann::json& _array) {
-	nlohmann::json entityJsonObject;
+nlohmann::json Parser::BufferEntityToJsonArray(Entity* e, bool bufferingPrefab) {
+	nlohmann::json jsonData;
 
-	entityJsonObject["tag"] = e->tag;
-	entityJsonObject["position"] = { e->localPosition.x, e->localPosition.y };
-	entityJsonObject["scale"] = { e->localScale.x, e->localScale.y };
+	jsonData["tag"] = e->tag;
+	jsonData["position"] = { e->localPosition.x, e->localPosition.y };
+	jsonData["scale"] = { e->localScale.x, e->localScale.y };
+
+	if (e->isPrefab && !bufferingPrefab) {
+		jsonData["isPrefab"] = true;
+		jsonData["path"] = e->prefabFilePath;
+		return jsonData;
+	}
 
 	//Components array
 	nlohmann::json componentsJsonArray = nlohmann::json::array();
@@ -60,23 +66,42 @@ void Parser::BufferEntityToJsonArray(Entity* e, nlohmann::json& _array) {
 
 		componentsJsonArray.push_back(componentJsonObject);
 	}
-	entityJsonObject["components"] = componentsJsonArray;
+	jsonData["components"] = componentsJsonArray;
 
 	nlohmann::json entityJsonArray = nlohmann::json::array();
 	for (size_t i = 0; i < e->GetChildren().size(); i++) {
-		BufferEntityToJsonArray(e->GetChild(i), entityJsonArray);
+		entityJsonArray.push_back(BufferEntityToJsonArray(e->GetChild(i)));
 	}
 
-	entityJsonObject["entities"] = entityJsonArray;
+	jsonData["entities"] = entityJsonArray;
 
-	_array.push_back(entityJsonObject);
+	return jsonData;
 }
 
 Entity* Parser::ReadEntityFromJsonData(nlohmann::json& jsonData) {
-	Entity* entity = new Entity();
-	entity->tag = jsonData["tag"];
-	entity->localPosition = Vec2(jsonData["position"][0], jsonData["position"][1]);
-	entity->localScale = Vec2(jsonData["scale"][0], jsonData["scale"][1]);
+	Entity* entity;
+
+	//Ensure jsondata is not a prefab, if it is we will open another file to read out the prefab
+	if (!jsonData["isPrefab"].is_null() && jsonData["isPrefab"]) {
+		Parser* parser = new Parser(jsonData["path"], true);
+		Entity* entity = parser->ReadPrefabFromFile();
+
+		entity->isPrefab = true;
+		entity->prefabFilePath = jsonData["path"];
+
+		entity->tag = jsonData["tag"];
+		entity->localPosition = Vec2(jsonData["position"][0], jsonData["position"][1]);
+		entity->localScale = Vec2(jsonData["scale"][0], jsonData["scale"][1]);
+
+		delete parser;
+		return entity;
+	}
+	else {
+		entity = new Entity();
+		entity->tag = jsonData["tag"];
+		entity->localPosition = Vec2(jsonData["position"][0], jsonData["position"][1]);
+		entity->localScale = Vec2(jsonData["scale"][0], jsonData["scale"][1]);
+	}
 
 	for (nlohmann::json& c : jsonData["components"]) {
 		Component* component = Component_Register::GetNewComponentInstance(c["name"]);
@@ -123,14 +148,11 @@ Parser::Parser(std::string destination, bool read, bool debug) {
 	//Create file if not exist
 	if (!this->_file.good()) {
 		if (!read) {
-			std::ofstream __file(this->destination);
-			__file.close();
-
 			this->_file = std::fstream(this->destination);
 		}
-		else {
-			Debug::Log("Parser : File " + this->destination + " does not exist");
-		}
+	}
+	else {
+		Debug::Log("Parser : File " + this->destination + " does not exist");
 	}
 }
 
@@ -204,7 +226,7 @@ void Parser::WriteSceneToFile(Scene* scene) {
 	nlohmann::json entityJsonArray = nlohmann::json::array();
 
 	for (Entity* e : scene->GetChildren()) {
-		BufferEntityToJsonArray(e, entityJsonArray);
+		entityJsonArray.push_back(BufferEntityToJsonArray(e));
 	}
 
 	jsonData["entities"] = entityJsonArray;
@@ -236,26 +258,13 @@ Scene* Parser::ReadSceneFromFile() {
 }
 
 void Parser::WritePrefabToFile(Entity* entity) {
-	nlohmann::json jsonData;
-
-	nlohmann::json entityJsonArray = nlohmann::json::array();
-	BufferEntityToJsonArray(entity, entityJsonArray);
-
-	jsonData["prefab"] = entityJsonArray;
-
 	std::ofstream o(destination + FILETYPE_PREFAB);
-	o << std::setw(4) << jsonData << std::endl;
+	o << std::setw(4) << BufferEntityToJsonArray(entity, true) << std::endl;
 }
 
 Entity* Parser::ReadPrefabFromFile() {
 	nlohmann::json jsonData = nlohmann::json::parse(this->GetFile());
-
-	Entity* entity = new Entity();
-	for (auto& e : jsonData["prefab"]) {
-		entity->AddChild(ReadEntityFromJsonData(e));
-	}
-
-	return entity;
+	return ReadEntityFromJsonData(jsonData);
 }
 
 Parser::~Parser() {

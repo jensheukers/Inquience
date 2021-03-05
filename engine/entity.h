@@ -69,6 +69,9 @@ public:
 	std::string tag; /***< Tag of the entity, whenever GetChildByTag() gets called and tag matches it will be returned*/
 	int uniqueId; /***< Unique id of the entity*/
 
+	bool isPrefab; /***< If true the entity is a saved prefab file*/
+	std::string prefabFilePath; /***< The path to the prefab file if entity is a prefab*/
+
 	/**
 	* Constructor
 	*/

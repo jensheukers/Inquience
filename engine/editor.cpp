@@ -138,6 +138,9 @@ void EditorHierarchy::ConstructTreenode(Editor* editor, Entity* entity) {
 					EditorInputWindow* window = new EditorInputWindow();
 					window->onApply.AddLambda([=]() {
 						Parser* parser = new Parser(std::string(window->GetBuffer()), false);
+						editor->currentSelectedEntity->isPrefab = true;
+						editor->currentSelectedEntity->prefabFilePath = window->GetBuffer();
+
 						parser->WritePrefabToFile(editor->currentSelectedEntity);
 						delete parser;
 					});
@@ -234,6 +237,8 @@ void EditorInspector::Handle(Editor* editor) {
 			}
 			ImGui::End();
 		}
+
+		ImGui::Text(std::string("Is Prefab"+ std::to_string(editor->currentSelectedEntity->isPrefab)).c_str());
 	}
 	else {
 		ImGui::Text("No entity selected");
@@ -556,6 +561,9 @@ void Editor::Update() {
 			window->onApply.AddLambda([=]() {
 				Parser* parser = new Parser(window->GetBuffer(), true);
 				Entity* prefab = parser->ReadPrefabFromFile();
+				prefab->isPrefab = true;
+				prefab->prefabFilePath = window->GetBuffer();
+
 				SceneManager::GetActiveScene()->AddChild(prefab);
 
 				delete parser;

@@ -1,24 +1,39 @@
 {
     "camerapos": [
-        1.0,
-        -10.0
+        -284.0,
+        -60.61614990234375
     ],
     "entities": [
-		{
-            "components": [
+        {
+            "components": [],
+            "entities": [
                 {
-                    "name": "class Sprite",
-                    "properties": [
+                    "components": [
                         {
-                            "Texture": "res/textures/placeholder.tga"
-                        },
-                        {
-                            "SetUV": "0.000000,0.000000,1.000000,0.000000,0.000000,1.000000,1.000000,1.000000"
-                        },
-                        {
-                            "SetBlendColor": "0,193,255,255"
+                            "name": "class Sprite",
+                            "properties": [
+                                {
+                                    "Texture": "res/textures/placeholder.tga"
+                                },
+                                {
+                                    "SetUV": "0.000000,0.000000,1.000000,0.000000,0.000000,1.000000,1.000000,1.000000"
+                                },
+                                {
+                                    "SetBlendColor": "0,198,255,255"
+                                }
+                            ]
                         }
-                    ]
+                    ],
+                    "entities": [],
+                    "position": [
+                        0.0,
+                        0.0
+                    ],
+                    "scale": [
+                        1500.0,
+                        1000.0
+                    ],
+                    "tag": "Sky"
                 }
             ],
             "position": [
@@ -26,566 +41,41 @@
                 0.0
             ],
             "scale": [
-                1500.0,
-                1000.0
+                0.0,
+                0.0
             ],
-            "tag": "BackGround"
-        },
-	
-        {
-            "components": [
-                {
-                    "name": "class Sprite",
-                    "properties": [
-                        {
-                            "Texture": "res/textures/spritesheet.tga"
-                        },
-                        {
-                            "SetUV": "0.062500,0.937500,0.125000,0.937500,0.062500,1.000000,0.125000,1.000000"
-                        }
-                    ]
-                }
-            ],
-            "position": [
-                256.0,
-                320.0
-            ],
-            "scale": [
-                32.0,
-                32.0
-            ],
-            "tag": "Entity"
-        },
-        {
-            "components": [
-                {
-                    "name": "class Sprite",
-                    "properties": [
-                        {
-                            "Texture": "res/textures/spritesheet.tga"
-                        },
-                        {
-                            "SetUV": "0.062500,0.937500,0.125000,0.937500,0.062500,1.000000,0.125000,1.000000"
-                        }
-                    ]
-                }
-            ],
-            "position": [
-                288.0,
-                320.0
-            ],
-            "scale": [
-                32.0,
-                32.0
-            ],
-            "tag": "Entity"
-        },
-        {
-            "components": [
-                {
-                    "name": "class Sprite",
-                    "properties": [
-                        {
-                            "Texture": "res/textures/spritesheet.tga"
-                        },
-                        {
-                            "SetUV": "0.062500,0.937500,0.125000,0.937500,0.062500,1.000000,0.125000,1.000000"
-                        }
-                    ]
-                }
-            ],
-            "position": [
-                320.0,
-                320.0
-            ],
-            "scale": [
-                32.0,
-                32.0
-            ],
-            "tag": "Entity"
-        },
-        {
-            "components": [
-                {
-                    "name": "class Sprite",
-                    "properties": [
-                        {
-                            "Texture": "res/textures/spritesheet.tga"
-                        },
-                        {
-                            "SetUV": "0.062500,0.937500,0.125000,0.937500,0.062500,1.000000,0.125000,1.000000"
-                        }
-                    ]
-                }
-            ],
-            "position": [
-                352.0,
-                320.0
-            ],
-            "scale": [
-                32.0,
-                32.0
-            ],
-            "tag": "Entity"
-        },
-        {
-            "components": [
-                {
-                    "name": "class Sprite",
-                    "properties": [
-                        {
-                            "Texture": "res/textures/spritesheet.tga"
-                        },
-                        {
-                            "SetUV": "0.062500,0.937500,0.125000,0.937500,0.062500,1.000000,0.125000,1.000000"
-                        }
-                    ]
-                }
-            ],
-            "position": [
-                384.0,
-                320.0
-            ],
-            "scale": [
-                32.0,
-                32.0
-            ],
-            "tag": "Entity"
-        },
-        {
-            "components": [
-                {
-                    "name": "class Sprite",
-                    "properties": [
-                        {
-                            "Texture": "res/textures/spritesheet.tga"
-                        },
-                        {
-                            "SetUV": "0.062500,0.937500,0.125000,0.937500,0.062500,1.000000,0.125000,1.000000"
-                        }
-                    ]
-                }
-            ],
-            "position": [
-                224.0,
-                320.0
-            ],
-            "scale": [
-                32.0,
-                32.0
-            ],
-            "tag": "Entity"
-        },
-        {
-            "components": [
-                {
-                    "name": "class Sprite",
-                    "properties": [
-                        {
-                            "Texture": "res/textures/spritesheet.tga"
-                        },
-                        {
-                            "SetUV": "0.062500,0.937500,0.125000,0.937500,0.062500,1.000000,0.125000,1.000000"
-                        }
-                    ]
-                }
-            ],
-            "position": [
-                192.0,
-                320.0
-            ],
-            "scale": [
-                32.0,
-                32.0
-            ],
-            "tag": "Entity"
-        },
-        {
-            "components": [
-                {
-                    "name": "class Sprite",
-                    "properties": [
-                        {
-                            "Texture": "res/textures/spritesheet.tga"
-                        },
-                        {
-                            "SetUV": "0.062500,0.937500,0.125000,0.937500,0.062500,1.000000,0.125000,1.000000"
-                        }
-                    ]
-                }
-            ],
-            "position": [
-                160.0,
-                320.0
-            ],
-            "scale": [
-                32.0,
-                32.0
-            ],
-            "tag": "Entity"
-        },
-        {
-            "components": [
-                {
-                    "name": "class Sprite",
-                    "properties": [
-                        {
-                            "Texture": "res/textures/spritesheet.tga"
-                        },
-                        {
-                            "SetUV": "0.062500,0.937500,0.125000,0.937500,0.062500,1.000000,0.125000,1.000000"
-                        }
-                    ]
-                }
-            ],
-            "position": [
-                128.0,
-                320.0
-            ],
-            "scale": [
-                32.0,
-                32.0
-            ],
-            "tag": "Entity"
-        },
-        {
-            "components": [
-                {
-                    "name": "class Sprite",
-                    "properties": [
-                        {
-                            "Texture": "res/textures/spritesheet.tga"
-                        },
-                        {
-                            "SetUV": "0.062500,0.937500,0.125000,0.937500,0.062500,1.000000,0.125000,1.000000"
-                        }
-                    ]
-                }
-            ],
-            "position": [
-                96.0,
-                320.0
-            ],
-            "scale": [
-                32.0,
-                32.0
-            ],
-            "tag": "Entity"
-        },
-        {
-            "components": [
-                {
-                    "name": "class Sprite",
-                    "properties": [
-                        {
-                            "Texture": "res/textures/spritesheet.tga"
-                        },
-                        {
-                            "SetUV": "0.000000,0.937500,0.062500,0.937500,0.000000,1.000000,0.062500,1.000000"
-                        }
-                    ]
-                }
-            ],
-            "position": [
-                64.0,
-                320.0
-            ],
-            "scale": [
-                32.0,
-                32.0
-            ],
-            "tag": "Entity"
-        },
-        {
-            "components": [
-                {
-                    "name": "class Sprite",
-                    "properties": [
-                        {
-                            "Texture": "res/textures/spritesheet.tga"
-                        },
-                        {
-                            "SetUV": "0.000000,0.812500,0.062500,0.812500,0.000000,0.875000,0.062500,0.875000"
-                        }
-                    ]
-                }
-            ],
-            "position": [
-                64.0,
-                352.0
-            ],
-            "scale": [
-                32.0,
-                32.0
-            ],
-            "tag": "Entity"
-        },
-        {
-            "components": [
-                {
-                    "name": "class Sprite",
-                    "properties": [
-                        {
-                            "Texture": "res/textures/spritesheet.tga"
-                        },
-                        {
-                            "SetUV": "0.062500,0.812500,0.125000,0.812500,0.062500,0.875000,0.125000,0.875000"
-                        }
-                    ]
-                }
-            ],
-            "position": [
-                96.0,
-                352.0
-            ],
-            "scale": [
-                32.0,
-                32.0
-            ],
-            "tag": "Entity"
-        },
-        {
-            "components": [
-                {
-                    "name": "class Sprite",
-                    "properties": [
-                        {
-                            "Texture": "res/textures/spritesheet.tga"
-                        },
-                        {
-                            "SetUV": "0.062500,0.812500,0.125000,0.812500,0.062500,0.875000,0.125000,0.875000"
-                        }
-                    ]
-                }
-            ],
-            "position": [
-                128.0,
-                352.0
-            ],
-            "scale": [
-                32.0,
-                32.0
-            ],
-            "tag": "Entity"
-        },
-        {
-            "components": [
-                {
-                    "name": "class Sprite",
-                    "properties": [
-                        {
-                            "Texture": "res/textures/spritesheet.tga"
-                        },
-                        {
-                            "SetUV": "0.062500,0.812500,0.125000,0.812500,0.062500,0.875000,0.125000,0.875000"
-                        }
-                    ]
-                }
-            ],
-            "position": [
-                160.0,
-                352.0
-            ],
-            "scale": [
-                32.0,
-                32.0
-            ],
-            "tag": "Entity"
-        },
-        {
-            "components": [
-                {
-                    "name": "class Sprite",
-                    "properties": [
-                        {
-                            "Texture": "res/textures/spritesheet.tga"
-                        },
-                        {
-                            "SetUV": "0.062500,0.812500,0.125000,0.812500,0.062500,0.875000,0.125000,0.875000"
-                        }
-                    ]
-                }
-            ],
-            "position": [
-                192.0,
-                352.0
-            ],
-            "scale": [
-                32.0,
-                32.0
-            ],
-            "tag": "Entity"
-        },
-        {
-            "components": [
-                {
-                    "name": "class Sprite",
-                    "properties": [
-                        {
-                            "Texture": "res/textures/spritesheet.tga"
-                        },
-                        {
-                            "SetUV": "0.062500,0.812500,0.125000,0.812500,0.062500,0.875000,0.125000,0.875000"
-                        }
-                    ]
-                }
-            ],
-            "position": [
-                224.0,
-                352.0
-            ],
-            "scale": [
-                32.0,
-                32.0
-            ],
-            "tag": "Entity"
-        },
-        {
-            "components": [
-                {
-                    "name": "class Sprite",
-                    "properties": [
-                        {
-                            "Texture": "res/textures/spritesheet.tga"
-                        },
-                        {
-                            "SetUV": "0.062500,0.812500,0.125000,0.812500,0.062500,0.875000,0.125000,0.875000"
-                        }
-                    ]
-                }
-            ],
-            "position": [
-                256.0,
-                352.0
-            ],
-            "scale": [
-                32.0,
-                32.0
-            ],
-            "tag": "Entity"
-        },
-        {
-            "components": [
-                {
-                    "name": "class Sprite",
-                    "properties": [
-                        {
-                            "Texture": "res/textures/spritesheet.tga"
-                        },
-                        {
-                            "SetUV": "0.062500,0.812500,0.125000,0.812500,0.062500,0.875000,0.125000,0.875000"
-                        }
-                    ]
-                }
-            ],
-            "position": [
-                288.0,
-                352.0
-            ],
-            "scale": [
-                32.0,
-                32.0
-            ],
-            "tag": "Entity"
-        },
-        {
-            "components": [
-                {
-                    "name": "class Sprite",
-                    "properties": [
-                        {
-                            "Texture": "res/textures/spritesheet.tga"
-                        },
-                        {
-                            "SetUV": "0.062500,0.812500,0.125000,0.812500,0.062500,0.875000,0.125000,0.875000"
-                        }
-                    ]
-                }
-            ],
-            "position": [
-                320.0,
-                352.0
-            ],
-            "scale": [
-                32.0,
-                32.0
-            ],
-            "tag": "Entity"
-        },
-        {
-            "components": [
-                {
-                    "name": "class Sprite",
-                    "properties": [
-                        {
-                            "Texture": "res/textures/spritesheet.tga"
-                        },
-                        {
-                            "SetUV": "0.062500,0.812500,0.125000,0.812500,0.062500,0.875000,0.125000,0.875000"
-                        }
-                    ]
-                }
-            ],
-            "position": [
-                352.0,
-                352.0
-            ],
-            "scale": [
-                32.0,
-                32.0
-            ],
-            "tag": "Entity"
-        },
-        {
-            "components": [
-                {
-                    "name": "class Sprite",
-                    "properties": [
-                        {
-                            "Texture": "res/textures/spritesheet.tga"
-                        },
-                        {
-                            "SetUV": "0.062500,0.812500,0.125000,0.812500,0.062500,0.875000,0.125000,0.875000"
-                        }
-                    ]
-                }
-            ],
-            "position": [
-                384.0,
-                352.0
-            ],
-            "scale": [
-                32.0,
-                32.0
-            ],
-            "tag": "Entity"
-        },
-        {
-            "components": [
-                {
-                    "name": "class Sprite",
-                    "properties": [
-                        {
-                            "Texture": "res/textures/spritesheet.tga"
-                        },
-                        {
-                            "SetUV": "0.125000,0.812500,0.187500,0.812500,0.125000,0.875000,0.187500,0.875000"
-                        }
-                    ]
-                }
-            ],
-            "position": [
-                416.0,
-                352.0
-            ],
-            "scale": [
-                32.0,
-                32.0
-            ],
-            "tag": "Entity"
+            "tag": "BackgroundLayer"
         },
         {
             "components": [],
+            "entities": [
+                {
+                    "isPrefab": true,
+                    "path": "res/prefabs/islands/small_island.prefab",
+                    "position": [
+                        100.0,
+                        200.0
+                    ],
+                    "scale": [
+                        0.0,
+                        0.0
+                    ],
+                    "tag": "Small_Island"
+                },
+				{
+                    "isPrefab": true,
+                    "path": "res/prefabs/islands/small_island.prefab",
+                    "position": [
+                        300.0,
+                        100.0
+                    ],
+                    "scale": [
+                        0.0,
+                        0.0
+                    ],
+                    "tag": "Small_Island"
+                }
+            ],
             "position": [
                 0.0,
                 0.0
@@ -594,72 +84,21 @@
                 0.0,
                 0.0
             ],
-            "tag": "Island"
-        },
-        {
-            "components": [
-                {
-                    "name": "class Sprite",
-                    "properties": [
-                        {
-                            "Texture": "res/textures/spritesheet.tga"
-                        },
-                        {
-                            "SetUV": "0.125000,0.937500,0.187500,0.937500,0.125000,1.000000,0.187500,1.000000"
-                        }
-                    ]
-                }
-            ],
-            "position": [
-                416.0,
-                320.0
-            ],
-            "scale": [
-                32.0,
-                32.0
-            ],
-            "tag": "Entity"
-        },
-        {
-            "components": [
-                {
-                    "name": "class BoxCollider",
-                    "properties": [
-                        {
-                            "DrawDebug": "0"
-                        },
-                        {
-                            "Outer": "350.000000,32.000000"
-                        },
-                        {
-                            "ScaleToOwner": "205"
-                        }
-                    ]
-                }
-            ],
-            "position": [
-                81.0,
-                337.0
-            ],
-            "scale": [
-                350.0,
-                32.0
-            ],
-            "tag": "Collider"
+            "tag": "WorldLayer"
         }
     ],
     "kvps": [
         {
-            "keyname": "BeginGameplay",
-            "value": "true"
-        },
-        {
             "keyname": "x",
-            "value": "50"
+            "value": "100"
         },
         {
             "keyname": "y",
             "value": "100"
+        },
+        {
+            "keyname": "BeginGameplay",
+            "value": "true"
         }
     ]
 }

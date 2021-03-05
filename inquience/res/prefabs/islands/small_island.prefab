@@ -1,550 +1,546 @@
 {
-    "prefab": [
-        {
-            "components": [],
-            "entities": [
-                {
-                    "components": [
-                        {
-                            "name": "class Sprite",
-                            "properties": [
-                                {
-                                    "Texture": "res/textures/spritesheet.tga"
-                                },
-                                {
-                                    "SetUV": "0.000000,0.937500,0.062500,0.937500,0.000000,1.000000,0.062500,1.000000"
-                                },
-                                {
-                                    "SetBlendColor": "255,255,255,255"
-                                }
-                            ]
-                        }
-                    ],
-                    "entities": [],
-                    "position": [
-                        0.0,
-                        0.0
-                    ],
-                    "scale": [
-                        32.0,
-                        32.0
-                    ],
-                    "tag": "Entity"
-                },
-                {
-                    "components": [
-                        {
-                            "name": "class Sprite",
-                            "properties": [
-                                {
-                                    "Texture": "res/textures/spritesheet.tga"
-                                },
-                                {
-                                    "SetUV": "0.062500,0.937500,0.125000,0.937500,0.062500,1.000000,0.125000,1.000000"
-                                },
-                                {
-                                    "SetBlendColor": "255,255,255,255"
-                                }
-                            ]
-                        }
-                    ],
-                    "entities": [],
-                    "position": [
-                        32.0,
-                        0.0
-                    ],
-                    "scale": [
-                        32.0,
-                        32.0
-                    ],
-                    "tag": "Entity"
-                },
-                {
-                    "components": [
-                        {
-                            "name": "class Sprite",
-                            "properties": [
-                                {
-                                    "Texture": "res/textures/spritesheet.tga"
-                                },
-                                {
-                                    "SetUV": "0.062500,0.937500,0.125000,0.937500,0.062500,1.000000,0.125000,1.000000"
-                                },
-                                {
-                                    "SetBlendColor": "255,255,255,255"
-                                }
-                            ]
-                        }
-                    ],
-                    "entities": [],
-                    "position": [
-                        64.0,
-                        0.0
-                    ],
-                    "scale": [
-                        32.0,
-                        32.0
-                    ],
-                    "tag": "Entity"
-                },
-                {
-                    "components": [
-                        {
-                            "name": "class Sprite",
-                            "properties": [
-                                {
-                                    "Texture": "res/textures/spritesheet.tga"
-                                },
-                                {
-                                    "SetUV": "0.062500,0.937500,0.125000,0.937500,0.062500,1.000000,0.125000,1.000000"
-                                },
-                                {
-                                    "SetBlendColor": "255,255,255,255"
-                                }
-                            ]
-                        }
-                    ],
-                    "entities": [],
-                    "position": [
-                        96.0,
-                        0.0
-                    ],
-                    "scale": [
-                        32.0,
-                        32.0
-                    ],
-                    "tag": "Entity"
-                },
-                {
-                    "components": [
-                        {
-                            "name": "class Sprite",
-                            "properties": [
-                                {
-                                    "Texture": "res/textures/spritesheet.tga"
-                                },
-                                {
-                                    "SetUV": "0.062500,0.937500,0.125000,0.937500,0.062500,1.000000,0.125000,1.000000"
-                                },
-                                {
-                                    "SetBlendColor": "255,255,255,255"
-                                }
-                            ]
-                        }
-                    ],
-                    "entities": [],
-                    "position": [
-                        128.0,
-                        0.0
-                    ],
-                    "scale": [
-                        32.0,
-                        32.0
-                    ],
-                    "tag": "Entity"
-                },
-                {
-                    "components": [
-                        {
-                            "name": "class Sprite",
-                            "properties": [
-                                {
-                                    "Texture": "res/textures/spritesheet.tga"
-                                },
-                                {
-                                    "SetUV": "0.062500,0.937500,0.125000,0.937500,0.062500,1.000000,0.125000,1.000000"
-                                },
-                                {
-                                    "SetBlendColor": "255,255,255,255"
-                                }
-                            ]
-                        }
-                    ],
-                    "entities": [],
-                    "position": [
-                        160.0,
-                        0.0
-                    ],
-                    "scale": [
-                        32.0,
-                        32.0
-                    ],
-                    "tag": "Entity"
-                },
-                {
-                    "components": [
-                        {
-                            "name": "class Sprite",
-                            "properties": [
-                                {
-                                    "Texture": "res/textures/spritesheet.tga"
-                                },
-                                {
-                                    "SetUV": "0.062500,0.937500,0.125000,0.937500,0.062500,1.000000,0.125000,1.000000"
-                                },
-                                {
-                                    "SetBlendColor": "255,255,255,255"
-                                }
-                            ]
-                        }
-                    ],
-                    "entities": [],
-                    "position": [
-                        192.0,
-                        0.0
-                    ],
-                    "scale": [
-                        32.0,
-                        32.0
-                    ],
-                    "tag": "Entity"
-                },
-                {
-                    "components": [
-                        {
-                            "name": "class Sprite",
-                            "properties": [
-                                {
-                                    "Texture": "res/textures/spritesheet.tga"
-                                },
-                                {
-                                    "SetUV": "0.062500,0.937500,0.125000,0.937500,0.062500,1.000000,0.125000,1.000000"
-                                },
-                                {
-                                    "SetBlendColor": "255,255,255,255"
-                                }
-                            ]
-                        }
-                    ],
-                    "entities": [],
-                    "position": [
-                        224.0,
-                        0.0
-                    ],
-                    "scale": [
-                        32.0,
-                        32.0
-                    ],
-                    "tag": "Entity"
-                },
-                {
-                    "components": [
-                        {
-                            "name": "class Sprite",
-                            "properties": [
-                                {
-                                    "Texture": "res/textures/spritesheet.tga"
-                                },
-                                {
-                                    "SetUV": "0.125000,0.937500,0.187500,0.937500,0.125000,1.000000,0.187500,1.000000"
-                                },
-                                {
-                                    "SetBlendColor": "255,255,255,255"
-                                }
-                            ]
-                        }
-                    ],
-                    "entities": [],
-                    "position": [
-                        256.0,
-                        0.0
-                    ],
-                    "scale": [
-                        32.0,
-                        32.0
-                    ],
-                    "tag": "Entity"
-                },
-                {
-                    "components": [
-                        {
-                            "name": "class Sprite",
-                            "properties": [
-                                {
-                                    "Texture": "res/textures/spritesheet.tga"
-                                },
-                                {
-                                    "SetUV": "0.125000,0.812500,0.187500,0.812500,0.125000,0.875000,0.187500,0.875000"
-                                },
-                                {
-                                    "SetBlendColor": "255,255,255,255"
-                                }
-                            ]
-                        }
-                    ],
-                    "entities": [],
-                    "position": [
-                        256.0,
-                        32.0
-                    ],
-                    "scale": [
-                        32.0,
-                        32.0
-                    ],
-                    "tag": "Entity"
-                },
-                {
-                    "components": [
-                        {
-                            "name": "class Sprite",
-                            "properties": [
-                                {
-                                    "Texture": "res/textures/spritesheet.tga"
-                                },
-                                {
-                                    "SetUV": "0.062500,0.812500,0.125000,0.812500,0.062500,0.875000,0.125000,0.875000"
-                                },
-                                {
-                                    "SetBlendColor": "255,255,255,255"
-                                }
-                            ]
-                        }
-                    ],
-                    "entities": [],
-                    "position": [
-                        224.0,
-                        32.0
-                    ],
-                    "scale": [
-                        32.0,
-                        32.0
-                    ],
-                    "tag": "Entity"
-                },
-                {
-                    "components": [
-                        {
-                            "name": "class Sprite",
-                            "properties": [
-                                {
-                                    "Texture": "res/textures/spritesheet.tga"
-                                },
-                                {
-                                    "SetUV": "0.062500,0.812500,0.125000,0.812500,0.062500,0.875000,0.125000,0.875000"
-                                },
-                                {
-                                    "SetBlendColor": "255,255,255,255"
-                                }
-                            ]
-                        }
-                    ],
-                    "entities": [],
-                    "position": [
-                        192.0,
-                        32.0
-                    ],
-                    "scale": [
-                        32.0,
-                        32.0
-                    ],
-                    "tag": "Entity"
-                },
-                {
-                    "components": [
-                        {
-                            "name": "class Sprite",
-                            "properties": [
-                                {
-                                    "Texture": "res/textures/spritesheet.tga"
-                                },
-                                {
-                                    "SetUV": "0.062500,0.812500,0.125000,0.812500,0.062500,0.875000,0.125000,0.875000"
-                                },
-                                {
-                                    "SetBlendColor": "255,255,255,255"
-                                }
-                            ]
-                        }
-                    ],
-                    "entities": [],
-                    "position": [
-                        160.0,
-                        32.0
-                    ],
-                    "scale": [
-                        32.0,
-                        32.0
-                    ],
-                    "tag": "Entity"
-                },
-                {
-                    "components": [
-                        {
-                            "name": "class Sprite",
-                            "properties": [
-                                {
-                                    "Texture": "res/textures/spritesheet.tga"
-                                },
-                                {
-                                    "SetUV": "0.062500,0.812500,0.125000,0.812500,0.062500,0.875000,0.125000,0.875000"
-                                },
-                                {
-                                    "SetBlendColor": "255,255,255,255"
-                                }
-                            ]
-                        }
-                    ],
-                    "entities": [],
-                    "position": [
-                        128.0,
-                        32.0
-                    ],
-                    "scale": [
-                        32.0,
-                        32.0
-                    ],
-                    "tag": "Entity"
-                },
-                {
-                    "components": [
-                        {
-                            "name": "class Sprite",
-                            "properties": [
-                                {
-                                    "Texture": "res/textures/spritesheet.tga"
-                                },
-                                {
-                                    "SetUV": "0.062500,0.812500,0.125000,0.812500,0.062500,0.875000,0.125000,0.875000"
-                                },
-                                {
-                                    "SetBlendColor": "255,255,255,255"
-                                }
-                            ]
-                        }
-                    ],
-                    "entities": [],
-                    "position": [
-                        96.0,
-                        32.0
-                    ],
-                    "scale": [
-                        32.0,
-                        32.0
-                    ],
-                    "tag": "Entity"
-                },
-                {
-                    "components": [
-                        {
-                            "name": "class Sprite",
-                            "properties": [
-                                {
-                                    "Texture": "res/textures/spritesheet.tga"
-                                },
-                                {
-                                    "SetUV": "0.062500,0.812500,0.125000,0.812500,0.062500,0.875000,0.125000,0.875000"
-                                },
-                                {
-                                    "SetBlendColor": "255,255,255,255"
-                                }
-                            ]
-                        }
-                    ],
-                    "entities": [],
-                    "position": [
-                        64.0,
-                        32.0
-                    ],
-                    "scale": [
-                        32.0,
-                        32.0
-                    ],
-                    "tag": "Entity"
-                },
-                {
-                    "components": [
-                        {
-                            "name": "class Sprite",
-                            "properties": [
-                                {
-                                    "Texture": "res/textures/spritesheet.tga"
-                                },
-                                {
-                                    "SetUV": "0.062500,0.812500,0.125000,0.812500,0.062500,0.875000,0.125000,0.875000"
-                                },
-                                {
-                                    "SetBlendColor": "255,255,255,255"
-                                }
-                            ]
-                        }
-                    ],
-                    "entities": [],
-                    "position": [
-                        32.0,
-                        32.0
-                    ],
-                    "scale": [
-                        32.0,
-                        32.0
-                    ],
-                    "tag": "Entity"
-                },
-                {
-                    "components": [
-                        {
-                            "name": "class Sprite",
-                            "properties": [
-                                {
-                                    "Texture": "res/textures/spritesheet.tga"
-                                },
-                                {
-                                    "SetUV": "0.000000,0.812500,0.062500,0.812500,0.000000,0.875000,0.062500,0.875000"
-                                },
-                                {
-                                    "SetBlendColor": "255,255,255,255"
-                                }
-                            ]
-                        }
-                    ],
-                    "entities": [],
-                    "position": [
-                        0.0,
-                        32.0
-                    ],
-                    "scale": [
-                        32.0,
-                        32.0
-                    ],
-                    "tag": "Entity"
-                },
-                {
-                    "components": [
-                        {
-                            "name": "class BoxCollider",
-                            "properties": [
-                                {
-                                    "DrawDebug": "1"
-                                },
-                                {
-                                    "Outer": "256.000000,32.000000"
-                                },
-                                {
-                                    "ScaleToOwner": "205"
-                                }
-                            ]
-                        }
-                    ],
-                    "entities": [],
-                    "position": [
-                        16.0,
-                        16.0
-                    ],
-                    "scale": [
-                        256.0,
-                        32.0
-                    ],
-                    "tag": "Collider"
-                }
-            ],
-            "position": [
-                0.0,
-                0.0
-            ],
-            "scale": [
-                0.0,
-                0.0
-            ],
-            "tag": "Small_Island"
-        }
-    ]
+	"components": [],
+	"entities": [
+		{
+			"components": [
+				{
+					"name": "class Sprite",
+					"properties": [
+						{
+							"Texture": "res/textures/spritesheet.tga"
+						},
+						{
+							"SetUV": "0.000000,0.937500,0.062500,0.937500,0.000000,1.000000,0.062500,1.000000"
+						},
+						{
+							"SetBlendColor": "255,255,255,255"
+						}
+					]
+				}
+			],
+			"entities": [],
+			"position": [
+				0.0,
+				0.0
+			],
+			"scale": [
+				32.0,
+				32.0
+			],
+			"tag": "Entity"
+		},
+		{
+			"components": [
+				{
+					"name": "class Sprite",
+					"properties": [
+						{
+							"Texture": "res/textures/spritesheet.tga"
+						},
+						{
+							"SetUV": "0.062500,0.937500,0.125000,0.937500,0.062500,1.000000,0.125000,1.000000"
+						},
+						{
+							"SetBlendColor": "255,255,255,255"
+						}
+					]
+				}
+			],
+			"entities": [],
+			"position": [
+				32.0,
+				0.0
+			],
+			"scale": [
+				32.0,
+				32.0
+			],
+			"tag": "Entity"
+		},
+		{
+			"components": [
+				{
+					"name": "class Sprite",
+					"properties": [
+						{
+							"Texture": "res/textures/spritesheet.tga"
+						},
+						{
+							"SetUV": "0.062500,0.937500,0.125000,0.937500,0.062500,1.000000,0.125000,1.000000"
+						},
+						{
+							"SetBlendColor": "255,255,255,255"
+						}
+					]
+				}
+			],
+			"entities": [],
+			"position": [
+				64.0,
+				0.0
+			],
+			"scale": [
+				32.0,
+				32.0
+			],
+			"tag": "Entity"
+		},
+		{
+			"components": [
+				{
+					"name": "class Sprite",
+					"properties": [
+						{
+							"Texture": "res/textures/spritesheet.tga"
+						},
+						{
+							"SetUV": "0.062500,0.937500,0.125000,0.937500,0.062500,1.000000,0.125000,1.000000"
+						},
+						{
+							"SetBlendColor": "255,255,255,255"
+						}
+					]
+				}
+			],
+			"entities": [],
+			"position": [
+				96.0,
+				0.0
+			],
+			"scale": [
+				32.0,
+				32.0
+			],
+			"tag": "Entity"
+		},
+		{
+			"components": [
+				{
+					"name": "class Sprite",
+					"properties": [
+						{
+							"Texture": "res/textures/spritesheet.tga"
+						},
+						{
+							"SetUV": "0.062500,0.937500,0.125000,0.937500,0.062500,1.000000,0.125000,1.000000"
+						},
+						{
+							"SetBlendColor": "255,255,255,255"
+						}
+					]
+				}
+			],
+			"entities": [],
+			"position": [
+				128.0,
+				0.0
+			],
+			"scale": [
+				32.0,
+				32.0
+			],
+			"tag": "Entity"
+		},
+		{
+			"components": [
+				{
+					"name": "class Sprite",
+					"properties": [
+						{
+							"Texture": "res/textures/spritesheet.tga"
+						},
+						{
+							"SetUV": "0.062500,0.937500,0.125000,0.937500,0.062500,1.000000,0.125000,1.000000"
+						},
+						{
+							"SetBlendColor": "255,255,255,255"
+						}
+					]
+				}
+			],
+			"entities": [],
+			"position": [
+				160.0,
+				0.0
+			],
+			"scale": [
+				32.0,
+				32.0
+			],
+			"tag": "Entity"
+		},
+		{
+			"components": [
+				{
+					"name": "class Sprite",
+					"properties": [
+						{
+							"Texture": "res/textures/spritesheet.tga"
+						},
+						{
+							"SetUV": "0.062500,0.937500,0.125000,0.937500,0.062500,1.000000,0.125000,1.000000"
+						},
+						{
+							"SetBlendColor": "255,255,255,255"
+						}
+					]
+				}
+			],
+			"entities": [],
+			"position": [
+				192.0,
+				0.0
+			],
+			"scale": [
+				32.0,
+				32.0
+			],
+			"tag": "Entity"
+		},
+		{
+			"components": [
+				{
+					"name": "class Sprite",
+					"properties": [
+						{
+							"Texture": "res/textures/spritesheet.tga"
+						},
+						{
+							"SetUV": "0.062500,0.937500,0.125000,0.937500,0.062500,1.000000,0.125000,1.000000"
+						},
+						{
+							"SetBlendColor": "255,255,255,255"
+						}
+					]
+				}
+			],
+			"entities": [],
+			"position": [
+				224.0,
+				0.0
+			],
+			"scale": [
+				32.0,
+				32.0
+			],
+			"tag": "Entity"
+		},
+		{
+			"components": [
+				{
+					"name": "class Sprite",
+					"properties": [
+						{
+							"Texture": "res/textures/spritesheet.tga"
+						},
+						{
+							"SetUV": "0.125000,0.937500,0.187500,0.937500,0.125000,1.000000,0.187500,1.000000"
+						},
+						{
+							"SetBlendColor": "255,255,255,255"
+						}
+					]
+				}
+			],
+			"entities": [],
+			"position": [
+				256.0,
+				0.0
+			],
+			"scale": [
+				32.0,
+				32.0
+			],
+			"tag": "Entity"
+		},
+		{
+			"components": [
+				{
+					"name": "class Sprite",
+					"properties": [
+						{
+							"Texture": "res/textures/spritesheet.tga"
+						},
+						{
+							"SetUV": "0.125000,0.812500,0.187500,0.812500,0.125000,0.875000,0.187500,0.875000"
+						},
+						{
+							"SetBlendColor": "255,255,255,255"
+						}
+					]
+				}
+			],
+			"entities": [],
+			"position": [
+				256.0,
+				32.0
+			],
+			"scale": [
+				32.0,
+				32.0
+			],
+			"tag": "Entity"
+		},
+		{
+			"components": [
+				{
+					"name": "class Sprite",
+					"properties": [
+						{
+							"Texture": "res/textures/spritesheet.tga"
+						},
+						{
+							"SetUV": "0.062500,0.812500,0.125000,0.812500,0.062500,0.875000,0.125000,0.875000"
+						},
+						{
+							"SetBlendColor": "255,255,255,255"
+						}
+					]
+				}
+			],
+			"entities": [],
+			"position": [
+				224.0,
+				32.0
+			],
+			"scale": [
+				32.0,
+				32.0
+			],
+			"tag": "Entity"
+		},
+		{
+			"components": [
+				{
+					"name": "class Sprite",
+					"properties": [
+						{
+							"Texture": "res/textures/spritesheet.tga"
+						},
+						{
+							"SetUV": "0.062500,0.812500,0.125000,0.812500,0.062500,0.875000,0.125000,0.875000"
+						},
+						{
+							"SetBlendColor": "255,255,255,255"
+						}
+					]
+				}
+			],
+			"entities": [],
+			"position": [
+				192.0,
+				32.0
+			],
+			"scale": [
+				32.0,
+				32.0
+			],
+			"tag": "Entity"
+		},
+		{
+			"components": [
+				{
+					"name": "class Sprite",
+					"properties": [
+						{
+							"Texture": "res/textures/spritesheet.tga"
+						},
+						{
+							"SetUV": "0.062500,0.812500,0.125000,0.812500,0.062500,0.875000,0.125000,0.875000"
+						},
+						{
+							"SetBlendColor": "255,255,255,255"
+						}
+					]
+				}
+			],
+			"entities": [],
+			"position": [
+				160.0,
+				32.0
+			],
+			"scale": [
+				32.0,
+				32.0
+			],
+			"tag": "Entity"
+		},
+		{
+			"components": [
+				{
+					"name": "class Sprite",
+					"properties": [
+						{
+							"Texture": "res/textures/spritesheet.tga"
+						},
+						{
+							"SetUV": "0.062500,0.812500,0.125000,0.812500,0.062500,0.875000,0.125000,0.875000"
+						},
+						{
+							"SetBlendColor": "255,255,255,255"
+						}
+					]
+				}
+			],
+			"entities": [],
+			"position": [
+				128.0,
+				32.0
+			],
+			"scale": [
+				32.0,
+				32.0
+			],
+			"tag": "Entity"
+		},
+		{
+			"components": [
+				{
+					"name": "class Sprite",
+					"properties": [
+						{
+							"Texture": "res/textures/spritesheet.tga"
+						},
+						{
+							"SetUV": "0.062500,0.812500,0.125000,0.812500,0.062500,0.875000,0.125000,0.875000"
+						},
+						{
+							"SetBlendColor": "255,255,255,255"
+						}
+					]
+				}
+			],
+			"entities": [],
+			"position": [
+				96.0,
+				32.0
+			],
+			"scale": [
+				32.0,
+				32.0
+			],
+			"tag": "Entity"
+		},
+		{
+			"components": [
+				{
+					"name": "class Sprite",
+					"properties": [
+						{
+							"Texture": "res/textures/spritesheet.tga"
+						},
+						{
+							"SetUV": "0.062500,0.812500,0.125000,0.812500,0.062500,0.875000,0.125000,0.875000"
+						},
+						{
+							"SetBlendColor": "255,255,255,255"
+						}
+					]
+				}
+			],
+			"entities": [],
+			"position": [
+				64.0,
+				32.0
+			],
+			"scale": [
+				32.0,
+				32.0
+			],
+			"tag": "Entity"
+		},
+		{
+			"components": [
+				{
+					"name": "class Sprite",
+					"properties": [
+						{
+							"Texture": "res/textures/spritesheet.tga"
+						},
+						{
+							"SetUV": "0.062500,0.812500,0.125000,0.812500,0.062500,0.875000,0.125000,0.875000"
+						},
+						{
+							"SetBlendColor": "255,255,255,255"
+						}
+					]
+				}
+			],
+			"entities": [],
+			"position": [
+				32.0,
+				32.0
+			],
+			"scale": [
+				32.0,
+				32.0
+			],
+			"tag": "Entity"
+		},
+		{
+			"components": [
+				{
+					"name": "class Sprite",
+					"properties": [
+						{
+							"Texture": "res/textures/spritesheet.tga"
+						},
+						{
+							"SetUV": "0.000000,0.812500,0.062500,0.812500,0.000000,0.875000,0.062500,0.875000"
+						},
+						{
+							"SetBlendColor": "255,255,255,255"
+						}
+					]
+				}
+			],
+			"entities": [],
+			"position": [
+				0.0,
+				32.0
+			],
+			"scale": [
+				32.0,
+				32.0
+			],
+			"tag": "Entity"
+		},
+		{
+			"components": [
+				{
+					"name": "class BoxCollider",
+					"properties": [
+						{
+							"DrawDebug": "1"
+						},
+						{
+							"Outer": "256.000000,32.000000"
+						},
+						{
+							"ScaleToOwner": "205"
+						}
+					]
+				}
+			],
+			"entities": [],
+			"position": [
+				16.0,
+				16.0
+			],
+			"scale": [
+				256.0,
+				32.0
+			],
+			"tag": "Collider"
+		}
+	],
+	"position": [
+		0.0,
+		0.0
+	],
+	"scale": [
+		0.0,
+		0.0
+	],
+	"tag": "Small_Island"
 }
