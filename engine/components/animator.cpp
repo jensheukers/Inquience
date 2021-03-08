@@ -21,6 +21,7 @@ Animation::Animation(std::vector<UV*> frames) {
 	this->name = "Animation";
 
 	this->currentFrameIndex = 0;
+	this->mirrored = false;
 }
 
 Animation::Animation() {
@@ -28,6 +29,7 @@ Animation::Animation() {
 	this->name = "Animation";
 
 	this->currentFrameIndex = 0;
+	this->mirrored = false;
 }
 
 UV* Animation::NextFrame() {
@@ -87,6 +89,23 @@ void Animation::ShiftLeft(UV* frameData) {
 			frames[i] = swap;
 		}
 	}
+}
+
+void Animation::Mirror() {
+	for (size_t i = 0; i < frames.size(); i++) {
+		UV _temp = *frames[i];
+
+		frames[i]->leftUp = _temp.rightUp;
+		frames[i]->leftDown = _temp.rightDown;
+		frames[i]->rightUp = _temp.leftUp;
+		frames[i]->rightDown = _temp.leftDown;
+	}
+
+	this->mirrored = !this->mirrored;
+}
+
+bool Animation::Mirrored() {
+	return this->mirrored;
 }
 
 Animator::Animator() {
@@ -240,6 +259,10 @@ void Animator::OnComponentPropertiesEditor() {
 				if (currentSelectedFrame) {
 					this->currentAnimation->ShiftRight(currentSelectedFrame);
 				}
+			}
+			ImGui::SameLine();
+			if (ImGui::Button("Mirror")) {
+				this->currentAnimation->Mirror();
 			}
 
 			for (size_t i = 0; i < this->currentAnimation->GetFrames().size(); i++) {

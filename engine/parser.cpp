@@ -273,6 +273,7 @@ void Parser::WriteAnimationToFile(Animation* animation) {
 
 	jsonData["frameTime"] = animation->frameTime;
 	jsonData["name"] = animation->name;
+	jsonData["mirrored"] = animation->Mirrored();
 
 	nlohmann::json framesArray = nlohmann::json::array();
 	for (size_t i = 0; i < animation->GetFrames().size(); i++) {
@@ -307,6 +308,10 @@ Animation* Parser::ReadAnimationFromFile() {
 		frame.rightDown = { frames[i]["rightDown"][0], frames[i]["rightDown"][1] };
 
 		animation->AddFrame(frame);
+	}
+
+	if (jsonData["mirrored"]) {
+		animation->Mirror();
 	}
 
 	return animation;

@@ -26,6 +26,7 @@ class Animation {
 private:
 	std::vector<UV*> frames; /***< The uv coordinates of every frame, note that animation should use one default texture*/
 	int currentFrameIndex; /***< The index of the current frame*/
+	bool mirrored; /***< If true UV Coordinates will be mirrored */
 public:
 	float frameTime; /***< The time between frames, default set to DEFAULT_FRAME_TIME*/
 	std::string name; /***< The name of the animation, so we can reference it*/
@@ -78,6 +79,15 @@ public:
 	*/
 	void ShiftLeft(UV* frameData);
 
+	/**
+	* Mirrors the animation
+	*/
+	void Mirror();
+
+	/**
+	* Returns if animations is mirrored
+	*/
+	bool Mirrored();
 
 	/**
 	* Returns the frames UV data vector
