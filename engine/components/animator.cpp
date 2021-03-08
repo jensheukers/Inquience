@@ -128,6 +128,16 @@ Animation* Animator::AddAnimation(Animation* animation) {
 	return animation;
 }
 
+Animation* Animator::AddAnimation(std::string directory) {
+	Parser* parser = new Parser(directory, true);
+	Animation* animation = parser->ReadAnimationFromFile();
+	delete parser;
+
+	animations.push_back(animation);
+	return animation;
+}
+
+
 Animation* Animator::RemoveAnimation(Animation* animation) {
 	for (size_t i = 0; i < animations.size(); i++) {
 		if (animation == animations[i]) {
@@ -141,8 +151,21 @@ Animation* Animator::GetAnimation(int index) {
 	return animations[index];
 }
 
+Animation* Animator::GetAnimation(std::string name) {
+	for (size_t i = 0; i < animations.size(); i++) {
+		if (animations[i]->name == name) {
+			return animations[i];
+		}
+	}
+	return nullptr;
+}
+
 Animation* Animator::SetActiveAnimation(int index) {
 	return currentAnimation = animations[index];
+}
+
+Animation* Animator::SetActiveAnimation(std::string name) {
+	return currentAnimation = GetAnimation(name);
 }
 
 void Animator::Update() {

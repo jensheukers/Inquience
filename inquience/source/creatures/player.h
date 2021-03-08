@@ -13,4 +13,6 @@ private:
 	MovementComponent* movementComponent;
 public:
 	Player();
+
+	void Update() override;
 };

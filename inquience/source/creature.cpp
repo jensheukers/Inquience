@@ -10,10 +10,14 @@ Creature::Creature() {
 
 	//Add component and set default texture to placeholder
 	sprite = this->AddComponent<Sprite>();
-	sprite->SetTexture(TextureLoader::LoadTarga("res/textures/placeholder.tga"));
+	sprite->SetTexture(TextureLoader::LoadTarga("res/textures/character_spritesheet.tga"));
+
+	animator = this->AddComponent<Animator>();
+	animator->AddAnimation("res/animations/character/run_left.animation");
+	animator->AddAnimation("res/animations/character/run_right.animation");
 
 	//Set scale to 32x32
-	localScale = Vec2(32, 32);
+	localScale = Vec2(64, 64);
 }
 
 void Creature::TakeDamage(int amount) {
@@ -26,4 +30,8 @@ void Creature::Heal(int amount) {
 
 int Creature::GetHealth() {
 	return healthComponent->GetHealth();
+}
+
+void Creature::PlayAnimation(std::string name) {
+	animator->SetActiveAnimation(name);
 }

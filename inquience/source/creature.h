@@ -5,11 +5,14 @@
 
 #include <source/components/healthcomponent.h>
 #include <components/sprite.h>
+#include <components/animator.h>
 
 class Creature : public Entity {
 private:
 	HealthComponent* healthComponent;
 	Sprite* sprite;
+
+	Animator* animator;
 public:
 	Creature();
 
@@ -19,6 +22,8 @@ public:
 	//Heals the  creature with x amount
 	void Heal(int amount);
 	int GetHealth();
+
+	void PlayAnimation(std::string animationName);
 };
 
 #endif // !IQ_CREATURE_H

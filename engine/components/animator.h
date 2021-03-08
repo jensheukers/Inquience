@@ -115,6 +115,13 @@ public:
 	Animation* AddAnimation(Animation* animation);
 
 	/**
+	* Adds a animation to the animations list
+	* @param std::string file
+	* @return Animation*
+	*/
+	Animation* AddAnimation(std::string file);
+
+	/**
 	* Removes a animation from the animations list
 	* @param Animation*
 	* @return Animation*
@@ -129,11 +136,25 @@ public:
 	Animation* GetAnimation(int index);
 
 	/**
+	* Gets a animation from the animations list, where name matches
+	* @param std::string name
+	* @return Animation*
+	*/
+	Animation* GetAnimation(std::string name);
+
+	/**
 	* Sets the currently active animation where index matches
 	* @param int
 	* @return Animation*
 	*/
 	Animation* SetActiveAnimation(int index);
+
+	/**
+	* Sets the currently active animation by name
+	* @param std::string name
+	* @return Animation*
+	*/
+	Animation* SetActiveAnimation(std::string name);
 
 	/**
 	* Animator Update function
