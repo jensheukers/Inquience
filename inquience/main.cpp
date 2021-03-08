@@ -7,6 +7,7 @@
 #include <core.h>
 #include <parser.h>
 #include <luascript.h>
+#include <components/animator.h>
 
 #include "source/gamestate.h"
 

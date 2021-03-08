@@ -9,6 +9,7 @@
 
 #include "scene.h"
 #include "entity.h"
+#include "components/animator.h"
 #include "component_register.h"
 
 //Include fstream and sstream for saving/loading
@@ -265,6 +266,50 @@ void Parser::WritePrefabToFile(Entity* entity) {
 Entity* Parser::ReadPrefabFromFile() {
 	nlohmann::json jsonData = nlohmann::json::parse(this->GetFile());
 	return ReadEntityFromJsonData(jsonData);
+}
+
+void Parser::WriteAnimationToFile(Animation* animation) {
+	nlohmann::json jsonData;
+
+	jsonData["frameTime"] = animation->frameTime;
+	jsonData["name"] = animation->name;
+
+	nlohmann::json framesArray = nlohmann::json::array();
+	for (size_t i = 0; i < animation->GetFrames().size(); i++) {
+		nlohmann::json frameData;
+		frameData["leftUp"] = { animation->GetFrames()[i]->leftUp.x, animation->GetFrames()[i]->leftUp.y };
+		frameData["rightUp"] = { animation->GetFrames()[i]->rightUp.x, animation->GetFrames()[i]->rightUp.y };
+		frameData["leftDown"] = { animation->GetFrames()[i]->leftDown.x, animation->GetFrames()[i]->leftDown.y };
+		frameData["rightDown"] = { animation->GetFrames()[i]->rightDown.x, animation->GetFrames()[i]->rightDown.y };
+
+		framesArray.push_back(frameData);
+	}
+
+	jsonData["frames"] = framesArray;
+
+	std::ofstream o(destination + FILETYPE_ANIMATION);
+	o << std::setw(4) << jsonData << std::endl;
+}
+
+Animation* Parser::ReadAnimationFromFile() {
+	nlohmann::json jsonData = nlohmann::json::parse(this->GetFile());
+	nlohmann::json frames = jsonData["frames"];
+
+	Animation* animation = new Animation();
+	animation->frameTime = jsonData["frameTime"];
+	animation->name = jsonData["name"];
+
+	for (size_t i = 0; i < frames.size(); i++) {
+		UV frame;
+		frame.leftUp = { frames[i]["leftUp"][0], frames[i]["leftUp"][1] };
+		frame.rightUp = { frames[i]["rightUp"][0], frames[i]["rightUp"][1] };
+		frame.leftDown = { frames[i]["leftDown"][0], frames[i]["leftDown"][1] };
+		frame.rightDown = { frames[i]["rightDown"][0], frames[i]["rightDown"][1] };
+
+		animation->AddFrame(frame);
+	}
+
+	return animation;
 }
 
 Parser::~Parser() {

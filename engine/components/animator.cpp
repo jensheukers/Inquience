@@ -11,21 +11,14 @@
 #include "../core.h"
 #include "../entity.h"
 #include "../input.h"
+#include "../editor.h"
+#include "../parser.h"
 
 Animation::Animation(std::vector<UV*> frames) {
 	this->frames = frames;
 	this->frameTime = DEFAULT_FRAME_TIME;
 
 	this->name = "Animation";
-	this->filePath = "";
-
-	this->currentFrameIndex = 0;
-}
-
-Animation::Animation(std::string filePath) {
-	this->frameTime = DEFAULT_FRAME_TIME;
-	this->name = "Animation";
-	this->filePath = filePath;
 
 	this->currentFrameIndex = 0;
 }
@@ -33,7 +26,6 @@ Animation::Animation(std::string filePath) {
 Animation::Animation() {
 	this->frameTime = DEFAULT_FRAME_TIME;
 	this->name = "Animation";
-	this->filePath = "";
 
 	this->currentFrameIndex = 0;
 }
@@ -157,6 +149,17 @@ void Animator::OnComponentPropertiesEditor() {
 		this->AddAnimation(new Animation());
 	}
 
+	if (ImGui::Button("Load from file")) {
+		EditorInputWindow* window = new EditorInputWindow();
+		window->onApply.AddLambda([=]() {
+			Parser* parser = new Parser(window->GetBuffer(), false);
+			this->AddAnimation(parser->ReadAnimationFromFile());
+			delete parser;
+		});
+
+		Editor::AddEditorWindow(window);
+	}
+
 	ImGui::BeginChild("Animations");
 	for (size_t i = 0; i < this->animations.size(); i++) {
 		ImGui::Text(this->animations[i]->name.c_str()); ImGui::SameLine();
@@ -170,7 +173,19 @@ void Animator::OnComponentPropertiesEditor() {
 
 			delete this->RemoveAnimation(this->animations[i]);
 		}
+
+		if (ImGui::Button("Save to file")) {
+			EditorInputWindow* window = new EditorInputWindow();
+			window->onApply.AddLambda([=]() {
+				Parser* parser = new Parser(window->GetBuffer(), false);
+				parser->WriteAnimationToFile(this->animations[i]);
+				delete parser;
+			});
+
+			Editor::AddEditorWindow(window);
+		}
 	}
+
 	ImGui::EndChild();
 
 	if (this->currentAnimation) {

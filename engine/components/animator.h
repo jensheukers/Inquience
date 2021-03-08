@@ -26,7 +26,6 @@ class Animation {
 private:
 	std::vector<UV*> frames; /***< The uv coordinates of every frame, note that animation should use one default texture*/
 	int currentFrameIndex; /***< The index of the current frame*/
-	std::string filePath; /***< The path to the animation file*/
 public:
 	float frameTime; /***< The time between frames, default set to DEFAULT_FRAME_TIME*/
 	std::string name; /***< The name of the animation, so we can reference it*/
@@ -35,11 +34,6 @@ public:
 	* Constructor, takes in vector containing all frames* @param std::vector<UV>
 	*/
 	Animation(std::vector<UV*> frames);
-
-	/**
-	* Constructor, takes in a path to animation file
-	*/
-	Animation(std::string filePath);
 
 	/**
 	* Constructor, Empty animation

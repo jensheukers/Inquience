@@ -94,6 +94,17 @@ public:
 	*/
 	Entity* ReadPrefabFromFile();
 
+	/**
+	* Writes a animation to a .animation file
+	* @param Animation* animation
+	*/
+	void WriteAnimationToFile(class Animation* animation);
+
+
+	/**
+	* Reads a animation from a .animation file
+	*/
+	class Animation* ReadAnimationFromFile();
 
 	/**
 	* Destructor
