@@ -47,6 +47,10 @@ void Entity::UpdateComponents() {
 	for (Component* component : components) {
 		component->Update();
 	}
+
+	for (Component* component : components) {
+		component->LateUpdate();
+	}
 }
 
 Entity::Entity() {

@@ -86,6 +86,12 @@ public:
 	virtual void Update() {};
 
 	/**
+	* Late update gets called by owner after update is called
+	* @return void
+	*/
+	virtual void LateUpdate() {};
+
+	/**
 	* Creates and returns a new instance, This method should be overwritten on derived components to always retrieve right type when using the component register
 	*/
 	virtual Component* New() { return new Component(); }

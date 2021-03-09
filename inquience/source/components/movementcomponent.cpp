@@ -18,7 +18,7 @@ void MovementComponent::BeginPlay() {
 	}
 }
 
-void MovementComponent::Update() {
+void MovementComponent::LateUpdate() {
 	if (Input::GetKey(KEYCODE_D)) {
 		this->StepRight(movementSpeed);
 	}
