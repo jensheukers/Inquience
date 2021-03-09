@@ -33,7 +33,7 @@ void Collider::CheckCollision(const std::vector<Collider*> colliders) {
 
 	for (size_t i = 0; i < colliders.size(); i++) {
 		if (colliders[i] == this) continue; // ensure
-		bool hit = IsColliding(colliders[i]);
+		bool hit = (IsColliding(colliders[i]) || colliders[i]->IsColliding(this));
 
 		//Check if contains, if so do some functionality
 		bool contains = false;
@@ -96,7 +96,6 @@ void BoxCollider::Update() {
 	}
 }
 
-// We check if WE are colliding WITH other
 bool BoxCollider::IsColliding(Collider* other) {
 	if (BoxCollider * otherBoxCollider = dynamic_cast<BoxCollider*>(other)) {
 		if (Physics::InBounds(GetOwner()->GetPosition(), otherBoxCollider->GetOwner()->GetPosition(), otherBoxCollider->GetOwner()->GetPosition() + otherBoxCollider->outer)) return true; // Left Up
