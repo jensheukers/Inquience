@@ -66,10 +66,10 @@ std::vector<Collider*> const Collider::GetHits() {
 }
 
 void BoxCollider::DrawDebugLines() {
-	Debug::DrawLine(GetOwner()->GetPosition(), GetOwner()->GetPosition() + Vec2(outer.x, 0), debugDrawColor);
-	Debug::DrawLine(GetOwner()->GetPosition() +  Vec2(outer.x, 0), GetOwner()->GetPosition() + outer, debugDrawColor);
-	Debug::DrawLine(GetOwner()->GetPosition() + outer, GetOwner()->GetPosition() + Vec2(0, outer.y), debugDrawColor);
-	Debug::DrawLine(GetOwner()->GetPosition() + Vec2(0, outer.y), GetOwner()->GetPosition(), debugDrawColor);
+	Debug::DrawLine(GetOwner()->position, GetOwner()->position + Vec2(outer.x, 0), debugDrawColor);
+	Debug::DrawLine(GetOwner()->position +  Vec2(outer.x, 0), GetOwner()->position + outer, debugDrawColor);
+	Debug::DrawLine(GetOwner()->position + outer, GetOwner()->position + Vec2(0, outer.y), debugDrawColor);
+	Debug::DrawLine(GetOwner()->position + Vec2(0, outer.y), GetOwner()->position, debugDrawColor);
 }
 
 BoxCollider::BoxCollider() {
@@ -92,23 +92,23 @@ void BoxCollider::Update() {
 	}
 
 	if (this->scaleToOwner) {
-		this->outer = GetOwner()->localScale;
+		this->outer = GetOwner()->scale;
 	}
 }
 
 bool BoxCollider::IsColliding(Collider* other) {
 	if (BoxCollider * otherBoxCollider = dynamic_cast<BoxCollider*>(other)) {
-		if (Physics::InBounds(GetOwner()->GetPosition(), otherBoxCollider->GetOwner()->GetPosition(), otherBoxCollider->GetOwner()->GetPosition() + otherBoxCollider->outer)) return true; // Left Up
-		if (Physics::InBounds(GetOwner()->GetPosition() + Vec2(outer.x, 0), otherBoxCollider->GetOwner()->GetPosition(), otherBoxCollider->GetOwner()->GetPosition() + otherBoxCollider->outer)) return true; // Right up
-		if (Physics::InBounds(GetOwner()->GetPosition() + outer, otherBoxCollider->GetOwner()->GetPosition(), otherBoxCollider->GetOwner()->GetPosition() + otherBoxCollider->outer)) return true; // Right Down
-		if (Physics::InBounds(GetOwner()->GetPosition() + Vec2(0, outer.y), otherBoxCollider->GetOwner()->GetPosition(), otherBoxCollider->GetOwner()->GetPosition() + otherBoxCollider->outer)) return true; // Left down
+		if (Physics::InBounds(GetOwner()->position, otherBoxCollider->GetOwner()->position, otherBoxCollider->GetOwner()->position + otherBoxCollider->outer)) return true; // Left Up
+		if (Physics::InBounds(GetOwner()->position + Vec2(outer.x, 0), otherBoxCollider->GetOwner()->position, otherBoxCollider->GetOwner()->position + otherBoxCollider->outer)) return true; // Right up
+		if (Physics::InBounds(GetOwner()->position + outer, otherBoxCollider->GetOwner()->position, otherBoxCollider->GetOwner()->position + otherBoxCollider->outer)) return true; // Right Down
+		if (Physics::InBounds(GetOwner()->position + Vec2(0, outer.y), otherBoxCollider->GetOwner()->position, otherBoxCollider->GetOwner()->position + otherBoxCollider->outer)) return true; // Left down
 	}
 	//Return false if not found
 	return false;
 }
 
 bool BoxCollider::IsCollidingWithPoint(Vec2 point) {
-	return Physics::InBounds(point, GetOwner()->GetPosition(), GetOwner()->GetPosition() + this->outer);
+	return Physics::InBounds(point, GetOwner()->position, GetOwner()->position + this->outer);
 }
 
 float BoxCollider::GetSize() {
@@ -119,7 +119,7 @@ float BoxCollider::GetSize() {
 }
 
 void BoxCollider::OnComponentPropertiesEditor() {
-	Debug::DrawCube(this->GetOwner()->GetPosition(), this->GetOwner()->GetPosition() + this->outer, glm::vec3(0, 1, 0));
+	Debug::DrawCube(this->GetOwner()->position, this->GetOwner()->position + this->outer, glm::vec3(0, 1, 0));
 
 	ImGui::InputFloat("Outer X", &this->outer.x);
 	ImGui::InputFloat("Outer Y", &this->outer.y);

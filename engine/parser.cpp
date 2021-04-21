@@ -26,8 +26,8 @@ nlohmann::json Parser::BufferEntityToJsonArray(Entity* e, bool bufferingPrefab) 
 	nlohmann::json jsonData;
 
 	jsonData["tag"] = e->tag;
-	jsonData["position"] = { e->localPosition.x, e->localPosition.y };
-	jsonData["scale"] = { e->localScale.x, e->localScale.y };
+	jsonData["position"] = { e->position.x, e->position.y };
+	jsonData["scale"] = { e->scale.x, e->scale.y };
 
 	if (e->isPrefab && !bufferingPrefab) {
 		jsonData["isPrefab"] = true;
@@ -91,8 +91,8 @@ Entity* Parser::ReadEntityFromJsonData(nlohmann::json& jsonData) {
 		entity->prefabFilePath = jsonData["path"];
 
 		entity->tag = jsonData["tag"];
-		entity->localPosition = Vec2(jsonData["position"][0], jsonData["position"][1]);
-		entity->localScale = Vec2(jsonData["scale"][0], jsonData["scale"][1]);
+		entity->position = Vec2(jsonData["position"][0], jsonData["position"][1]);
+		entity->scale = Vec2(jsonData["scale"][0], jsonData["scale"][1]);
 
 		delete parser;
 		return entity;
@@ -100,8 +100,8 @@ Entity* Parser::ReadEntityFromJsonData(nlohmann::json& jsonData) {
 	else {
 		entity = new Entity();
 		entity->tag = jsonData["tag"];
-		entity->localPosition = Vec2(jsonData["position"][0], jsonData["position"][1]);
-		entity->localScale = Vec2(jsonData["scale"][0], jsonData["scale"][1]);
+		entity->position = Vec2(jsonData["position"][0], jsonData["position"][1]);
+		entity->scale = Vec2(jsonData["scale"][0], jsonData["scale"][1]);
 	}
 
 	for (nlohmann::json& c : jsonData["components"]) {
@@ -151,9 +151,6 @@ Parser::Parser(std::string destination, bool read, bool debug) {
 		if (!read) {
 			this->_file = std::fstream(this->destination);
 		}
-	}
-	else {
-		Debug::Log("Parser : File " + this->destination + " does not exist");
 	}
 }
 
@@ -233,7 +230,7 @@ void Parser::WriteSceneToFile(Scene* scene) {
 	jsonData["entities"] = entityJsonArray;
 	jsonData["kvps"] = kvpJsonArray;
 
-	jsonData["camerapos"] = { scene->GetActiveCamera()->GetPosition().x, scene->GetActiveCamera()->GetPosition().y };
+	jsonData["camerapos"] = { scene->GetActiveCamera()->position.x, scene->GetActiveCamera()->position.y };
 
 	std::ofstream o(destination + FILETYPE_SCENE);
 	o << std::setw(4) << jsonData << std::endl;

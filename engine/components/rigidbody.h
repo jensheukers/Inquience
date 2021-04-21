@@ -23,11 +23,8 @@ private:
 	Vec2 velocity; /***< The velocity of the rigidbody, is added to position every frame */
 	Vec2 positionLastFrame; /***< Position last frame */
 
-	bool bDownCastPositive; /***< True if down cast returns positive*/
-	bool bRightCastPositive; /***< True if right cast returns positive*/
-	bool bLeftCastPositive; /***< True if left cast returns positive*/
+	void HandleMovement();
 public:
-	bool bPreventSinkingBodies; /***< If true raycast checks will be performed to prevent a body sinking through another collider, Set true in constructor*/
 	bool bSimulateGravity; /***< If true gravity will be simulated, set true in constructor*/
 	bool bSimulateDrag; /***< If true drag will be simulated, set true in constructor*/
 
@@ -62,25 +59,6 @@ public:
 	* @return Vec2
 	*/
 	const Vec2 GetVelocity();
-
-	/**
-	* Returns bDownCastPositive
-	* @return boolean
-	*/
-	const bool DownCastPositive() { return this->bDownCastPositive; }
-
-	/**
-	* Returns bRightCastPositive
-	* @return boolean
-	*/
-	const bool RightCastPositive() { return this->bRightCastPositive; }
-
-
-	/**
-	* Returns bLeftCastPositive
-	* @return boolean
-	*/
-	const bool LeftCastPositive() { return this->bLeftCastPositive; }
 
 	virtual RigidBody* New() override { return new RigidBody(); }
 	virtual RigidBody* Copy() const { return new RigidBody(*this); }

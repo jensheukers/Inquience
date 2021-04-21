@@ -26,7 +26,7 @@ public:
 
 	void BeginPlay();
 
-	void LateUpdate() override;
+	void Update() override;
 
 	void StepLeft(float speed);
 	void StepRight(float speed);

@@ -22,8 +22,6 @@ public:
 	void Update();
 
 	void SetTarget(class Entity* target);
-
-	Vec2 GetPosition();
 };
 
 #endif // !CAMERA_H

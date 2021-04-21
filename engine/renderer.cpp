@@ -26,15 +26,15 @@
 
 void Renderer::RenderEntity(Entity* entity, Camera* camera) {
 	//Calculate the position with the camera position included
-	Vec2 calculatedPos = Vec2(entity->GetPosition().x - camera->GetPosition().x, entity->GetPosition().y - camera->GetPosition().y);
+	Vec2 calculatedPos = Vec2(entity->position.x - camera->position.x, entity->position.y - camera->position.y);
 
 	//Try to cast to Text
 	if (Text* text = entity->GetComponent<Text>()) {
-		RenderText(text->GetFont(), text->GetText(), entity->GetPosition(), text->GetSize(), text->GetColor());
+		RenderText(text->GetFont(), text->GetText(), entity->position, text->GetSize(), text->GetColor());
 	}
 	else {
 		if (dynamic_cast<UIComponent*>(entity)) {
-			calculatedPos = entity->GetPosition();
+			calculatedPos = entity->position;
 		}
 
 		if (entity->HasComponent<Sprite>() && entity->GetComponent<Sprite>()->GetTexture()) {
@@ -63,7 +63,7 @@ void Renderer::RenderEntity(Entity* entity, Camera* camera) {
 			//Do transformations
 			glm::mat4 model(1.0);
 			model = glm::translate(model, glm::vec3(calculatedPos.x, calculatedPos.y, 0.0f));  // First translate
-			model = glm::scale(model, glm::vec3(entity->GetScale().x, entity->GetScale().y, 1.0f)); // Last scale
+			model = glm::scale(model, glm::vec3(entity->scale.x, entity->scale.y, 1.0f)); // Last scale
 			defaultShader->SetMat4("model", model);
 
 			//Bind texture
@@ -309,8 +309,8 @@ void Renderer::DrawLine(Vec2 a, Vec2 b, glm::vec3 color, Camera* camera) {
 
 	//Set vertices & uv data for sprite, then sub buffer the data
 	float vertices[] = {
-		a.x - camera->GetPosition().x,  a.y - camera->GetPosition().y, 0.0f, 0.0f,
-		b.x - camera->GetPosition().x, b.y - camera->GetPosition().y, 0.0f, 0.0f
+		a.x - camera->position.x,  a.y - camera->position.y, 0.0f, 0.0f,
+		b.x - camera->position.x, b.y - camera->position.y, 0.0f, 0.0f
 	};
 
 	//bind buffer and insert vertices data

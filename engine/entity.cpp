@@ -19,13 +19,9 @@ void Entity::GenerateUniqueID() {
 }
 
 void Entity::HandleParentTransformations() {
-	if (!this->parent) { // If we have no parent
-		this->position = localPosition;
-		this->scale = localScale;
-	}
-	else { // If we do have a parent, we want to include translations
-		this->position = this->parent->position + localPosition;
-		this->scale = this->parent->scale + localScale;
+	if (this->parent) {
+		this->position = this->position + this->parent->position;
+		this->scale = this->scale + this->parent->scale;
 	}
 }
 
@@ -69,9 +65,7 @@ Entity::Entity() {
 Entity::Entity(const Entity& entity) {
 	this->parent = nullptr;
 	this->position = entity.position;
-	this->localPosition = entity.localPosition;
 	this->scale = entity.scale;
-	this->localScale = entity.localScale;
 	this->tag = entity.tag;
 	this->isPrefab = entity.isPrefab;
 	this->prefabFilePath = entity.prefabFilePath;
@@ -173,14 +167,6 @@ void Entity::SetParent(Entity* entity) {
 	this->parent = entity;
 }
 
-Vec2 Entity::GetPosition() {
-	return this->position;
-}
-
-Vec2 Entity::GetScale() {
-	return this->scale;
-}
-
 Entity* Entity::GetChildByTag(std::string tag) {
 	if (this->tag == tag) return this;
 
@@ -213,7 +199,7 @@ void Entity::MoveChildDown(Entity* child) {
 }
 
 void Entity::FindEntitiesNearPosition(std::vector<Entity*>& vectorRef, Vec2 position, float distance) {
-	if (Vec2::Distance(position, this->GetPosition()) <= distance) {
+	if (Vec2::Distance(position, this->position) <= distance) {
 		vectorRef.push_back(this);
 	}
 

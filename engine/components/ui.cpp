@@ -109,7 +109,7 @@ void UIComponent::Update() {
 	if (!GetOwner()->HasComponent<Sprite>()) return;
 	if (!GetOwner()->GetComponent<Sprite>()->GetTexture()) return;
 
-	if (Physics::InBounds(Input::GetMousePosition(), GetOwner()->GetPosition(), GetOwner()->GetPosition() + GetOwner()->GetScale())) {
+	if (Physics::InBounds(Input::GetMousePosition(), GetOwner()->position, GetOwner()->position + GetOwner()->scale)) {
 		if (!entered) {
 			OnEnter();
 			entered = true;

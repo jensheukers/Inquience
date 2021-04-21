@@ -17,7 +17,7 @@ Creature::Creature() {
 	animator->AddAnimation("res/animations/character/run_right.animation");
 
 	//Set scale to 32x32
-	localScale = Vec2(64, 64);
+	scale = Vec2(64, 64);
 }
 
 void Creature::TakeDamage(int amount) {

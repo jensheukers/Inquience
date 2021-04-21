@@ -177,18 +177,18 @@ void EditorInspector::Handle(Editor* editor) {
 		ImGui::Text("Local Transformations:");
 
 		static float position[2];
-		position[0] = editor->currentSelectedEntity->localPosition.x;
-		position[1] = editor->currentSelectedEntity->localPosition.y;
+		position[0] = editor->currentSelectedEntity->position.x;
+		position[1] = editor->currentSelectedEntity->position.y;
 		ImGui::InputFloat2("Position", position);
 
 		static float scale[2];
-		scale[0] = editor->currentSelectedEntity->localScale.x;
-		scale[1] = editor->currentSelectedEntity->localScale.y;
+		scale[0] = editor->currentSelectedEntity->scale.x;
+		scale[1] = editor->currentSelectedEntity->scale.y;
 		ImGui::InputFloat2("Scale", scale);
 
 		//Set
-		editor->currentSelectedEntity->localPosition = Vec2(position[0], position[1]);
-		editor->currentSelectedEntity->localScale = Vec2(scale[0], scale[1]);
+		editor->currentSelectedEntity->position = Vec2(position[0], position[1]);
+		editor->currentSelectedEntity->scale = Vec2(scale[0], scale[1]);
 
 		//Spawn components
 		ImGui::Spacing();
@@ -266,8 +266,8 @@ void EditorCreateEntityWizard::Handle(Editor* editor) {
 	if (ImGui::Button("Create")) {
 		Entity* entity = new Entity();
 
-		entity->localPosition = Vec2(position[0], position[1]);
-		entity->localScale = Vec2(scale[0], scale[1]);
+		entity->position = Vec2(position[0], position[1]);
+		entity->scale = Vec2(scale[0], scale[1]);
 
 		if (parentToSelected && editor->currentSelectedEntity) {
 			editor->currentSelectedEntity->AddChild(entity);
@@ -346,7 +346,7 @@ Editor::Editor() {
 		currentSelectedEntity->GetParent()->AddChild(copy);
 
 		//Set position to mouse position
-		copy->localPosition = Input::GetMousePosition() + SceneManager::GetActiveScene()->GetActiveCamera()->GetPosition();
+		copy->position = Input::GetMousePosition() + SceneManager::GetActiveScene()->GetActiveCamera()->position;
 		currentSelectedEntity = copy;
 	});
 	combos.push_back(copySelectedEvent);
@@ -419,7 +419,7 @@ void Editor::HandleInput() {
 	}
 
 	//Mouse position
-	Vec2 mousePos = Input::GetMousePosition() + SceneManager::GetActiveScene()->GetActiveCamera()->GetPosition();
+	Vec2 mousePos = Input::GetMousePosition() + SceneManager::GetActiveScene()->GetActiveCamera()->position;
 
 	//Mouse input
 	if (Input::GetButtonDown(BUTTONCODE_LEFT)) {
@@ -427,11 +427,11 @@ void Editor::HandleInput() {
 	}
 
 	if (currentSelectedEntity && bHoldingEntity && Input::GetButton(BUTTONCODE_RIGHT)) {
-		currentSelectedEntity->localPosition = mousePos - (GetInstance()->currentSelectedEntity->GetScale() / 2);
+		currentSelectedEntity->position = mousePos - (GetInstance()->currentSelectedEntity->scale / 2);
 
 		//Try to set on grid tile if possible
-		if (GridTile* tile = grid->GetGridTile(currentSelectedEntity->localPosition)) {
-			currentSelectedEntity->localPosition = tile->position;
+		if (GridTile* tile = grid->GetGridTile(currentSelectedEntity->position)) {
+			currentSelectedEntity->position = tile->position;
 		}
 
 		std::string scaleModeString = "Scale Mode: ";
@@ -453,7 +453,7 @@ void Editor::HandleInput() {
 			break;
 		}
 
-		currentSelectedEntity->localScale = currentSelectedEntity->localScale + extraScale;
+		currentSelectedEntity->scale = currentSelectedEntity->scale + extraScale;
 
 		//Draw to screen
 		Debug::DrawText(scaleModeString, Vec2(0, 100), 0.5f, glm::vec3(1, 0, 0));
@@ -476,7 +476,7 @@ void Editor::SetCurrentSelectedEntityByPosition(Entity* parent, Vec2 pos) {
 		SetCurrentSelectedEntityByPosition(child, pos);
 	}
 
-	if (Physics::InBounds(pos, parent->GetPosition(), parent->GetPosition() + parent->GetScale()) && parent != SceneManager::GetActiveScene()) {
+	if (Physics::InBounds(pos, parent->position, parent->position + parent->scale) && parent != SceneManager::GetActiveScene()) {
 		currentSelectedEntity = parent;
 		bHoldingEntity = true;
 	}
@@ -487,7 +487,7 @@ void Editor::AddEditorWindow(EditorWindow* window) {
 }
 
 Entity* Editor::GetEntityOnTile(GridTile* tile, Entity* entity) {
-	if (entity != SceneManager::GetActiveScene() && tile->position == entity->GetPosition()) return entity;
+	if (entity != SceneManager::GetActiveScene() && tile->position == entity->position) return entity;
 
 	for (size_t i = 0; i < entity->GetChildren().size(); i++) {
 		if (Entity* child = this->GetEntityOnTile(tile, entity->GetChildren()[i])) {
@@ -602,8 +602,8 @@ void Editor::Update() {
 
 		//Draw around current selected entity
 		if (GetInstance()->currentSelectedEntity) {
-			Debug::DrawCube(GetInstance()->currentSelectedEntity->GetPosition(),
-				GetInstance()->currentSelectedEntity->GetPosition() + GetInstance()->currentSelectedEntity->GetScale(),
+			Debug::DrawCube(GetInstance()->currentSelectedEntity->position,
+				GetInstance()->currentSelectedEntity->position + GetInstance()->currentSelectedEntity->scale,
 				glm::vec3(1, 0, 1));
 		}
 

@@ -18,7 +18,7 @@ void MovementComponent::BeginPlay() {
 	}
 }
 
-void MovementComponent::LateUpdate() {
+void MovementComponent::Update() {
 	if (Input::GetKey(KEYCODE_D)) {
 		this->StepRight(movementSpeed);
 	}
@@ -33,19 +33,16 @@ void MovementComponent::LateUpdate() {
 }
 
 void MovementComponent::StepLeft(float speed) {
-	if (rigidBody->LeftCastPositive()) return;
 	rigidBody->SetVelocity(Vec2(-(float)speed, rigidBody->GetVelocity().y));
 	this->direction = Direction::Left;
 }
 
 void MovementComponent::StepRight(float speed) {
-	if (rigidBody->RightCastPositive()) return;
 	rigidBody->SetVelocity(Vec2((float)speed, rigidBody->GetVelocity().y));
 	this->direction = Direction::Right;
 }
 
 void MovementComponent::Jump(float force) {
-	if (!rigidBody->DownCastPositive()) return;
 	rigidBody->AddForce(Vec2(0, -force));
 	this->direction = Direction::Up;
 }

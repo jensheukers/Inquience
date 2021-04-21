@@ -32,10 +32,6 @@ private:
 	//Components
 	std::vector<Component*> components; /***< List of components*/
 
-	//Transformations
-	Vec2 position; /***< The global position (Parent transformations included)*/
-	Vec2 scale; /***< The global scale (Parent transformations included)*/
-
 	bool active; /***< Determines wheter the entity is active or not, if entity is not active no updates will be performed*/
 
 	/**
@@ -64,8 +60,8 @@ protected:
 	*/
 	virtual void Update() {};
 public:
-	Vec2 localPosition; /***< The local position of the Entity*/
-	Vec2 localScale; /***< The local scale of the Entity*/
+	Vec2 position; /***< The local position of the Entity*/
+	Vec2 scale; /***< The local scale of the Entity*/
 	std::string tag; /***< Tag of the entity, whenever GetChildByTag() gets called and tag matches it will be returned*/
 	int uniqueId; /***< Unique id of the entity*/
 
@@ -249,16 +245,6 @@ public:
 		}
 		return false;
 	}
-
-	/**
-	* Returns the global position of the entity
-	*/
-	Vec2 GetPosition();
-
-	/**
-	* Retruns the global scale of the entity
-	*/
-	Vec2 GetScale();
 
 	/**
 	* Returns this if tag == this->tag, else calls this method on children.

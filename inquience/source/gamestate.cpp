@@ -12,7 +12,7 @@ void GameState::BeginGameplay() {
 	float x = std::stof(SceneManager::GetActiveScene()->GetKeyValue("x"));
 	float y = std::stof(SceneManager::GetActiveScene()->GetKeyValue("y"));
 
-	player->localPosition = Vec2(x, y); // Set spawn location
+	player->position = Vec2(x, y); // Set spawn location
 
 	SceneManager::GetActiveScene()->GetActiveCamera()->SetTarget(player);
 }
