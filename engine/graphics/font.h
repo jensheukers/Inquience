@@ -57,7 +57,7 @@ public:
 //Include ui.h for text
 #include "../components/ui.h"
 
-class Text : public UIComponent {
+class Text : public Component {
 private:
 	Font* font; /***< The font used in the text*/
 	std::string text; /***< The text to display*/
@@ -113,6 +113,18 @@ public:
 	* @return Font*
 	*/
 	Font* GetFont();
+	
+	/**
+	* Overwrite
+	*/
+	virtual Text* New() override { return new Text(FontLoader::LoadFont("fonts/consola.ttf")); }
+	virtual Text* Copy() const { return new Text(*this); }
+
+
+	/**
+	* Gets called when a component property window gets opened for this component
+	*/
+	virtual void OnComponentPropertiesEditor() override;
 };
 
 #endif // !FONT_H

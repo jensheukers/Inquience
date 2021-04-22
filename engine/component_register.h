@@ -10,6 +10,7 @@
 #include "components/rigidbody.h"
 #include "components/sprite.h"
 #include "components/ui.h"
+#include "graphics/font.h"
 
 class Component_Register {
 private:
@@ -25,6 +26,7 @@ private:
 		components[typeid(RigidBody).name()] = new RigidBody();
 		components[typeid(Sprite).name()] = new Sprite();
 		components[typeid(UIComponent).name()] = new UIComponent();
+		components[typeid(Text).name()] = new Text(FontLoader::LoadFont("fonts/consola.ttf"));
 	}
 
 	/**

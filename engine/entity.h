@@ -238,8 +238,8 @@ public:
 	bool RemoveComponent(T* instance) {
 		for (size_t i = 0; i < components.size(); i++) {
 			if (instance == components[i]) {
-				components.erase(components.begin() + i);
 				delete instance;
+				components.erase(components.begin() + i);
 				return true;
 			}
 		}

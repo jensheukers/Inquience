@@ -109,6 +109,42 @@ Text::Text(Font* font, std::string text, glm::vec3 color) {
 	this->text = text;
 	this->color = color;
 	this->size = 1;
+
+
+	this->AddProperty("Text", [=](StringVector v) {
+		this->SetText(v[0]);
+	}, [&]() -> StringVector {
+		StringVector v;
+		v.push_back(this->GetText());
+
+		return v;
+	});
+
+	this->AddProperty("Color", [=](StringVector v) {
+		this->SetColor(glm::vec3(std::stof(v[0]), std::stof(v[1]), std::stof(v[2])));
+	}, [&]() -> StringVector {
+		StringVector v;
+		v.push_back(std::to_string(this->GetColor().x));
+		v.push_back(std::to_string(this->GetColor().y));
+		v.push_back(std::to_string(this->GetColor().z));
+
+		return v;
+	});
+
+	this->AddProperty("Size", [=](StringVector v) {
+		this->SetSize(std::stof(v[0]));
+	}, [&]() -> StringVector {
+		StringVector v;
+		v.push_back(std::to_string(this->GetSize()));
+		return v;
+	});
+
+	/*this->AddProperty("Font", [=](StringVector v) {
+
+	}, [&]() -> StringVector {
+		StringVector v;
+		v.push_back(this->GetFont());
+	});*/
 }
 
 void Text::SetText(std::string text) {
@@ -137,4 +173,21 @@ float Text::GetSize() {
 
 Font* Text::GetFont() {
 	return this->font;
+}
+
+void Text::OnComponentPropertiesEditor() {
+	static char buffer[128];
+	static int c[3];
+	static float s;
+
+	ImGui::InputText("Text", buffer, sizeof(buffer));
+	ImGui::InputInt3("Color", c);
+	ImGui::InputFloat("Size", &s);
+
+	if (ImGui::Button("Apply")) {
+		this->SetText(buffer);
+		this->SetColor(glm::vec3(c[0], c[1], c[2]));
+		this->SetSize(s);
+	}
+
 }
