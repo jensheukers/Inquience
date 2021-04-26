@@ -29,6 +29,11 @@ protected:
 	* Draws debug lines
 	*/
 	virtual void DrawDebugLines() {};
+
+	//Mem holders
+	StringVector onCollisionEnterReturnVector;
+	StringVector onCollisionActiveReturnVector;
+	StringVector onCollisionExitReturnVector;
 public:
 	bool isTrigger; /*** Determine's if collider is a trigger or not, this is just a fictional property and has no use in the component itself,
 						 it is just here if it is to be used, RigidBody does use isTrigger*/

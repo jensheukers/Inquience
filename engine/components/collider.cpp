@@ -7,6 +7,7 @@
 #include "collider.h"
 
 #include "../entity.h"
+#include "luascript.h"
 
 Collider::Collider() {
 	bDrawDebugLines = false;
@@ -17,7 +18,39 @@ Collider::Collider() {
 	}, [=]() -> StringVector {
 		return { std::to_string(bDrawDebugLines) };
 	});
+
+	AddProperty("OnCollisionEnter", [=](std::vector<std::string> args) {
+		this->onCollisionEnter.AddLambda([=]() {
+			LuaScript::RunFunction(args[0], args[1]);
+		});
+
+		this->onCollisionEnterReturnVector = args;
+	}, [=]() -> StringVector {
+		return onCollisionEnterReturnVector;
+	});
+
+	AddProperty("OnCollisionActive", [=](std::vector<std::string> args) {
+		this->onCollisionActive.AddLambda([=]() {
+			LuaScript::RunFunction(args[0], args[1]);
+		});
+
+		this->onCollisionActiveReturnVector = args;
+	}, [=]() -> StringVector {
+			return onCollisionActiveReturnVector;
+	});
+
+	AddProperty("OnCollisionExit", [=](std::vector<std::string> args) {
+		this->onCollisionExit.AddLambda([=]() {
+			LuaScript::RunFunction(args[0], args[1]);
+		});
+
+		this->onCollisionExitReturnVector = args;
+	}, [=]() -> StringVector {
+			return onCollisionExitReturnVector;
+	});
 }
+
+
 
 void Collider::Update() {
 	if (bDrawDebugLines) {
