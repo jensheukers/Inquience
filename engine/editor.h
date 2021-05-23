@@ -155,6 +155,9 @@ private:
 	void HandleInput();
 public:
 	static bool editorActive; /***If true the editor will be called by core*/
+
+	float cameraMovementSpeed = 5; /***< The movement speed of the camera*/
+
 	Grid* grid; /***< Grid reference*/
 
 	//Instance pointers

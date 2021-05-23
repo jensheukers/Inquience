@@ -59,9 +59,13 @@ protected:
 	* @return void
 	*/
 	virtual void Update() {};
+
+	Vec2 globalPosition; /***< The global position of the entity*/
+	Vec2 globalScale; /***< The global scale of the entity*/
 public:
 	Vec2 position; /***< The local position of the Entity*/
 	Vec2 scale; /***< The local scale of the Entity*/
+
 	std::string tag; /***< Tag of the entity, whenever GetChildByTag() gets called and tag matches it will be returned*/
 	int uniqueId; /***< Unique id of the entity*/
 
@@ -290,6 +294,16 @@ public:
 			children[ii]->GetAllComponentsOfTypeInChildren(vectorRef);
 		}
 	}
+
+	/**
+	* @returns Global position
+	*/
+	Vec2 GetGlobalPosition() { return this->globalPosition; };
+
+	/**
+	* @returns Global scale
+	*/
+	Vec2 GetGlobalScale() { return this->globalScale; };
 
 	/**
 	* Destructor

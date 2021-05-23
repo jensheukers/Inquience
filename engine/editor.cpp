@@ -407,15 +407,15 @@ void Editor::HandleInput() {
 	}
 
 	if (Input::GetKey(KEYCODE_KP_4)) {
-		camera->position = camera->position + Vec2(-1, 0);
+		camera->position = camera->position + Vec2(-cameraMovementSpeed, 0);
 	}
 
 	if (Input::GetKey(KEYCODE_KP_6)) {
-		camera->position = camera->position + Vec2(1, 0);
+		camera->position = camera->position + Vec2(cameraMovementSpeed, 0);
 	}
 
 	if (Input::GetKey(KEYCODE_KP_8)) {
-		camera->position = camera->position + Vec2(0, -1);
+		camera->position = camera->position + Vec2(0, -cameraMovementSpeed);
 	}
 
 	//Mouse position
@@ -476,7 +476,7 @@ void Editor::SetCurrentSelectedEntityByPosition(Entity* parent, Vec2 pos) {
 		SetCurrentSelectedEntityByPosition(child, pos);
 	}
 
-	if (Physics::InBounds(pos, parent->position, parent->position + parent->scale) && parent != SceneManager::GetActiveScene()) {
+	if (Physics::InBounds(pos, parent->GetGlobalPosition(), parent->GetGlobalPosition() + parent->GetGlobalScale()) && parent != SceneManager::GetActiveScene()) {
 		currentSelectedEntity = parent;
 		bHoldingEntity = true;
 	}
@@ -602,8 +602,8 @@ void Editor::Update() {
 
 		//Draw around current selected entity
 		if (GetInstance()->currentSelectedEntity) {
-			Debug::DrawCube(GetInstance()->currentSelectedEntity->position,
-				GetInstance()->currentSelectedEntity->position + GetInstance()->currentSelectedEntity->scale,
+			Debug::DrawCube(GetInstance()->currentSelectedEntity->GetGlobalPosition(),
+				GetInstance()->currentSelectedEntity->GetGlobalPosition() + GetInstance()->currentSelectedEntity->GetGlobalScale(),
 				glm::vec3(1, 0, 1));
 		}
 

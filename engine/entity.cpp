@@ -20,8 +20,8 @@ void Entity::GenerateUniqueID() {
 
 void Entity::HandleParentTransformations() {
 	if (this->parent) {
-		this->position = this->position + this->parent->position;
-		this->scale = this->scale + this->parent->scale;
+		this->globalPosition = this->position + this->parent->GetGlobalPosition();
+		this->globalScale = this->scale + this->parent->GetGlobalScale();
 	}
 }
 

@@ -26,15 +26,15 @@
 
 void Renderer::RenderEntity(Entity* entity, Camera* camera) {
 	//Calculate the position with the camera position included
-	Vec2 calculatedPos = Vec2(entity->position.x - camera->position.x, entity->position.y - camera->position.y);
+	Vec2 calculatedPos = Vec2(entity->GetGlobalPosition().x - camera->position.x, entity->GetGlobalPosition().y - camera->position.y);
 
 	//Try to cast to Text
 	if (Text* text = entity->GetComponent<Text>()) {
-		RenderText(text->GetFont(), text->GetText(), entity->position, text->GetSize(), text->GetColor());
+		RenderText(text->GetFont(), text->GetText(), entity->GetGlobalPosition(), text->GetSize(), text->GetColor());
 	}
 	else {
 		if (dynamic_cast<UIComponent*>(entity)) {
-			calculatedPos = entity->position;
+			calculatedPos = entity->GetGlobalPosition();
 		}
 
 		if (entity->HasComponent<Sprite>() && entity->GetComponent<Sprite>()->GetTexture()) {
@@ -63,7 +63,7 @@ void Renderer::RenderEntity(Entity* entity, Camera* camera) {
 			//Do transformations
 			glm::mat4 model(1.0);
 			model = glm::translate(model, glm::vec3(calculatedPos.x, calculatedPos.y, 0.0f));  // First translate
-			model = glm::scale(model, glm::vec3(entity->scale.x, entity->scale.y, 1.0f)); // Last scale
+			model = glm::scale(model, glm::vec3(entity->GetGlobalScale().x, entity->GetGlobalScale().y, 1.0f)); // Last scale
 			defaultShader->SetMat4("model", model);
 
 			//Bind texture
