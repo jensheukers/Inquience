@@ -14,12 +14,13 @@ void MovementComponent::Move(Vec2 direction) {
 	Vec2 oldPos = GetOwner()->position;
 
 	GetOwner()->position = GetOwner()->position + (direction * Core::GetDeltaTime());
+	GetOwner()->RefreshGlobalPosition();
 
 	std::vector<Collider*> colliders;
 	GetOwner()->GetHighestEntityInHierarchy()->GetAllComponentsOfTypeInChildren<Collider>(colliders);
 	collider->CheckCollision(colliders);
 
-	if (collider->CollisionActive()) {
+	if (collider->CollisionActive() || collider->CollisionEntered()) {
 		GetOwner()->position = oldPos;
 	}
 }
@@ -43,8 +44,12 @@ void MovementComponent::Update() {
 		this->StepLeft(movementSpeed);
 	}
 
-	if (Input::GetKeyDown(KEYCODE_SPACE)) {
-		this->Jump(jumpForce);
+	if (Input::GetKey(KEYCODE_W)) {
+		this->StepBackward(movementSpeed);
+	}
+
+	if (Input::GetKey(KEYCODE_S)) {
+		this->StepForward(movementSpeed);
 	}
 }
 
@@ -58,8 +63,13 @@ void MovementComponent::StepRight(float speed) {
 	this->direction = Direction::Right;
 }
 
-void MovementComponent::Jump(float force) {
-	Move(Vec2(0, -force));
+void MovementComponent::StepForward(float speed) {
+	Move(Vec2(0, (float)speed));
+	this->direction = Direction::Down;
+}
+
+void MovementComponent::StepBackward(float speed) {
+	Move(Vec2(0, -(float)speed));
 	this->direction = Direction::Up;
 }
 

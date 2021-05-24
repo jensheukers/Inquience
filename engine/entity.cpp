@@ -221,6 +221,10 @@ Entity* Entity::GetHighestEntityInHierarchy() {
 	}
 }
 
+void Entity::RefreshGlobalPosition() {
+	this->HandleParentTransformations();
+}
+
 Entity::~Entity() {
 	for (size_t i = 0; i < (int)children.size(); i++) {
 		delete children[i];

@@ -24,7 +24,7 @@ private:
 	*/
 	void Move(Vec2 direction);
 public:
-	float movementSpeed = 200.f;
+	float movementSpeed = 150.f;
 	float jumpForce = 400.f;
 
 	MovementComponent();
@@ -35,7 +35,8 @@ public:
 
 	void StepLeft(float speed);
 	void StepRight(float speed);
-	void Jump(float force);
+	void StepForward(float speed);
+	void StepBackward(float speed);
 
 	Direction GetDirection();
 };

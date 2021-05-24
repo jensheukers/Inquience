@@ -306,6 +306,12 @@ public:
 	Vec2 GetGlobalScale() { return this->globalScale; };
 
 	/**
+	* Refreshes the global position for this frame 
+	*/
+	void RefreshGlobalPosition();
+
+
+	/**
 	* Destructor
 	*/
 	virtual ~Entity();
