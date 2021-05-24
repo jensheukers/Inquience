@@ -1,9 +1,11 @@
 // Header file for collider class.
 //
+// Inquience uses AABB Collision detection
+//
 // Copyright (C) Jens Heukers - All Rights Reserved
 // Unauthorized copying of this file, via any medium is strictly prohibited
 // Proprietary and confidential
-// Written by Jens Heukers, October 2019
+// Written by Jens Heukers, May 2021
 #ifndef COLLIDER_H
 #define COLLIDER_H
 
@@ -28,16 +30,16 @@ protected:
 	/**
 	* Draws debug lines
 	*/
-	virtual void DrawDebugLines() {};
+	virtual void DrawDebugLines();
 
 	//Mem holders
 	StringVector onCollisionEnterReturnVector;
 	StringVector onCollisionActiveReturnVector;
 	StringVector onCollisionExitReturnVector;
 public:
-	bool isTrigger; /*** Determine's if collider is a trigger or not, this is just a fictional property and has no use in the component itself,
-						 it is just here if it is to be used, RigidBody does use isTrigger*/
- 
+	Vec2 outer; /***< The external bounds of the BoxCollider*/
+	bool scaleToOwner; /***< If true the outer scale will be set equal to the entity scale every frame*/
+
 	Delegate onCollisionEnter; /***< Should be triggered whenever another collider entered our collider this frame*/
 	Delegate onCollisionActive; /***< Should be triggered whenever another collider entered our collider last frame, and is still colliding*/
 	Delegate onCollisionExit; /***< Should be triggered whenever another collider was colliding last frame but not this frame*/
@@ -53,7 +55,7 @@ public:
 	/**
 	* Update
 	*/
-	virtual void Update() override;
+	void Update() override;
 
 	/**
 	* Is called every frame by collisionmanager
@@ -63,17 +65,17 @@ public:
 	/**
 	* The actual collision check, can be overwritten
 	*/
-	virtual bool IsColliding(Collider* other) { return false; };
+	bool IsColliding(Collider* other);
 
 	/**
 	* Returns true if point is inside our collider
 	*/
-	virtual bool IsCollidingWithPoint(Vec2 point) { return true; }
+	bool IsCollidingWithPoint(Vec2 point);
 
 	/**
 	* Returns the size of the collider, should be overwritten
 	*/
-	virtual float GetSize() { return 0; };
+	virtual float GetSize();
 
 	/**
 	* Returns all the colliders currently colliding with this collider
@@ -97,33 +99,6 @@ public:
 
 	virtual Collider* New() override { return new Collider(); }
 	virtual Collider* Copy() const { return new Collider(*this); }
-};
-
-class BoxCollider : public Collider {
-protected:
-	/**
-	* Override DrawDebugLines
-	*/
-	void DrawDebugLines() override;
-
-public:
-	/**
-	* Constructor 
-	*/
-	BoxCollider();
-
-	Vec2 outer; /***< The external bounds of the BoxCollider*/
-	bool scaleToOwner; /***< If true the outer scale will be set equal to the entity scale every frame*/
-	
-	virtual void Update() override;
-
-	virtual bool IsColliding(Collider* other) override;
-	virtual bool IsCollidingWithPoint(Vec2 point) override;
-
-	virtual float GetSize() override;
-
-	virtual Collider* New() override { return new BoxCollider(); }
-	virtual BoxCollider* Copy() const { return new BoxCollider(*this); }
 
 	void OnComponentPropertiesEditor() override;
 };

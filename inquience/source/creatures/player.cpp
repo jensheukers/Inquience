@@ -1,8 +1,7 @@
 #include "player.h"
 
 Player::Player() {
-	this->collider = this->AddComponent<BoxCollider>();
-	this->rigidBody = this->AddComponent<RigidBody>();
+	this->collider = this->AddComponent<Collider>();
 	this->movementComponent = this->AddComponent<MovementComponent>();
 }
 

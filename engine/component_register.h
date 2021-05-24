@@ -7,7 +7,6 @@
 //Component includes
 #include "components/animator.h"
 #include "components/collider.h"
-#include "components/rigidbody.h"
 #include "components/sprite.h"
 #include "components/ui.h"
 #include "graphics/font.h"
@@ -22,8 +21,6 @@ private:
 	Component_Register() {
 		components[typeid(Animator).name()] = new Animator();
 		components[typeid(Collider).name()] = new Collider();
-		components[typeid(BoxCollider).name()] = new BoxCollider();
-		components[typeid(RigidBody).name()] = new RigidBody();
 		components[typeid(Sprite).name()] = new Sprite();
 		components[typeid(UIComponent).name()] = new UIComponent();
 		components[typeid(Text).name()] = new Text(FontLoader::LoadFont("fonts/consola.ttf"));

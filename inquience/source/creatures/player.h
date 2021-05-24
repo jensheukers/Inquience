@@ -3,14 +3,13 @@
 
 //Components
 #include "../components/movementcomponent.h"
-#include <components/rigidbody.h>
+
 #include <components/collider.h>
 
 class Player : public Creature {
 private:
-	BoxCollider* collider;
-	RigidBody* rigidBody;
 	MovementComponent* movementComponent;
+	Collider* collider;
 public:
 	Player();
 

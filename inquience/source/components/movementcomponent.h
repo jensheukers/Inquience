@@ -15,9 +15,14 @@ enum Direction {
 //Movement component requires a rigidbody on entity
 class MovementComponent : public Component {
 private:
-	class RigidBody* rigidBody; // Rigidbody instance
+	class Collider* collider; // collider instance
 
 	Direction direction;
+
+	/**
+	* Moves in the direction and does a collision check
+	*/
+	void Move(Vec2 direction);
 public:
 	float movementSpeed = 200.f;
 	float jumpForce = 400.f;

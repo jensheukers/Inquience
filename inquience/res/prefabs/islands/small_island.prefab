@@ -508,7 +508,7 @@
 		{
 			"components": [
 				{
-					"name": "class BoxCollider",
+					"name": "class Collider",
 					"properties": [
 						{
 							"DrawDebug": "1"

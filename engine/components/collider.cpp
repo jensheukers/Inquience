@@ -3,51 +3,76 @@
 // Copyright (C) Jens Heukers - All Rights Reserved
 // Unauthorized copying of this file, via any medium is strictly prohibited
 // Proprietary and confidential
-// Written by Jens Heukers, October 2019
+// Written by Jens Heukers, May 2021
 #include "collider.h"
 
 #include "../entity.h"
 #include "luascript.h"
 
+void Collider::DrawDebugLines() {
+	Debug::DrawLine(GetOwner()->GetGlobalPosition(), GetOwner()->GetGlobalPosition() + Vec2(outer.x, 0), debugDrawColor);
+	Debug::DrawLine(GetOwner()->GetGlobalPosition() + Vec2(outer.x, 0), GetOwner()->GetGlobalPosition() + outer, debugDrawColor);
+	Debug::DrawLine(GetOwner()->GetGlobalPosition() + outer, GetOwner()->GetGlobalPosition() + Vec2(0, outer.y), debugDrawColor);
+	Debug::DrawLine(GetOwner()->GetGlobalPosition() + Vec2(0, outer.y), GetOwner()->GetGlobalPosition(), debugDrawColor);
+}
+
 Collider::Collider() {
 	bDrawDebugLines = false;
 	debugDrawColor = glm::vec3(0, 1, 0);
 
+	this->outer = Vec2(32, 32);
+	this->scaleToOwner = true;
+	this->collisionActive = false;
+	this->collisionEntered = false;
+	this->collisionExited = false;
+
 	AddProperty("DrawDebug", [=](std::vector<std::string> args) {
 		bDrawDebugLines = (stoi(args[0]) == 1);
-	}, [=]() -> StringVector {
-		return { std::to_string(bDrawDebugLines) };
-	});
+		}, [=]() -> StringVector {
+			return { std::to_string(bDrawDebugLines) };
+		});
 
 	AddProperty("OnCollisionEnter", [=](std::vector<std::string> args) {
 		this->onCollisionEnter.AddLambda([=]() {
 			LuaScript::RunFunction(args[0], args[1]);
-		});
+			});
 
 		this->onCollisionEnterReturnVector = args;
-	}, [=]() -> StringVector {
-		return onCollisionEnterReturnVector;
-	});
+		}, [=]() -> StringVector {
+			return onCollisionEnterReturnVector;
+		});
 
 	AddProperty("OnCollisionActive", [=](std::vector<std::string> args) {
 		this->onCollisionActive.AddLambda([=]() {
 			LuaScript::RunFunction(args[0], args[1]);
-		});
+			});
 
 		this->onCollisionActiveReturnVector = args;
-	}, [=]() -> StringVector {
+		}, [=]() -> StringVector {
 			return onCollisionActiveReturnVector;
-	});
+		});
 
 	AddProperty("OnCollisionExit", [=](std::vector<std::string> args) {
 		this->onCollisionExit.AddLambda([=]() {
 			LuaScript::RunFunction(args[0], args[1]);
-		});
+			});
 
 		this->onCollisionExitReturnVector = args;
-	}, [=]() -> StringVector {
+		}, [=]() -> StringVector {
 			return onCollisionExitReturnVector;
-	});
+		});
+
+	AddProperty("Outer", [=](std::vector<std::string> args) {
+		outer = Vec2(std::stof(args[0]), std::stof(args[1]));
+		}, [=]() -> StringVector {
+			return { std::to_string(outer.x), std::to_string(outer.y) };
+		});
+
+	AddProperty("ScaleToOwner", [=](std::vector<std::string> args) {
+		scaleToOwner = std::stoi(args[0]);
+		}, [=]() -> StringVector {
+			return { std::to_string(scaleToOwner) };
+		});
 }
 
 
@@ -55,6 +80,10 @@ Collider::Collider() {
 void Collider::Update() {
 	if (bDrawDebugLines) {
 		this->DrawDebugLines();
+	}
+
+	if (this->scaleToOwner) {
+		this->outer = GetOwner()->GetGlobalScale();
 	}
 }
 
@@ -98,39 +127,9 @@ std::vector<Collider*> const Collider::GetHits() {
 	return this->hits;
 }
 
-void BoxCollider::DrawDebugLines() {
-	Debug::DrawLine(GetOwner()->GetGlobalPosition(), GetOwner()->GetGlobalPosition() + Vec2(outer.x, 0), debugDrawColor);
-	Debug::DrawLine(GetOwner()->GetGlobalPosition() +  Vec2(outer.x, 0), GetOwner()->GetGlobalPosition() + outer, debugDrawColor);
-	Debug::DrawLine(GetOwner()->GetGlobalPosition() + outer, GetOwner()->GetGlobalPosition() + Vec2(0, outer.y), debugDrawColor);
-	Debug::DrawLine(GetOwner()->GetGlobalPosition() + Vec2(0, outer.y), GetOwner()->GetGlobalPosition(), debugDrawColor);
-}
 
-BoxCollider::BoxCollider() {
-	AddProperty("Outer", [=](std::vector<std::string> args) {
-		outer = Vec2(std::stof(args[0]), std::stof(args[1]));
-	}, [=]() -> StringVector {
-		return { std::to_string(outer.x), std::to_string(outer.y) };
-	});
-
-	AddProperty("ScaleToOwner", [=](std::vector<std::string> args) {
-		scaleToOwner = std::stoi(args[0]);
-	}, [=]() -> StringVector {
-		return { std::to_string(scaleToOwner) };
-	});
-}
-
-void BoxCollider::Update() {
-	if (bDrawDebugLines) {
-		this->DrawDebugLines();
-	}
-
-	if (this->scaleToOwner) {
-		this->outer = GetOwner()->GetGlobalScale();
-	}
-}
-
-bool BoxCollider::IsColliding(Collider* other) {
-	if (BoxCollider * otherBoxCollider = dynamic_cast<BoxCollider*>(other)) {
+bool Collider::IsColliding(Collider* other) {
+	if (Collider* otherBoxCollider = dynamic_cast<Collider*>(other)) {
 		if (Physics::InBounds(GetOwner()->GetGlobalPosition(), otherBoxCollider->GetOwner()->GetGlobalPosition(), otherBoxCollider->GetOwner()->GetGlobalPosition() + otherBoxCollider->outer)) return true; // Left Up
 		if (Physics::InBounds(GetOwner()->GetGlobalPosition() + Vec2(outer.x, 0), otherBoxCollider->GetOwner()->GetGlobalPosition(), otherBoxCollider->GetOwner()->GetGlobalPosition() + otherBoxCollider->outer)) return true; // Right up
 		if (Physics::InBounds(GetOwner()->GetGlobalPosition() + outer, otherBoxCollider->GetOwner()->GetGlobalPosition(), otherBoxCollider->GetOwner()->GetGlobalPosition() + otherBoxCollider->outer)) return true; // Right Down
@@ -140,23 +139,23 @@ bool BoxCollider::IsColliding(Collider* other) {
 	return false;
 }
 
-bool BoxCollider::IsCollidingWithPoint(Vec2 point) {
+bool Collider::IsCollidingWithPoint(Vec2 point) {
 	return Physics::InBounds(point, GetOwner()->GetGlobalPosition(), GetOwner()->GetGlobalPosition() + this->outer);
 }
 
-float BoxCollider::GetSize() {
+float Collider::GetSize() {
 	if (outer.x > outer.y) {
 		return outer.x;
 	}
 	return outer.y;
 }
 
-void BoxCollider::OnComponentPropertiesEditor() {
+void Collider::OnComponentPropertiesEditor() {
 	Debug::DrawCube(this->GetOwner()->GetGlobalPosition(), this->GetOwner()->GetGlobalPosition() + this->outer, glm::vec3(0, 1, 0));
 
 	ImGui::InputFloat("Outer X", &this->outer.x);
 	ImGui::InputFloat("Outer Y", &this->outer.y);
-	
+
 	ImGui::Checkbox("Scale to Owner", &this->scaleToOwner);
 	ImGui::Checkbox("Draw Debug Lines", &this->bDrawDebugLines);
 }

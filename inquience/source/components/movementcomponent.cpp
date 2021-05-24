@@ -3,18 +3,34 @@
 #include <debug.h>
 
 #include <entity.h>
-#include <components/rigidbody.h>
+#include <core.h>
+
+#include <components/collider.h>
 
 //Get Input
 #include <input.h>
+
+void MovementComponent::Move(Vec2 direction) {
+	Vec2 oldPos = GetOwner()->position;
+
+	GetOwner()->position = GetOwner()->position + (direction * Core::GetDeltaTime());
+
+	std::vector<Collider*> colliders;
+	GetOwner()->GetHighestEntityInHierarchy()->GetAllComponentsOfTypeInChildren<Collider>(colliders);
+	collider->CheckCollision(colliders);
+
+	if (collider->CollisionActive()) {
+		GetOwner()->position = oldPos;
+	}
+}
 
 MovementComponent::MovementComponent() {
 	direction = Direction::Right;
 }
 
 void MovementComponent::BeginPlay() {
-	if (!(this->rigidBody = GetOwner()->GetComponent<RigidBody>())) {
-		Debug::Log("WARNING: MovementComponent added BEFORE rigidbody, Rigidbody should always be added before MovementComponent");
+	if (!(this->collider = GetOwner()->GetComponent<Collider>())) {
+		Debug::Log("Error: No collider component added to Owner");
 	}
 }
 
@@ -33,17 +49,17 @@ void MovementComponent::Update() {
 }
 
 void MovementComponent::StepLeft(float speed) {
-	rigidBody->SetVelocity(Vec2(-(float)speed, rigidBody->GetVelocity().y));
+	Move(Vec2(-(float)speed, 0));
 	this->direction = Direction::Left;
 }
 
 void MovementComponent::StepRight(float speed) {
-	rigidBody->SetVelocity(Vec2((float)speed, rigidBody->GetVelocity().y));
+	Move(Vec2((float)speed, 0));
 	this->direction = Direction::Right;
 }
 
 void MovementComponent::Jump(float force) {
-	rigidBody->AddForce(Vec2(0, -force));
+	Move(Vec2(0, -force));
 	this->direction = Direction::Up;
 }
 

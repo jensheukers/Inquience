@@ -594,11 +594,11 @@ void Editor::Update() {
 	}
 	if (SceneManager::GetActiveScene()) {
 		//Draw all colliders
-		std::vector<Collider*> colliders;
-		SceneManager::GetActiveScene()->GetAllComponentsOfTypeInChildren(colliders);
-		for (size_t i = 0; i < colliders.size(); i++) {
-			colliders[i]->Update();
-		}
+		//std::vector<Collider*> colliders;
+		//SceneManager::GetActiveScene()->GetAllComponentsOfTypeInChildren(colliders);
+		//for (size_t i = 0; i < colliders.size(); i++) {
+		//	colliders[i]->Update();
+		//}
 
 		//Draw around current selected entity
 		if (GetInstance()->currentSelectedEntity) {

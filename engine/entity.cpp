@@ -23,6 +23,10 @@ void Entity::HandleParentTransformations() {
 		this->globalPosition = this->position + this->parent->GetGlobalPosition();
 		this->globalScale = this->scale + this->parent->GetGlobalScale();
 	}
+	else {
+		this->globalPosition = this->position;
+		this->globalPosition = this->scale;
+	}
 }
 
 void Entity::UpdateChildren(bool gamePaused) {
