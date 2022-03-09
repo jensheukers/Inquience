@@ -79,7 +79,6 @@ add_library(Engine
 	engine/unique_types.cpp
 	engine/components/animator.cpp
 	engine/components/collider.cpp
-	engine/components/rigidbody.cpp
 	engine/components/sprite.cpp
 	engine/components/ui.cpp
 	engine/graphics/font.cpp
@@ -108,7 +107,6 @@ add_library(Engine
 	engine/unique_types.h
 	engine/components/animator.h
 	engine/components/collider.h
-	engine/components/rigidbody.h
 	engine/components/sprite.h
 	engine/components/ui.h
 	engine/graphics/font.h
