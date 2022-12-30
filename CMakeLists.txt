@@ -65,7 +65,6 @@ add_library(Engine
 	engine/component_register.cpp
 	engine/core.cpp
 	engine/debug.cpp
-	engine/editor.cpp
 	engine/entity.cpp
 	engine/input.cpp
 	engine/luascript.cpp
@@ -92,7 +91,6 @@ add_library(Engine
 	engine/component_register.h
 	engine/core.h
 	engine/debug.h
-	engine/editor.h
 	engine/entity.h
 	engine/input.h
 	engine/json.hpp
@@ -207,3 +205,28 @@ add_custom_command(TARGET Inquience POST_BUILD
 add_custom_command(TARGET Inquience POST_BUILD 
 					COMMAND ${CMAKE_COMMAND} -E copy_directory
 						${CMAKE_SOURCE_DIR}/inquience/res $<TARGET_FILE_DIR:Inquience>/res)
+						
+						
+#------------------------------------------------------
+#	WorldBuilder
+#------------------------------------------------------
+add_executable( WorldBuilder
+	worldbuilder/main.cpp
+)
+
+target_link_libraries(WorldBuilder
+	Engine
+	${ALL_LIBS}
+)
+
+target_include_directories( WorldBuilder PUBLIC
+	${CMAKE_SOURCE_DIR}/worldbuilder
+)
+
+add_custom_command(TARGET WorldBuilder POST_BUILD 
+					COMMAND ${CMAKE_COMMAND} -E make_directory
+						$<TARGET_FILE_DIR:WorldBuilder>/res)
+
+add_custom_command(TARGET WorldBuilder POST_BUILD 
+					COMMAND ${CMAKE_COMMAND} -E copy_directory
+						${CMAKE_SOURCE_DIR}/worldbuilder/res $<TARGET_FILE_DIR:WorldBuilder>/res)
