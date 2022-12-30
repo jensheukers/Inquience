@@ -11,7 +11,6 @@
 #include "input.h"
 #include "soundmanager.h"
 #include "luascript.h"
-#include "editor.h"
 
 #include "math/physics.h"
 
@@ -101,16 +100,6 @@ void Core::Update() {
 		instance->fps = frames;
 		frames = 0;
 		lastTime = instance->timeElapsed;
-	}
-
-	//Update editor if active
-	if (Editor::editorActive) {
-		Editor::Update();
-
-		Core::PauseGame();
-	}
-	else {
-		Core::ContinueGame();
 	}
 
 	//Update Entities

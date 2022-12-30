@@ -100,19 +100,6 @@ public:
 	* Copies the component settings and returns a new instance, should be overwritten
 	*/
 	virtual Component* Copy() const { return new Component(*this); }
-
-// SHOULD ONLY BE WITH EDITOR (Fix/Create macro's)
-	bool bShowComponentProperties = false;
-
-	/**
-	* Gets called when a component property window gets opened for this component
-	*/
-	virtual void OnComponentPropertiesEditor();
-// -----------------------------------------
-	/**
-	* Destructor
-	*/
-	virtual ~Component() {};
 };
 
 #endif // !COMPONENT_H

@@ -119,12 +119,6 @@ public:
 	*/
 	virtual Text* New() override { return new Text(FontLoader::LoadFont("fonts/consola.ttf")); }
 	virtual Text* Copy() const { return new Text(*this); }
-
-
-	/**
-	* Gets called when a component property window gets opened for this component
-	*/
-	virtual void OnComponentPropertiesEditor() override;
 };
 
 #endif // !FONT_H

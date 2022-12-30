@@ -6,9 +6,6 @@
 // Written by Jens Heukers, April 2020
 #include "ui.h"
 
-//Include editor to check if editor is active
-#include "editor.h"
-
 //Include input for position checks, and physics for checks
 #include "../input.h"
 #include "../math/physics.h"
@@ -105,7 +102,6 @@ UIComponent::UIComponent() {
 }
 
 void UIComponent::Update() {
-	if (Debug::consoleActive || Editor::editorActive) return;
 	if (!GetOwner()->HasComponent<Sprite>()) return;
 	if (!GetOwner()->GetComponent<Sprite>()->GetTexture()) return;
 

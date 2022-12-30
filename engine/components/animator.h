@@ -164,8 +164,6 @@ public:
 
 	virtual Animator* New() override { return new Animator(); }
 	virtual Animator* Copy() const { return new Animator(*this); }
-
-	virtual void OnComponentPropertiesEditor() override;
 };
 
 #endif // !ANIMATOR_H

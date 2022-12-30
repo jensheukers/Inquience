@@ -53,8 +53,3 @@ Entity* Component::SetOwner(Entity* entity) {
 Entity* Component::GetOwner() {
 	return this->owner;
 }
-
-void Component::OnComponentPropertiesEditor()
-{
-	ImGui::Text("Component properties have not been derrived!");
-}

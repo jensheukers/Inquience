@@ -149,13 +149,3 @@ float Collider::GetSize() {
 	}
 	return outer.y;
 }
-
-void Collider::OnComponentPropertiesEditor() {
-	Debug::DrawCube(this->GetOwner()->GetGlobalPosition(), this->GetOwner()->GetGlobalPosition() + this->outer, glm::vec3(0, 1, 0));
-
-	ImGui::InputFloat("Outer X", &this->outer.x);
-	ImGui::InputFloat("Outer Y", &this->outer.y);
-
-	ImGui::Checkbox("Scale to Owner", &this->scaleToOwner);
-	ImGui::Checkbox("Draw Debug Lines", &this->bDrawDebugLines);
-}

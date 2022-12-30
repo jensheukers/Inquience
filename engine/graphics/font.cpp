@@ -174,20 +174,3 @@ float Text::GetSize() {
 Font* Text::GetFont() {
 	return this->font;
 }
-
-void Text::OnComponentPropertiesEditor() {
-	static char buffer[128];
-	static int c[3];
-	static float s;
-
-	ImGui::InputText("Text", buffer, sizeof(buffer));
-	ImGui::InputInt3("Color", c);
-	ImGui::InputFloat("Size", &s);
-
-	if (ImGui::Button("Apply")) {
-		this->SetText(buffer);
-		this->SetColor(glm::vec3(c[0], c[1], c[2]));
-		this->SetSize(s);
-	}
-
-}

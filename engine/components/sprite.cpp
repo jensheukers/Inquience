@@ -146,30 +146,3 @@ UV Sprite::Split(Texture* texture, int pixelsPerTile, int index) {
 
 	return uv;
 }
-
-void Sprite::OnComponentPropertiesEditor()
-{
-	static char buffer[128]; // Allocate buffer
-	ImGui::InputText("##0", buffer, sizeof(buffer));
-	ImGui::SameLine();
-	if (ImGui::Button("Set/Load Texture")) {
-		this->SetTexture(TextureLoader::LoadTarga(buffer));
-	}
-	
-	ImGui::Spacing();
-	ImGui::Text("Options to slice a tilemap, by pressing split the uv coordinates will be updated");
-
-	static int pixelsPerTileEditor;
-	static int tileMapIndexEditor;
-	ImGui::InputInt("Pixels Per Tile", &pixelsPerTileEditor);
-	ImGui::InputInt("Tile Map Index", &tileMapIndexEditor);
-
-	if (ImGui::Button("Split")) {
-		this->Split(pixelsPerTileEditor, tileMapIndexEditor);
-	}
-
-	ImGui::ColorPicker4("Blend Color", _imguiColorBuffer);
-
-	this->blendColor = ColorRGBA((unsigned int) (_imguiColorBuffer[0] * 255), (unsigned int)(_imguiColorBuffer[1] * 255),
-								 (unsigned int)(_imguiColorBuffer[2] * 255), (unsigned int)(_imguiColorBuffer[3] * 255));
-}

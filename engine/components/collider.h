@@ -99,8 +99,6 @@ public:
 
 	virtual Collider* New() override { return new Collider(); }
 	virtual Collider* Copy() const { return new Collider(*this); }
-
-	void OnComponentPropertiesEditor() override;
 };
 
 #endif // !COLLIDER_H
