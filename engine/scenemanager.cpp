@@ -12,42 +12,34 @@
 
 #include "parser.h"
 
-SceneManager* SceneManager::instance; // Declare instance
-
-SceneManager* SceneManager::GetInstance() {
-	if (!instance) {
-		instance = new SceneManager();
-
-		Debug::Log("SceneManager : Instance Created");
-	}
-	//Return instance
-	return instance;
+SceneManager::SceneManager() {
+	this->activeScene = nullptr;
 }
 
 Scene* SceneManager::SetActiveScene(Scene* scene) {
-	GetInstance()->activeScene = scene;
+	this->activeScene = scene;
 	return scene;
 }
 
 Scene* SceneManager::GetActiveScene() {
-	return GetInstance()->activeScene;
+	return this->activeScene;
 }
 
 Scene* SceneManager::SwapScene(Scene* scene) {
-	if (SceneManager::GetInstance()->activeScene) {
-		delete SceneManager::GetInstance()->activeScene;
+	if (this->activeScene) {
+		delete this->activeScene;
 	}
 
-	SceneManager::GetInstance()->SetActiveScene(scene);
+	this->SetActiveScene(scene);
 
 	Debug::Log("SceneManager : Swapped Scene");
 
-	return SceneManager::GetActiveScene();
+	return this->GetActiveScene();
 }
 
 Scene* SceneManager::ReadFromFileAndSwap(std::string path) {
 	Parser* parser = new Parser(path, true);
-	Scene* scene = SceneManager::SwapScene(parser->ReadSceneFromFile());
+	Scene* scene = this->SwapScene(parser->ReadSceneFromFile());
 	delete parser;
 	return scene;
 }
@@ -55,6 +47,5 @@ Scene* SceneManager::ReadFromFileAndSwap(std::string path) {
 void SceneManager::Terminate() {
 	if (GetActiveScene()) {
 		delete GetActiveScene();
-	}
-	delete GetInstance();
+	};
 }

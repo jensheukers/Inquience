@@ -19,7 +19,7 @@ void Camera::Update() {
 	if (this->target) {
 		Vec2 center = this->target->position + this->target->scale;
 
-		this->position = center - Vec2(Core::GetRendererInstance()->GetResolution().x / 2, Core::GetRendererInstance()->GetResolution().y / 2);
+		this->position = center - Vec2(Core::GetRenderer()->GetResolution().x / 2, Core::GetRenderer()->GetResolution().y / 2);
 	}
 }
 

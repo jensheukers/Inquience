@@ -7,7 +7,7 @@
 #include "parser.h"
 #include "debug.h"
 
-#include "scene.h"
+
 #include "entity.h"
 #include "components/animator.h"
 #include "component_register.h"

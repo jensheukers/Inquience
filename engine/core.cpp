@@ -7,10 +7,7 @@
 // Written by Jens Heukers, October 2019
 #include "core.h"
 #include "debug.h"
-#include "scenemanager.h"
 #include "input.h"
-#include "soundmanager.h"
-#include "luascript.h"
 
 #include "math/physics.h"
 
@@ -39,8 +36,17 @@ void Core::Initialize(int argc, char* argv[], Vec2 resolution, std::string title
 	instance->executableDirectoryPath = _exeDirArg.substr(0, found); // Cut off last part of path
 	instance->executableDirectoryPath.append("\\"); // Append a slash to return the absolute directory
 
-	//Create renderer
+	//Create renderer 
 	instance->renderer = new Renderer(resolution, title.c_str());
+
+	//Create scenemanager
+	instance->sceneManager = new SceneManager();
+
+	//Create soundmanager
+	instance->soundManager = new SoundManager();
+
+	//Create LuaScript
+	instance->luascript = new LuaScript();
 
 	//Initialize variables
 	instance->frame = 0;
@@ -48,22 +54,19 @@ void Core::Initialize(int argc, char* argv[], Vec2 resolution, std::string title
 	//Initialize Input
 	Input::Init(instance->renderer->GetWindow());
 
-	//Initialize SoundManager
-	SoundManager::Init();
-
 	//Initialize Steamworks API
 	if (SteamAPI_Init()) {
 		Debug::Log("Steam Initialized");
 	}
 
 	//Implement luascript native functions
-	LuaScript::AddNativeFunction("Log", [](lua_State* state) -> int {
+	instance->luascript->AddNativeFunction("Log", [](lua_State* state) -> int {
 		Debug::Log(lua_tostring(state, -1));
 		return 0;
 	});
 
 	//Runs a function from a native lua file from c++
-	LuaScript::AddNativeFunction("RunFunction", [](lua_State* state) -> int {
+	instance->luascript->AddNativeFunction("RunFunction", [](lua_State* state) -> int {
 		int top = -lua_gettop(state);
 
 		std::string fileName = lua_tostring(state, top);
@@ -74,11 +77,11 @@ void Core::Initialize(int argc, char* argv[], Vec2 resolution, std::string title
 			params.push_back(lua_tostring(state, i));
 		}
 
-		LuaScript::RunFunction(fileName, functionName, params);
+		instance->luascript->RunFunction(fileName, functionName, params);
 		return 0;
 	});
 
-	LuaScript::AddNativeFunction("RequestExit", [](lua_State* state) -> int {
+	instance->luascript->AddNativeFunction("RequestExit", [](lua_State* state) -> int {
 		instance->RequestExit();
 		return 0;
 	});
@@ -103,19 +106,19 @@ void Core::Update() {
 	}
 
 	//Update Entities
-	if (SceneManager::GetActiveScene()) {
+	if (instance->sceneManager->GetActiveScene()) {
 
 		//Update Scene
 
-		SceneManager::GetActiveScene()->UpdateScene(instance->gamePaused);
+		instance->sceneManager->GetActiveScene()->UpdateScene(instance->gamePaused);
 
-		if (SceneManager::GetActiveScene()->GetActiveCamera()) {
-			instance->renderer->RenderScene(SceneManager::GetActiveScene(), SceneManager::GetActiveScene()->GetActiveCamera());
+		if (instance->sceneManager->GetActiveScene()->GetActiveCamera()) {
+			instance->renderer->RenderScene(instance->sceneManager->GetActiveScene(), instance->sceneManager->GetActiveScene()->GetActiveCamera());
 
 			//Render debug stuff
 			for (size_t i = 0; i < Debug::GetLineDrawList().size(); i++) {
 				Line line = Debug::GetLineDrawList()[i];
-				instance->renderer->DrawLine(line.a, line.b, line.color, SceneManager::GetActiveScene()->GetActiveCamera());
+				instance->renderer->DrawLine(line.a, line.b, line.color, instance->sceneManager->GetActiveScene()->GetActiveCamera());
 			}
 
 			for (size_t i = 0; i < Debug::GetTextDrawList().size(); i++) {
@@ -146,7 +149,7 @@ void Core::Update() {
 	}
 
 	//Update soundmanager
-	SoundManager::Update();
+	instance->soundManager->Update();
 
 	//Update Input
 	Input::HandleUpdates();
@@ -185,8 +188,8 @@ void Core::Destroy() {
 	Input::Terminate();
 	delete instance->renderer;
 
-	SceneManager::Terminate();
-	SoundManager::Destroy();
+	instance->sceneManager->Terminate();
+	instance->soundManager->Destroy();
 
 	// Delete instance and set instance to nullptr
 	delete instance; 
@@ -197,8 +200,22 @@ std::string Core::GetExecutableDirectoryPath() {
 	return instance->executableDirectoryPath;
 }
 
-Renderer* Core::GetRendererInstance() {
+Renderer* Core::GetRenderer() {
 	return instance->renderer;
+}
+
+SceneManager* Core::GetSceneManager() {
+	return instance->sceneManager;
+}
+
+
+SoundManager* Core::GetSoundManager() {
+	return instance->soundManager;
+}
+
+
+LuaScript* Core::GetLuaScript() {
+	return instance->luascript;
 }
 
 void Core::RequestExit() {

@@ -14,78 +14,71 @@
 
 class SoundManager {
 private:
-	static SoundManager* _instance; /// @brief The SoundManager instance
-
 	//Local members
 	ALCdevice* device; /// @brief The currently used audio device
 	ALCcontext* context; /// @brief The currently active context
 
 	std::vector<Sound*> _sounds; /// @brief Vector containing registered sounds
 
-	/**
-	* Returns the instance or creates one if not exists
-	*/
-	static SoundManager* GetInstance();
-
 public:
 	/**
-	* Initializes the SoundManager
+	* Constructor
 	*/
-	static void Init();
+	SoundManager();
 
 	/**
 	* Update gets called each frame by core
 	*/
-	static void Update();
+	void Update();
 
 	/**
 	* Adds a new sound to the sounds list
 	*/
-	static void AddSound(Sound* sound);
+	void AddSound(Sound* sound);
 
 	/**
 	* Returns a sound pointer, where index matches
 	*/
-	static Sound* GetSound(int index);
+	Sound* GetSound(int index);
 
 	/**
 	* Removes a sound from the sounds list
 	*/
-	static void RemoveSound(Sound* sound);
+	void RemoveSound(Sound* sound);
 
 	/**
 	* Removes a sound from the sounds list
 	*/
-	static void RemoveSound(int index);
+	void RemoveSound(int index);
 
 	/**
 	* Plays the sound
 	*/
-	static void PlaySound(int index);
+	void PlaySound(int index);
 
 	//Overload
 
 	/**
 	* Plays the sound
 	*/
-	static void PlaySound(Sound* sound);
+	void PlaySound(Sound* sound);
 
 	/**
 	* Stops playing the sound
 	*/
-	static void StopSound(int index);
+	void StopSound(int index);
 
 	//Overload
 
 	/**
 	* Stops playing the sound
 	*/
-	static void StopSound(Sound* sound);
+	void StopSound(Sound* sound);
 
 	/**
 	* Destroys the sound manager
 	*/
-	static void Destroy();
+	void Destroy();
 };
 
 

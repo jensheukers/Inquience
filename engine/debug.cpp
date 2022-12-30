@@ -13,7 +13,7 @@
 #include "imgui.h"
 
 #include "input.h"
-#include "luascript.h"
+#include "core.h"
 
 
 #include "graphics/font.h"
@@ -102,7 +102,7 @@ void Debug::ConstructConsole() {
 			GetInstance()->logs.push_back(buffer);
 
 			//Run  on lua
-			LuaScript::Run(buffer);
+			Core::GetLuaScript()->Run(buffer);
 			
 			GetInstance()->commands.push_back(buffer);
 

@@ -6,10 +6,11 @@
 // Written by Jens Heukers, April 2020
 #include <core.h>
 #include <parser.h>
-#include <luascript.h>
 #include <components/animator.h>
 
 #include "source/gamestate.h"
+
+#include "../engine/component_register.h"
 
 int main(int argc, char * argv[]) {
 	Core::Initialize(argc, argv, Vec2(1280, 720), "Inquience");
@@ -23,7 +24,7 @@ int main(int argc, char * argv[]) {
 
 	//Native Luascript functions (Game)
 	{
-		LuaScript::AddNativeFunction("NextLevel_Internal", [](lua_State* state) -> int {
+			Core::GetLuaScript()->AddNativeFunction("NextLevel_Internal", [](lua_State* state) -> int {
 			Core::ExecuteLateFrame([=]() {
 				gameState->NextLevel();
 			});

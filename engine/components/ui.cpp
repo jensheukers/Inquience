@@ -12,7 +12,7 @@
 
 #include "../entity.h"
 
-#include "luascript.h"
+#include "core.h"
 
 
 UIComponent::UIComponent() {
@@ -27,7 +27,7 @@ UIComponent::UIComponent() {
 					a.push_back(v[i]);
 				}
 
-				LuaScript::RunFunction(fileName, funcName, a);
+				Core::GetLuaScript()->RunFunction(fileName, funcName, a);
 			});
 		}
 	};

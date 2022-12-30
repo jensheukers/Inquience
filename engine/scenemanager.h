@@ -11,44 +11,41 @@
 
 class SceneManager {
 private:
-	static SceneManager* instance; /***< The instance of the SceneManager*/
-
 	//Local members
 	Scene* activeScene; /***< The currently active scene */
-
-	/**
-	* Creates a instance if not yet created
-	* @return SceneManager*
-	*/
-	static SceneManager* GetInstance();
 public:
+	/**
+	* @brief Constructor
+	*/
+	SceneManager();
+
 	/**
 	* Sets the currently active scene
 	* @param Scene*
 	* @return Scene*
 	*/
-	static Scene* SetActiveScene(Scene* scene);
+	Scene* SetActiveScene(Scene* scene);
 
 	/**
 	* Gets the currently active scene
 	* @return Scene*
 	*/
-	static Scene* GetActiveScene();
+	Scene* GetActiveScene();
 
 	/**
 	* Safely swaps scenes, and removes current scene
 	*/
-	static Scene* SwapScene(Scene* scene);
+	Scene* SwapScene(Scene* scene);
 
 	/*
 	* Reads a scene from file, and swaps the scene
 	**/
-	static Scene* ReadFromFileAndSwap(std::string path);
+	Scene* ReadFromFileAndSwap(std::string path);
 
 
 	/**
 	* Terminates the SceneManager
 	* @return void
 	*/
-	static void Terminate();
+	void Terminate();
 };

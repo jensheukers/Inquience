@@ -8,24 +8,15 @@
 #include "soundmanager.h"
 #include "debug.h"
 
-SoundManager* SoundManager::_instance;
+SoundManager::SoundManager() {
+	this->device = alcOpenDevice(NULL);
 
-SoundManager* SoundManager::GetInstance() {
-	if (!_instance) {
-		_instance = new SoundManager();
-	}
-	return _instance;
-}
-
-void SoundManager::Init() {
-	SoundManager::GetInstance()->device = alcOpenDevice(NULL);
-
-	if (!SoundManager::GetInstance()->device) {
+	if (this->device) {
 		Debug::Log("SoundManager: Could not load audio device");
 	}
 
-	SoundManager::GetInstance()->context = alcCreateContext(SoundManager::GetInstance()->device, NULL);
-	if (!alcMakeContextCurrent(SoundManager::GetInstance()->context)) {
+	this->context = alcCreateContext(this->device, NULL);
+	if (!alcMakeContextCurrent(this->context)) {
 		Debug::Log("SoundManager: Could not set current audio context");
 	}
 
@@ -34,32 +25,32 @@ void SoundManager::Init() {
 
 void SoundManager::Update() {
 	//Play sounds
-	for (size_t i = 0; i < SoundManager::GetInstance()->_sounds.size(); i++) {
-		if (SoundManager::GetInstance()->_sounds[i]->GetAudioSource()->state != AL_STOPPED) {
-			alGetSourcei(SoundManager::GetInstance()->_sounds[i]->GetAudioSource()->sourceID, 
-				AL_SOURCE_STATE, &SoundManager::GetInstance()->_sounds[i]->GetAudioSource()->state);
+	for (size_t i = 0; i < this->_sounds.size(); i++) {
+		if (this->_sounds[i]->GetAudioSource()->state != AL_STOPPED) {
+			alGetSourcei(this->_sounds[i]->GetAudioSource()->sourceID,
+				AL_SOURCE_STATE, &this->_sounds[i]->GetAudioSource()->state);
 		}
 	}
 }
 
 void SoundManager::AddSound(Sound* sound) {
-	SoundManager::GetInstance()->_sounds.push_back(sound);
+	this->_sounds.push_back(sound);
 }
 
 Sound* SoundManager::GetSound(int index) {
-	return SoundManager::GetInstance()->_sounds[index];
+	return this->_sounds[index];
 }
 
 void SoundManager::RemoveSound(Sound* sound) {
-	for (unsigned i = 0; i < SoundManager::GetInstance()->_sounds.size(); i++) {
-		if (SoundManager::GetInstance()->_sounds[i] == sound) {
-			SoundManager::GetInstance()->_sounds.erase(SoundManager::GetInstance()->_sounds.begin() + i);
+	for (unsigned i = 0; i < this->_sounds.size(); i++) {
+		if (this->_sounds[i] == sound) {
+			this->_sounds.erase(this->_sounds.begin() + i);
 		}
 	}
 }
 
 void SoundManager::RemoveSound(int index) {
-	SoundManager::GetInstance()->_sounds.erase(SoundManager::GetInstance()->_sounds.begin() + index);
+	this->_sounds.erase(this->_sounds.begin() + index);
 }
 
 void SoundManager::PlaySound(int index) {
@@ -67,8 +58,8 @@ void SoundManager::PlaySound(int index) {
 }
 
 void SoundManager::PlaySound(Sound* sound) {
-	for (size_t i = 0; i < SoundManager::GetInstance()->_sounds.size(); i++) {
-		if (SoundManager::GetInstance()->_sounds[i] == sound) {
+	for (size_t i = 0; i < this->_sounds.size(); i++) {
+		if (this->_sounds[i] == sound) {
 			SoundManager::PlaySound(i);
 		}
 	}
@@ -79,22 +70,22 @@ void SoundManager::StopSound(int index) {
 }
 
 void SoundManager::StopSound(Sound* sound) {
-	for (size_t i = 0; i < SoundManager::GetInstance()->_sounds.size(); i++) {
-		if (SoundManager::GetInstance()->_sounds[i] == sound) {
-			SoundManager::StopSound(i);
+	for (size_t i = 0; i < this->_sounds.size(); i++) {
+		if (this->_sounds[i] == sound) {
+			this->StopSound(i);
 		}
 	}
 }
 
 void SoundManager::Destroy() {
 	alcMakeContextCurrent(NULL);
-	alcDestroyContext(SoundManager::GetInstance()->context);
-	alcCloseDevice(SoundManager::GetInstance()->device);
+	alcDestroyContext(this->context);
+	alcCloseDevice(this->device);
 
 	//Remove and DELETE all sounds
-	for (size_t i = 0; i < SoundManager::GetInstance()->_sounds.size(); i++) {
-		delete SoundManager::GetInstance()->_sounds[i]; // Delete instance
-		SoundManager::RemoveSound(i); // Remove pointer
+	for (size_t i = 0; i < this->_sounds.size(); i++) {
+		delete this->_sounds[i]; // Delete instance
+		this->RemoveSound(i); // Remove pointer
 
 		Debug::Log("SoundManager: Removed sound instance: " + std::to_string(i));
 	}

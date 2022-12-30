@@ -6,15 +6,15 @@ void GameState::BeginGameplay() {
 	Debug::Log("Starting Gameplay");
 
 	Player* player = new Player();
-	SceneManager::GetActiveScene()->AddChild(player);
+	Core::GetSceneManager()->GetActiveScene()->AddChild(player);
 
 	//Try to retrieve x and y values from KeyValuePairs for spawn location
-	float x = std::stof(SceneManager::GetActiveScene()->GetKeyValue("x"));
-	float y = std::stof(SceneManager::GetActiveScene()->GetKeyValue("y"));
+	float x = std::stof(Core::GetSceneManager()->GetActiveScene()->GetKeyValue("x"));
+	float y = std::stof(Core::GetSceneManager()->GetActiveScene()->GetKeyValue("y"));
 
 	player->position = Vec2(x, y); // Set spawn location
 
-	SceneManager::GetActiveScene()->GetActiveCamera()->SetTarget(player);
+	Core::GetSceneManager()->GetActiveScene()->GetActiveCamera()->SetTarget(player);
 }
 
 GameState::GameState(std::vector<std::string> levels) {
@@ -36,9 +36,9 @@ void GameState::NextLevel() {
 
 	Debug::Log("Loading Scene: " + this->levels[this->currentLevel] );
 
-	SceneManager::ReadFromFileAndSwap(this->levels[this->currentLevel]);
+	Core::GetSceneManager()->ReadFromFileAndSwap(this->levels[this->currentLevel]);
 
-	if (this->currentScene == SceneManager::GetActiveScene() || !(this->currentScene = SceneManager::GetActiveScene())) {
+	if (this->currentScene == Core::GetSceneManager()->GetActiveScene() || !(this->currentScene = Core::GetSceneManager()->GetActiveScene())) {
 		Debug::Log("Failed to load level, GetActiveScene() returned nullptr OR scene did not change");
 		return;
 	}
@@ -46,7 +46,7 @@ void GameState::NextLevel() {
 	Debug::Log("Next Level (" + levels[this->currentLevel] + ") Loaded!");
 
 	//Check if gameplay should be started
-	if (SceneManager::GetActiveScene()->GetKeyValue(IQ_SCENELOAD_GAMEPLAY_KEYNAME) == IQ_SCENELOAD_GAMEPLAY_POSITIVE_KEYVALUE) {
+	if (Core::GetSceneManager()->GetActiveScene()->GetKeyValue(IQ_SCENELOAD_GAMEPLAY_KEYNAME) == IQ_SCENELOAD_GAMEPLAY_POSITIVE_KEYVALUE) {
 		this->BeginGameplay();
 	}
 }

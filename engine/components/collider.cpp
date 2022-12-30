@@ -7,7 +7,7 @@
 #include "collider.h"
 
 #include "../entity.h"
-#include "luascript.h"
+#include "core.h"
 
 void Collider::DrawDebugLines() {
 	Debug::DrawLine(GetOwner()->GetGlobalPosition(), GetOwner()->GetGlobalPosition() + Vec2(outer.x, 0), debugDrawColor);
@@ -34,7 +34,7 @@ Collider::Collider() {
 
 	AddProperty("OnCollisionEnter", [=](std::vector<std::string> args) {
 		this->onCollisionEnter.AddLambda([=]() {
-			LuaScript::RunFunction(args[0], args[1]);
+			Core::GetLuaScript()->RunFunction(args[0], args[1]);
 			});
 
 		this->onCollisionEnterReturnVector = args;
@@ -44,7 +44,7 @@ Collider::Collider() {
 
 	AddProperty("OnCollisionActive", [=](std::vector<std::string> args) {
 		this->onCollisionActive.AddLambda([=]() {
-			LuaScript::RunFunction(args[0], args[1]);
+			Core::GetLuaScript()->RunFunction(args[0], args[1]);
 			});
 
 		this->onCollisionActiveReturnVector = args;
@@ -54,7 +54,7 @@ Collider::Collider() {
 
 	AddProperty("OnCollisionExit", [=](std::vector<std::string> args) {
 		this->onCollisionExit.AddLambda([=]() {
-			LuaScript::RunFunction(args[0], args[1]);
+			Core::GetLuaScript()->RunFunction(args[0], args[1]);
 			});
 
 		this->onCollisionExitReturnVector = args;

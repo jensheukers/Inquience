@@ -12,7 +12,7 @@
 #define IQ_SCENELOAD_GAMEPLAY_POSITIVE_KEYVALUE "true"
 #define IQ_SCENELOAD_GAMEPLAY_NEGATIVE_KEYVALUE "false"
 
-#include <scenemanager.h>
+#include <core.h>
 #include <vector>
 #include <string>
 

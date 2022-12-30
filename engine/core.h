@@ -12,9 +12,9 @@
 
 //Include renderer.h
 #include "renderer.h"
-
-//Forward declare
-class Scene;
+#include "scenemanager.h"
+#include "soundmanager.h"
+#include "luascript.h"
 
 class Core {
 private:
@@ -22,6 +22,9 @@ private:
 	
 	//References
 	Renderer* renderer = nullptr; /***< The renderer instance pointer*/
+	SceneManager* sceneManager = nullptr;
+	SoundManager* soundManager = nullptr;
+	LuaScript* luascript = nullptr;
 
 	//Local variables
 	std::string executableDirectoryPath; /***< The path to the executable directory*/
@@ -95,7 +98,25 @@ public:
 	* Returns the renderer instance
 	* @return Renderer*
 	*/
-	static Renderer* GetRendererInstance();
+	static Renderer* GetRenderer();
+
+	/**
+	* Returns the scenemanager instance
+	* @return SceneManager*
+	*/
+	static SceneManager* GetSceneManager();
+
+	/**
+	* Returns the SoundManager instance
+	* @return SoundManager*
+	*/
+	static SoundManager* GetSoundManager();
+
+	/**
+	* Returns the luascript instance
+	* @return SoundManager*
+	*/
+	static LuaScript* GetLuaScript();
 
 	/**
 	* Requests a exit
