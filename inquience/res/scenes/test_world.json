@@ -51,7 +51,7 @@
             "entities": [
                 {
                     "isPrefab": true,
-                    "path": "res/prefabs/islands/small_island.prefab",
+                    "path": "res/prefabs/islands/small_island.json",
                     "position": [
                         100.0,
                         200.0
@@ -64,7 +64,7 @@
                 },
 				{
                     "isPrefab": true,
-                    "path": "res/prefabs/islands/small_island.prefab",
+                    "path": "res/prefabs/islands/small_island.json",
                     "position": [
                         300.0,
                         100.0

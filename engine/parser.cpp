@@ -232,7 +232,7 @@ void Parser::WriteSceneToFile(Scene* scene) {
 
 	jsonData["camerapos"] = { scene->GetActiveCamera()->position.x, scene->GetActiveCamera()->position.y };
 
-	std::ofstream o(destination + FILETYPE_SCENE);
+	std::ofstream o(destination);
 	o << std::setw(4) << jsonData << std::endl;
 }
 
@@ -256,7 +256,7 @@ Scene* Parser::ReadSceneFromFile() {
 }
 
 void Parser::WritePrefabToFile(Entity* entity) {
-	std::ofstream o(destination + FILETYPE_PREFAB);
+	std::ofstream o(destination);
 	o << std::setw(4) << BufferEntityToJsonArray(entity, true) << std::endl;
 }
 
@@ -285,7 +285,7 @@ void Parser::WriteAnimationToFile(Animation* animation) {
 
 	jsonData["frames"] = framesArray;
 
-	std::ofstream o(destination + FILETYPE_ANIMATION);
+	std::ofstream o(destination);
 	o << std::setw(4) << jsonData << std::endl;
 }
 

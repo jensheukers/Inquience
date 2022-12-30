@@ -1,11 +1,6 @@
 #ifndef PARSER_H
 #define PARSER_H
 
-//Define filetype extensions
-#define FILETYPE_SCENE ".scene"
-#define FILETYPE_PREFAB ".prefab"
-#define FILETYPE_ANIMATION ".animation"
-
 #include <iostream>
 #include <fstream>
 #include <vector>
