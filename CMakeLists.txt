@@ -212,6 +212,10 @@ add_custom_command(TARGET Inquience POST_BUILD
 #------------------------------------------------------
 add_executable( WorldBuilder
 	worldbuilder/main.cpp
+	worldbuilder/wb_editor.cpp
+	worldbuilder/wb_editor.h
+	worldbuilder/wb_editorwindow.cpp
+	worldbuilder/wb_editorwindow.h
 )
 
 target_link_libraries(WorldBuilder
