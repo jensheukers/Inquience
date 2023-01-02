@@ -366,20 +366,132 @@ WB_Editor::WB_Editor() {
 
 	//Create new empty scene
 	currentScene = NewScene();
+
+	KeyComboEvent copySelectedEvent = KeyComboEvent(KeyCombo{ KeyEvent(KEYCODE_LEFT_CONTROL, KeyEvent_Type::Get), KeyEvent(KEYCODE_V, KeyEvent_Type::GetDown) });
+	copySelectedEvent.onActivate.AddLambda([=]() {
+		if (!currentSelectedEntity) return;
+		Entity* copy = new Entity(*currentSelectedEntity);
+		currentSelectedEntity->GetParent()->AddChild(copy);
+
+		//Set position to mouse position
+		copy->position = Input::GetMousePosition() + Core::GetSceneManager()->GetActiveScene()->GetActiveCamera()->position;
+		currentSelectedEntity = copy;
+		});
+	combos.push_back(copySelectedEvent);
+
+	KeyComboEvent deleteSelectedEvent = KeyComboEvent(KeyCombo{ KeyEvent(KEYCODE_DELETE, KeyEvent_Type::GetDown) });
+	deleteSelectedEvent.onActivate.AddLambda([=]() {
+		if (!currentSelectedEntity) return;
+		currentSelectedEntity->GetParent()->RemoveChild(currentSelectedEntity);
+		delete currentSelectedEntity;
+		currentSelectedEntity = nullptr;
+		});
+	combos.push_back(deleteSelectedEvent);
+
+	KeyComboEvent setScalemodeEvent = KeyComboEvent(KeyCombo{ KeyEvent(KEYCODE_LEFT_CONTROL, KeyEvent_Type::Get), KeyEvent(KEYCODE_Q, KeyEvent_Type::GetDown) });
+	setScalemodeEvent.onActivate.AddLambda([=]() {
+		switch (this->scalemode) {
+		case Editor_ScaleMode::Horizontal:
+			this->scalemode = Editor_ScaleMode::Vertical;
+			break;
+		case Editor_ScaleMode::Vertical:
+			this->scalemode = Editor_ScaleMode::Both;
+			break;
+		case Editor_ScaleMode::Both:
+			this->scalemode = Editor_ScaleMode::Horizontal;
+			break;
+		default:
+			this->scalemode = Editor_ScaleMode::Both;
+			break;
+		}
+		});
+	combos.push_back(setScalemodeEvent);
+
+	KeyComboEvent deselectSelected = KeyComboEvent(KeyCombo{ KeyEvent(KEYCODE_ESCAPE, KeyEvent_Type::GetDown) });
+	deselectSelected.onActivate.AddLambda([=]() {
+		currentSelectedEntity = nullptr;
+		});
+	combos.push_back(deselectSelected);
+
+	this->scalemode = Editor_ScaleMode::Both;
 }
 
-void WB_Editor::Update() {
-	//Update editor windows
-	for (int i = this->activeEditorWindows.size() - 1; i >= 0; i--) {
-		if (this->activeEditorWindows[i]->active && Core::GetSceneManager()->GetActiveScene()) {
-			this->activeEditorWindows[i]->Handle(this);
-		}
-		else {
-			delete this->activeEditorWindows[i];
-			this->activeEditorWindows.erase(this->activeEditorWindows.begin() + i);
-		}
+void WB_Editor::HandleInput() {
+	for (size_t i = 0; i < combos.size(); i++) {
+		combos[i].Check();
 	}
 
+	Camera* camera = Core::GetSceneManager()->GetActiveScene()->GetActiveCamera();
+	//Camera input
+	if (Input::GetKey(KEYCODE_KP_2)) {
+		camera->position = camera->position + Vec2(0, 1);
+	}
+
+	if (Input::GetKey(KEYCODE_KP_4)) {
+		camera->position = camera->position + Vec2(-cameraMovementSpeed, 0);
+	}
+
+	if (Input::GetKey(KEYCODE_KP_6)) {
+		camera->position = camera->position + Vec2(cameraMovementSpeed, 0);
+	}
+
+	if (Input::GetKey(KEYCODE_KP_8)) {
+		camera->position = camera->position + Vec2(0, -cameraMovementSpeed);
+	}
+
+	//Mouse position
+	Vec2 mousePos = Input::GetMousePosition() + Core::GetSceneManager()->GetActiveScene()->GetActiveCamera()->position;
+
+	//Mouse input
+	if (Input::GetButtonDown(BUTTONCODE_LEFT)) {
+		SetCurrentSelectedEntityByPosition(Core::GetSceneManager()->GetActiveScene(), mousePos);
+	}
+
+	if (currentSelectedEntity && bHoldingEntity && Input::GetButton(BUTTONCODE_RIGHT)) {
+		currentSelectedEntity->position = mousePos - (currentSelectedEntity->scale / 2);
+
+		//Try to set on grid tile if possible
+		//if (GridTile* tile = grid->GetGridTile(currentSelectedEntity->position)) {
+		//	currentSelectedEntity->position = tile->position;
+		//}
+
+		std::string scaleModeString = "Scale Mode: ";
+
+		//Scale the entity based on scrolling
+		Vec2 extraScale;
+		switch (this->scalemode) {
+		case Editor_ScaleMode::Horizontal:
+			extraScale = Vec2(Input::GetScrollOffset().y, 0);
+			scaleModeString += "Horizontal";
+			break;
+		case Editor_ScaleMode::Vertical:
+			extraScale = Vec2(0, Input::GetScrollOffset().y);
+			scaleModeString += "Vertical";
+			break;
+		case Editor_ScaleMode::Both:
+			extraScale = Vec2(Input::GetScrollOffset().y);
+			scaleModeString += "Horizontal & Vertical";
+			break;
+		}
+
+		currentSelectedEntity->scale = currentSelectedEntity->scale + extraScale;
+
+		//Draw to screen
+		Debug::DrawTextLine(scaleModeString, Vec2(0, 100), 0.5f, glm::vec3(1, 0, 0));
+		Debug::DrawTextLine("Left Control + Q to change mode", Vec2(0, 150), 0.5f, glm::vec3(1, 0, 0));
+	}
+	else if (currentSelectedEntity) {
+		Debug::DrawTextLine("Left Click to modify position and scale", Vec2(0, 100), 0.5f, glm::vec3(1, 0, 0));
+	}
+
+	if (Input::GetButtonUp(BUTTONCODE_RIGHT)) {
+		bHoldingEntity = false;
+	}
+}
+
+
+
+void WB_Editor::Update() {
 	ImGui::BeginMainMenuBar();
 
 	if (ImGui::BeginMenu("File")) {
@@ -418,6 +530,8 @@ void WB_Editor::Update() {
 	}
 
 	if (ImGui::BeginMenu("Scene")) {
+		if (ImGui::MenuItem("New Entity")) { AddEditorWindow(new EditorCreateEntityWizard()); }
+		if (ImGui::MenuItem("KVP Wizard")) { AddEditorWindow(new EditorKeyValuePairWizard()); }
 		ImGui::EndMenu();
 	}
 
@@ -429,4 +543,49 @@ void WB_Editor::Update() {
 	}
 
 	ImGui::EndMainMenuBar();
+
+	//Update editor windows
+	for (int i = this->activeEditorWindows.size() - 1; i >= 0; i--) {
+		if (this->activeEditorWindows[i]->active && Core::GetSceneManager()->GetActiveScene()) {
+			this->activeEditorWindows[i]->Handle(this);
+		}
+		else {
+			delete this->activeEditorWindows[i];
+			this->activeEditorWindows.erase(this->activeEditorWindows.begin() + i);
+		}
+	}
+
+
+	if (Core::GetSceneManager()->GetActiveScene()) {
+		//Draw all colliders
+		//std::vector<Collider*> colliders;
+		//SceneManager::GetActiveScene()->GetAllComponentsOfTypeInChildren(colliders);
+		//for (size_t i = 0; i < colliders.size(); i++) {
+		//	colliders[i]->Update();
+		//}
+
+		//Draw around current selected entity
+		if (this->currentSelectedEntity) {
+			Debug::DrawCube(this->currentSelectedEntity->GetGlobalPosition(),
+				this->currentSelectedEntity->GetGlobalPosition() + this->currentSelectedEntity->GetGlobalScale(),
+				glm::vec3(1, 0, 1));
+		}
+
+		//Only execute when there is no window focused
+		if (!ImGui::IsAnyWindowFocused()) {
+			this->HandleInput();
+		}
+	}
+}
+
+void WB_Editor::SetCurrentSelectedEntityByPosition(Entity* parent, Vec2 pos) {
+	for (size_t i = 0; i < parent->GetChildren().size(); i++) {
+		Entity* child = parent->GetChildren()[i];
+		SetCurrentSelectedEntityByPosition(child, pos);
+	}
+
+	if (Physics::InBounds(pos, parent->GetGlobalPosition(), parent->GetGlobalPosition() + parent->GetGlobalScale()) && parent != Core::GetSceneManager()->GetActiveScene()) {
+		currentSelectedEntity = parent;
+		bHoldingEntity = true;
+	}
 }

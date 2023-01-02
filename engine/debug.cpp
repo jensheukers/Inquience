@@ -66,7 +66,7 @@ void Debug::DrawCube(Vec2 a, Vec2 b, glm::vec3 color) {
 	Line line3; line3.a = Vec2(a.x, b.y); line3.b = a; line3.color = color; GetInstance()->_lineDrawList.push_back(line3);
 }
 
-void Debug::DrawText(std::string text, Vec2 position, float size, glm::vec3 color) {
+void Debug::DrawTextLine(std::string text, Vec2 position, float size, glm::vec3 color) {
 	static Font* font = FontLoader::LoadFont("fonts/consola.ttf");
 	DebugText debugText;
 	debugText.font = font;

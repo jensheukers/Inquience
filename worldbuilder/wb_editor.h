@@ -4,6 +4,9 @@
 // Unauthorized copying of this file, via any medium is strictly prohibited
 // Proprietary and confidential
 // Written by Jens Heukers
+#ifndef EDITOR_H
+#define EDITOR_H
+
 #include <Windows.h>
 
 #include <vector>
@@ -89,11 +92,19 @@ public:
 	void Handle(WB_Editor* editor) override;
 };
 
+enum Editor_ScaleMode {
+	Horizontal,
+	Vertical,
+	Both
+};
+
 class WB_Editor {
 private:
 	std::vector<EditorWindow*> activeEditorWindows; /** list containing editor window pointers*/
 	Scene* currentScene;
 	Camera* camera;
+
+	Editor_ScaleMode scalemode;
 
 
 	/**
@@ -123,9 +134,21 @@ private:
 	*/
 	std::string SaveFileName(char* filter = "Supported Files(*.json)\0*.json;\0", HWND owner = NULL);
 
+	/**
+	* Handles the input
+	*/
+	void HandleInput();
+
 public:
 	//Instance pointers
 	class Entity* currentSelectedEntity = nullptr;
+	
+	float cameraMovementSpeed = 5; /***< The movement speed of the camera*/
+
+	bool bHoldingEntity; /***< If true the cursor is holding a entity*/
+
+	//Key Combos
+	std::vector<struct KeyComboEvent> combos;
 
 	/**
 	* @brief Constructor
@@ -169,4 +192,11 @@ public:
 		}
 		return false;
 	}
+
+	/**
+	* Sets current selected entity if in bounds
+	*/
+	void SetCurrentSelectedEntityByPosition(class Entity* parent, class Vec2 pos);
 };
+
+#endif // !EDITOR_H

@@ -69,7 +69,7 @@ public:
 	/**
 	* Draws text to the screen
 	*/
-	static void DrawText(std::string text, Vec2 position, float size, glm::vec3 color = glm::vec3(1, 1, 1));
+	static void DrawTextLine(std::string text, Vec2 position, float size, glm::vec3 color = glm::vec3(1, 1, 1));
 
 	/**
 	* Returns the line draw list
