@@ -142,10 +142,13 @@ Entity* Parser::ReadEntityFromJsonData(nlohmann::json& jsonData) {
 
 Parser::Parser(std::string destination, bool read, bool debug) {
 	this->destination = Core::GetExecutableDirectoryPath() + destination;
+
+	if (debug) {
+		Debug::Log("New parser instance, file location = " + this->destination);
+	}
 	this->_file = std::fstream(this->destination);
 	this->_read = read;
 	this->debug = debug;
-
 	//Create file if not exist
 	if (!this->_file.good()) {
 		if (!read) {

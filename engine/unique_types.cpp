@@ -27,7 +27,7 @@ void ThreadContext::Spawn(std::function<void()> func) {
 	worker = std::thread(func);
 }
 
-void ThreadContext::Yield() {
+void ThreadContext::WaitUntil() {
 	int nextFrame = (int)Core::GetCurrentFrame() + 1;
 	while (nextFrame < (int)Core::GetCurrentFrame()) {
 		continue;

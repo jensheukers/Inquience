@@ -54,7 +54,7 @@ public:
 	/**
 	* Yield until frame is finished
 	*/
-	void Yield();
+	void WaitUntil();
 	/**
 	* Sleep for amount of seconds
 	* @param int 
