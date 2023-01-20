@@ -14,6 +14,37 @@
 #include <Windows.h>
 
 #include <input.h>
+#include <math/physics.h>
+
+void Grid::Construct(Vec2 size, Vec2 tileSize) {
+	this->size = size;
+	this->tileSize = tileSize;
+	for (int x = 0; x < (int)size.x; x += (int)tileSize.x) {
+		for (int y = 0; y < (int)size.y; y += (int)tileSize.y) {
+			GridTile* tile = new GridTile();
+			tile->position = Vec2((float)x, (float)y);
+			tile->bounds = Vec2((float)x + tileSize.x, (float)y + tileSize.y);
+
+			gridTiles.push_back(tile);
+		}
+	}
+}
+
+GridTile* Grid::GetGridTile(Vec2 position) {
+	for (size_t i = 0; i < gridTiles.size(); i++) {
+		if (Physics::InBounds(position, gridTiles[i]->position, gridTiles[i]->bounds)) {
+			return gridTiles[i];
+		}
+	}
+	return nullptr;
+}
+
+Grid::~Grid() {
+	for (size_t i = 0; i < gridTiles.size(); i++) {
+		delete gridTiles[i];
+		gridTiles.erase(gridTiles.begin() + i);
+	}
+}
 
 Scene* WB_Editor::LoadScene(std::string path) {
 	return Core::GetSceneManager()->ReadFromFileAndSwap(path);
@@ -72,11 +103,38 @@ std::string WB_Editor::SaveFileName(char* filter, HWND owner) {
 }
 
 
+WB_EditorWindow* WB_Editor::AddEditorWindow(WB_EditorWindow* w) {
+	activeEditorWindows.push_back(w);
+	return w;
+}
+
+WB_EditorWindow* WB_Editor::RemoveEditorWindow(WB_EditorWindow* w) {
+	for (size_t i = 0; i < activeEditorWindows.size(); i++) {
+		if (activeEditorWindows[i] == w) {
+			return RemoveEditorWindow(i);
+		}
+	}
+
+	return nullptr;
+}
+
+WB_EditorWindow* WB_Editor::RemoveEditorWindow(int i) {
+	WB_EditorWindow* w = activeEditorWindows[i];
+	activeEditorWindows.erase(activeEditorWindows.begin() + i);
+	return w;
+}
+
+
 WB_Editor::WB_Editor() {
 	camera = new Camera();
 
 	//Create new empty scene
 	currentScene = NewScene();
+
+	grid = new Grid();
+
+	//Todo: Fetch grid settings
+	grid->Construct(Vec2(2048), Vec2(32));
 }
 
 void WB_Editor::HandleInput() {
@@ -135,14 +193,14 @@ void WB_Editor::Update() {
 	}
 
 	if (ImGui::BeginMenu("View")) {
-
+		if (ImGui::MenuItem("Painter")) {
+			AddEditorWindow((WB_EditorWindow*)new WB_PainterWindow());
+		}
 		ImGui::EndMenu();
 	}
 
 	if (ImGui::BeginMenu("Settings")) {
-		if (ImGui::MenuItem("Grid Settings")) {
-
-		}
+		if (ImGui::MenuItem("Grid Settings"))  AddEditorWindow(new WB_EditorGridSettingsWindow()); 
 		ImGui::EndMenu();
 	}
 
@@ -166,4 +224,22 @@ void WB_Editor::Update() {
 			this->HandleInput();
 		}
 	}
+
+	//Draw grid lines
+	//Draw vertical lines
+	for (size_t x = 0; x <= grid->size.x; x += grid->tileSize.x) {
+		Debug::DrawLine(Vec2(x, 0), Vec2(x, grid->size.y));
+	}
+
+	//Draw horizontal lines
+	for (size_t y = 0; y <= grid->size.y; y += grid->tileSize.y) {
+		Debug::DrawLine(Vec2(0, y), Vec2(grid->size.x, y));
+	}
+
+	Vec2 worldMousePos = camera->position + Input::GetMousePosition();
+	Debug::DrawTextLine("(" + std::to_string((int)worldMousePos.x) + ", " + std::to_string((int)worldMousePos.y) + ")", Vec2(0, 50), 0.5f);
+}
+
+WB_Editor::~WB_Editor() {
+	delete this->grid;
 }

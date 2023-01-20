@@ -103,7 +103,7 @@ public:
 	* Load a Targa File.
 	* @return Texture*
 	*/
-	static Texture* LoadTarga(char* filepath);
+	static Texture* LoadTarga(const char* filepath);
 
 	/**
 	* Terminates the TextureLoader

@@ -214,6 +214,8 @@ add_executable( WorldBuilder
 	worldbuilder/main.cpp
 	worldbuilder/wb_editor.cpp
 	worldbuilder/wb_editor.h
+	worldbuilder/wb_editorwindows.h
+	worldbuilder/wb_editorwindows.cpp
 )
 
 target_link_libraries(WorldBuilder

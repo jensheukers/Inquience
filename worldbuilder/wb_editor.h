@@ -12,12 +12,42 @@
 #include <vector>
 #include <string>
 
-#include "wb_editorwindow.h"
+#include "wb_editorwindows.h"
+
+#include <math/vec2.h>
 
 //Fwd declare
 class Scene;
 class Camera;
 
+struct GridTile {
+	Vec2 position;
+	Vec2 bounds;
+};
+
+struct Grid {
+	std::vector<GridTile*> gridTiles;
+	Vec2 size;
+	Vec2 tileSize;
+
+	/**
+	* Constructs a grid
+	* @param Vec2 size
+	* @param Vec2 gridSize
+	*/
+	void Construct(Vec2 size, Vec2 tileSize);
+
+	/**
+	* Returns the gridtile depending on param
+	* @param GridTile tile
+	*/
+	GridTile* GetGridTile(Vec2 position);
+
+	/**
+	* Destructor
+	*/
+	~Grid();
+};
 
 
 class WB_Editor {
@@ -40,6 +70,13 @@ private:
 	Scene* NewScene();
 
 	/**
+	* Handles the input
+	*/
+	void HandleInput();
+
+public:
+
+	/**
 	* @brief Opens a window search dialog to and returns path
 	* @param char* filters
 	* @param HWND owner reference
@@ -53,13 +90,8 @@ private:
 	*/
 	std::string SaveFileName(char* filter = "Supported Files(*.json)\0*.json;\0", HWND owner = NULL);
 
-	/**
-	* Handles the input
-	*/
-	void HandleInput();
-
-public:
 	float cameraMovementSpeed = 5; /***< The movement speed of the camera*/
+	Grid* grid; /***< Grid reference*/
 
 	//Key Combos
 	std::vector<struct KeyComboEvent> combos;
@@ -106,6 +138,17 @@ public:
 		}
 		return false;
 	}
+
+	/**
+	* Returns the entity if on the tile, iterates through all children of given enity parameter until found, else return nullptr
+	* Note that this is a heavy operation, should not be executed every frame
+	* @param GridTile* tile
+	* @param Entity* entity
+	* @return Entity*	Entity occupying the tile
+	*/
+	class Entity* GetEntityOnTile(GridTile* tile, class Entity* entity);
+
+	~WB_Editor();
 };
 
 #endif // !EDITOR_H
