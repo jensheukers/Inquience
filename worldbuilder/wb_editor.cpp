@@ -240,6 +240,19 @@ void WB_Editor::Update() {
 	Debug::DrawTextLine("(" + std::to_string((int)worldMousePos.x) + ", " + std::to_string((int)worldMousePos.y) + ")", Vec2(0, 50), 0.5f);
 }
 
+Entity* WB_Editor::GetEntityOnTile(GridTile* tile, Entity* entity) {
+	if (entity != Core::GetSceneManager()->GetActiveScene() && tile->position == entity->position) return entity;
+
+	for (size_t i = 0; i < entity->GetChildren().size(); i++) {
+		if (Entity* child = this->GetEntityOnTile(tile, entity->GetChildren()[i])) {
+			return child;
+		}
+	}
+
+	return nullptr;
+}
+
+
 WB_Editor::~WB_Editor() {
 	delete this->grid;
 }

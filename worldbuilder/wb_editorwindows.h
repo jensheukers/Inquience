@@ -2,7 +2,7 @@
 #define WB_EDITORWINDOWS_H
 
 //Editor Window Definitions
-#define WB_PAINTERWINDOW_IMGUI_TILESIZE 64
+#define WB_PAINTERWINDOW_IMGUI_TILESIZE 32
 
 #include <components/sprite.h>
 
@@ -31,7 +31,7 @@ public:
 	WB_PainterWindow() { this->sprite = nullptr; this->pixelsPerTile = 32; this->curUvData = nullptr; };
 	void Handle(WB_Editor* editor) override;
 
-	UV* GetCurrentUvData() { return curUvData; }
+	UV* GetCurrentUvData() { return curUvData; };
 };
 
 class WB_EditorGridSettingsWindow : public WB_EditorWindow {

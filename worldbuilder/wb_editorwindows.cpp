@@ -6,6 +6,9 @@
 #include <math/vec2.h>
 
 #include <debug.h>
+#include <input.h>
+
+#include <core.h>
 
 WB_EditorWindow::WB_EditorWindow() {
 	this->active = true; // Always set to active
@@ -34,10 +37,14 @@ void WB_PainterWindow::Handle(WB_Editor* editor) {
 				for (size_t y = 0; y < sprite->GetTexture()->textureData->height; y += pixelsPerTile) {
 					for (size_t x = 0; x < sprite->GetTexture()->textureData->width; x += pixelsPerTile) {
 						UV u = sprite->Split(pixelsPerTile, index);
+
+						ImGui::PushID(index);
 						if (ImGui::ImageButton((ImTextureID)sprite->GetTexture()->_glTexture, ImVec2(WB_PAINTERWINDOW_IMGUI_TILESIZE, WB_PAINTERWINDOW_IMGUI_TILESIZE), ImVec2(u.leftDown.x, u.leftDown.y), ImVec2(u.rightUp.x, u.rightUp.y))) {
+							Debug::Log("test");
 							if (curUvData != nullptr) delete curUvData;
 							curUvData = new UV(u);
 						}
+						ImGui::PopID();
 
 						if (x + pixelsPerTile < sprite->GetTexture()->textureData->width) ImGui::SameLine();
 						index++;
@@ -53,6 +60,42 @@ void WB_PainterWindow::Handle(WB_Editor* editor) {
 		ImGui::EndTabBar();
 	}
 
+	if (!ImGui::IsWindowFocused()) {
+		//Handle paint events
+		if (Input::GetButton(BUTTONCODE_LEFT)) {
+			if (this->curUvData != nullptr && this->sprite != nullptr && Core::GetSceneManager() && Core::GetSceneManager()->GetActiveScene()) {
+				GridTile* tile = editor->grid->GetGridTile(Input::GetMousePosition());
+
+				//Check if there is no entity on tile already
+				if (Entity* e = editor->GetEntityOnTile(tile, Core::GetSceneManager()->GetActiveScene())) {
+					e->GetParent()->RemoveChild(e);
+					delete e;
+				}
+
+				Entity* e = new Entity();
+				e->scale = Vec2(this->pixelsPerTile, this->pixelsPerTile);
+				e->position = tile->position;
+
+				Sprite* s = e->AddComponent<Sprite>();
+				s->SetTexture(this->sprite->GetTexture());
+				s->uv = UV(*this->curUvData);
+
+				Core::GetSceneManager()->GetActiveScene()->AddChild(e);
+			}
+		}
+
+		if (Input::GetButton(BUTTONCODE_RIGHT)) {
+			if (Core::GetSceneManager() && Core::GetSceneManager()->GetActiveScene()) {
+				GridTile* tile = editor->grid->GetGridTile(Input::GetMousePosition());
+
+				//Check if there is no entity on tile already
+				if (Entity* e = editor->GetEntityOnTile(tile, Core::GetSceneManager()->GetActiveScene())) {
+					e->GetParent()->RemoveChild(e);
+					delete e;
+				}
+			}
+		}
+	}
 	ImGui::End();
 }
 
