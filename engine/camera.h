@@ -14,6 +14,7 @@
 class Camera : Vec2{
 private:
 	class Entity* target; /***< Target camera can focus on*/
+	float zoomScale;
 public:
 	Vec2 position;
 
@@ -22,6 +23,18 @@ public:
 	void Update();
 
 	void SetTarget(class Entity* target);
+
+	/**
+	* @brief Sets the zoomscale
+	* @param float zoomscale
+	*/
+	void SetZoomScale(float zoomScale) { this->zoomScale = zoomScale; }
+
+	/**
+	* @brief Returns the zoom scale
+	* @return float zoomscale
+	*/
+	float GetZoomScale() { return this->zoomScale; }
 };
 
 #endif // !CAMERA_H

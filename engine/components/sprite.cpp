@@ -17,25 +17,14 @@ UV::UV() {
 	this->rightDown = Vec2(1, 1); // 1, 0
 }
 
-void Sprite::SetImGuiColorBuffer(ColorRGBA blendColor) {
-	this->_imguiColorBuffer[0] = (float)(blendColor._r / 255);
-	this->_imguiColorBuffer[1] = (float)(blendColor._g / 255);
-	this->_imguiColorBuffer[2] = (float)(blendColor._b / 255);
-	this->_imguiColorBuffer[3] = (float)(blendColor._a / 255);
-}
-
 Sprite::Sprite() {
 	this->texture = nullptr;
-
-	this->SetImGuiColorBuffer(this->blendColor);
 	this->AddProperties();
 }
 
 Sprite::Sprite(const Sprite& sprite) {
 	this->uv = sprite.uv;
 	this->texture = sprite.texture;
-
-	this->SetImGuiColorBuffer(this->blendColor);
 	this->AddProperties();
 }
 
@@ -69,7 +58,6 @@ void Sprite::AddProperties() {
 		this->blendColor._g = std::stoi(args[1]);
 		this->blendColor._b = std::stoi(args[2]);
 		this->blendColor._a = std::stoi(args[3]);
-		SetImGuiColorBuffer(this->blendColor);
 		}, [=]() -> StringVector {
 			return {
 				std::to_string(this->blendColor._r),
@@ -145,4 +133,31 @@ UV Sprite::Split(Texture* texture, int pixelsPerTile, int index) {
 	}
 
 	return uv;
+}
+
+void Sprite::ShowComponentProperties()
+{
+	static char buffer[128]; // Allocate buffer
+	ImGui::InputText("##0", buffer, sizeof(buffer));
+	ImGui::SameLine();
+	if (ImGui::Button("Set/Load Texture")) {
+		this->SetTexture(TextureLoader::LoadTarga(buffer));
+	}
+
+	ImGui::Spacing();
+	ImGui::Text("Options to slice a tilemap, by pressing split the uv coordinates will be updated");
+
+	static int pixelsPerTileEditor;
+	static int tileMapIndexEditor;
+	ImGui::InputInt("Pixels Per Tile", &pixelsPerTileEditor);
+	ImGui::InputInt("Tile Map Index", &tileMapIndexEditor);
+
+	if (ImGui::Button("Split")) {
+		this->Split(pixelsPerTileEditor, tileMapIndexEditor);
+	}
+
+	ImGui::ColorPicker4("Blend Color", _imguiColorBuffer);
+
+	this->blendColor = ColorRGBA((unsigned int)(_imguiColorBuffer[0] * 255), (unsigned int)(_imguiColorBuffer[1] * 255),
+		(unsigned int)(_imguiColorBuffer[2] * 255), (unsigned int)(_imguiColorBuffer[3] * 255));
 }

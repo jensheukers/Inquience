@@ -39,12 +39,13 @@ private:
 	bool gamePaused; /***< If true entity updates and component updates will not be processed in the frame*/
 
 	std::vector<std::function<void()>> LateFrameFunctionList; /***< List of functions to be executed after the frame is done*/
+	std::vector<Component*> lateFrameRemoveComponentList; /***< List of components to be removed at the end of the frame*/
 public:
 	/**
 	* Initalizes the Core of the engine
 	* @return void
 	*/
-	static void Initialize(int argc, char* argv[], Vec2 resolution = Vec2(1280, 720), std::string title = "INQUIENCE");
+	static void Initialize(int argc, char* argv[], Vec2 resolution = Vec2(1280, 720), std::string title = "INQUIENCE", bool fullscreen = false);
 
 	/**
 	* Updates the engine, if engine is initialized
@@ -136,7 +137,12 @@ public:
 	/**
 	* Adds a function that is to be executed once at the end of this frame
 	*/
-	static void ExecuteLateFrame(std::function<void()> func);
+	static void LateFrameExecute(std::function<void()> func);
+
+	/**
+	* Removes a component at the end of this frame
+	*/
+	static void LateFrameRemoveComponent(Component* component);
 
 	//Local methods
 

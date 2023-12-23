@@ -10,6 +10,8 @@
 #ifndef VEC2_H
 #define VEC2_H
 
+#include <string>
+
 //Include GLM if existant in project
 #ifdef GLM_SETUP_INCLUDED
 #include "glm/glm.hpp"
@@ -215,7 +217,7 @@ public:
 	* Returns the vector in a string
 	* @return const char*
 	*/
-	const char* ToString();
+	std::string ToString();
 
 	//Static methods
 

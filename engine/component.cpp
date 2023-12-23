@@ -4,11 +4,16 @@
 // Unauthorized copying of this file, via any medium is strictly prohibited
 // Proprietary and confidential
 // Written by Jens Heukers, October 2019
+#include "managed.h"
 #include "component.h"
 #include "debug.h"
 
 //Include imgui for editor purpose
 #include "imgui.h"
+
+Component::Component() {
+	this->owner = nullptr;
+}
 
 size_t Component::GetPropertyIndex(std::string key) {
 	for (size_t i = 0; i < properties.size(); i++) {
@@ -52,4 +57,9 @@ Entity* Component::SetOwner(Entity* entity) {
 
 Entity* Component::GetOwner() {
 	return this->owner;
+}
+
+void Component::ShowComponentProperties()
+{
+	ImGui::Text("Component properties have not been derrived!");
 }

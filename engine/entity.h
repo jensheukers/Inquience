@@ -6,6 +6,7 @@
 // Written by Jens Heukers 2021
 #ifndef ENTITY_H
 #define ENTITY_H
+#include "managed.h"
 
 //Include typeinfo
 #include <typeinfo>
@@ -20,10 +21,10 @@
 //Include component
 #include "component.h"
 
-//Forward declare renderer
+//Forward declare managed & renderer
 class Renderer;
 
-class Entity {
+class Entity : public Managed {
 private:
 	//Local Members
 	Entity* parent; /***< The parent instance */

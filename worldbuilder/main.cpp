@@ -9,14 +9,16 @@
 
 
 int main(int argc, char* argv[]) {
-	Core::Initialize(argc, argv, Vec2(1280, 720), "World Builder");
+	Core::Initialize(argc, argv, Vec2(1920, 1080), "World Builder");
 
 	WB_Editor* editor = new WB_Editor();
 
 	while (Core::IsActive()) {
 		editor->Update();
+
 		Core::Update(); // Handle updates for engine
 	}
 
+	delete editor;
 	return 0; // return succes
 }

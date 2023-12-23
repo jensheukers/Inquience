@@ -6,6 +6,7 @@
 // Written by Jens Heukers, October 2019
 #ifndef COMPONENT_H
 #define COMPONENT_H
+#include "managed.h"
 
 #include <vector>
 #include <string>
@@ -24,9 +25,10 @@ struct ComponentProperty {
 	PropertyGetCallback getCallback;
 };
 
-class Component {
+class Entity;
+class Component : public Managed {
 private:
-	class Entity* owner; /***< The owner of this component*/
+	Entity* owner; /***< The owner of this component*/
 	std::vector<ComponentProperty*> properties; /***< Properties vector, contains all property callbacks*/
 
 	/**
@@ -40,6 +42,11 @@ protected:
 	*/
 	void AddProperty(std::string key, PropertySetCallback setCallback, PropertyGetCallback getCallback = []() -> StringVector { return StringVector(); });
 public:
+	/*
+	* @brief Constructor
+	*/
+	Component();
+
 	/**
 	* Returns the name of the component as a string
 	*/
@@ -100,6 +107,19 @@ public:
 	* Copies the component settings and returns a new instance, should be overwritten
 	*/
 	virtual Component* Copy() const { return new Component(*this); }
+
+	//todo add macro definitions
+	bool bShowComponentProperties;
+	/**
+	* Can be called to create a IMGUI window to handle component properties
+	* Has to be encapsuled by caller with ImGui::Begin() and ImGui::End()
+	*/
+	virtual void ShowComponentProperties();
+
+	/**
+	* Destructor
+	*/
+	virtual ~Component() {};
 };
 
 #endif // !COMPONENT_H

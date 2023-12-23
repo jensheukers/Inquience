@@ -20,15 +20,27 @@
 class Scene;
 class Camera;
 
+enum Editor_ScaleMode {
+	Horizontal,
+	Vertical,
+	Both
+};
+
 struct GridTile {
 	Vec2 position;
 	Vec2 bounds;
 };
 
 struct Grid {
+	bool active;
 	std::vector<GridTile*> gridTiles;
 	Vec2 size;
 	Vec2 tileSize;
+
+	/*
+	* Constructor
+	*/
+	Grid();
 
 	/**
 	* Constructs a grid
@@ -55,6 +67,10 @@ private:
 	std::vector<WB_EditorWindow*> activeEditorWindows; /** list containing editor window pointers*/
 	Scene* currentScene;
 	Camera* camera;
+
+	Entity* selectedEntity;
+
+	Editor_ScaleMode scalemode;
 
 	/**
 	* @brief loads a scene from file
@@ -139,14 +155,36 @@ public:
 		return false;
 	}
 
+
 	/**
-	* Returns the entity if on the tile, iterates through all children of given enity parameter until found, else return nullptr
-	* Note that this is a heavy operation, should not be executed every frame
+	* @brief Checks if any window is focussed by ImGui, meaning user has clicked on the window
+	*/
+	bool AnyWindowFocused() {
+		for (size_t i = 0; i < this->activeEditorWindows.size(); i++){
+			if (activeEditorWindows[i]->IsFocused()) return true;
+		}
+		return false;
+	}
+
+	/**
+	* @brief Returns the entity if on the tile, iterates through all children of given enity parameter until found, else return nullptr. Note that this is a heavy operation, should not be executed every frame
 	* @param GridTile* tile
 	* @param Entity* entity
 	* @return Entity*	Entity occupying the tile
 	*/
 	class Entity* GetEntityOnTile(GridTile* tile, class Entity* entity);
+
+	/**
+	* @brief Returns the selected entity
+	* @return pointer to selected entity.
+	*/
+	Entity* GetSelectedEntity() { return selectedEntity; }
+
+	/*
+	* @brief Sets the selected entity
+	* @param Entity* pointer to entity
+	*/
+	void SetSelectedEntity(Entity* entity) { this->selectedEntity = entity; }
 
 	~WB_Editor();
 };

@@ -31,7 +31,10 @@ private:
 
 public:
 	/**
-	* Constructor, if read is true we can read from file, if not we can write
+	* @brief Constructor, if read is true we can read from file, if not we can write
+	* @param std::string destination the ABSOLUTE path to savefile
+	* @param bool read read or write
+	* @param bool debug print debug to console
 	*/
 	Parser(std::string destination, bool read, bool debug = false);
 

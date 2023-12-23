@@ -157,6 +157,26 @@ public:
 	Animation* SetActiveAnimation(std::string name);
 
 	/**
+	* Sets active animation to nullptr
+	*/
+	void SetActiveAnimationToNullPtr() { currentAnimation = nullptr; }
+
+	/*
+	* @brief returns the active animation
+	* @return Animation*
+	*/
+	Animation* GetActiveAnimation() { return currentAnimation; }
+
+
+
+	/**
+	* @brief Returns animations list
+	*/
+	std::vector<Animation*> GetAnimations() { return animations; }
+	
+
+
+	/**
 	* Animator Update function
 	* Updates are called automaticly by parent, through this method animations can be played
 	*/
@@ -164,6 +184,8 @@ public:
 
 	virtual Animator* New() override { return new Animator(); }
 	virtual Animator* Copy() const { return new Animator(*this); }
+
+	virtual void ShowComponentProperties() override;
 };
 
 #endif // !ANIMATOR_H

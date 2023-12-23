@@ -25,7 +25,7 @@ int main(int argc, char * argv[]) {
 	//Native Luascript functions (Game)
 	{
 			Core::GetLuaScript()->AddNativeFunction("NextLevel_Internal", [](lua_State* state) -> int {
-			Core::ExecuteLateFrame([=]() {
+			Core::LateFrameExecute([=]() {
 				gameState->NextLevel();
 			});
 			return 0;

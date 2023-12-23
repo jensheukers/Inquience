@@ -1,11 +1,9 @@
 // Source file for Renderer class.
 //
-// Version: 7/7/2019
-//
 // Copyright (C) Jens Heukers - All Rights Reserved
 // Unauthorized copying of this file, via any medium is strictly prohibited
 // Proprietary and confidential
-// Written by Jens Heukers, July 2019
+// Written by Jens Heukers
 
 //Include header file
 #include "renderer.h"
@@ -27,10 +25,11 @@
 void Renderer::RenderEntity(Entity* entity, Camera* camera) {
 	//Calculate the position with the camera position included
 	Vec2 calculatedPos = Vec2(entity->GetGlobalPosition().x - camera->position.x, entity->GetGlobalPosition().y - camera->position.y);
+	//calculatedPos = calculatedPos + Vec2((entity->GetGlobalScale().x / 2) * -camera->GetZoomScale(), (entity->GetGlobalPosition().y / 2) * -camera->GetZoomScale());
 
-	//Try to cast to Text
+	//Try to find text component if we find a text component render the text
 	if (Text* text = entity->GetComponent<Text>()) {
-		RenderText(text->GetFont(), text->GetText(), entity->GetGlobalPosition(), text->GetSize(), text->GetColor());
+		RenderText(text->GetFont(), text->GetText(), calculatedPos, text->GetSize(), text->GetColor());
 	}
 	else {
 		if (dynamic_cast<UIComponent*>(entity)) {
@@ -138,7 +137,7 @@ void Renderer::RenderText(Font* font, std::string text, Vec2 position, float siz
 	glBindTexture(GL_TEXTURE_2D, 0);
 }
 
-Renderer::Renderer(Vec2 resolution, const char* title) {
+Renderer::Renderer(Vec2 resolution, const char* title, bool fullscreen) {
 	//Initialize GLFW and Glew
 	if (!glfwInit()) {
 		Debug::Log("GLFW Failed to Initialize");
@@ -153,7 +152,11 @@ Renderer::Renderer(Vec2 resolution, const char* title) {
 	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 	glfwWindowHint(GLFW_RESIZABLE, GL_FALSE);
 
-	window = glfwCreateWindow((int)resolution.x, (int)resolution.y, title, NULL, NULL);
+
+	GLFWmonitor* monitor = NULL;
+	if (fullscreen) monitor = glfwGetPrimaryMonitor();
+
+	window = glfwCreateWindow((int)resolution.x, (int)resolution.y, title, monitor, NULL);
 	glfwMakeContextCurrent(window); // Make current context
 
 	//Initialize GLEW
@@ -175,6 +178,7 @@ Renderer::Renderer(Vec2 resolution, const char* title) {
 	defaultShader = new Shader("shaders/default.vs", "shaders/default.fs");
 	textShader = new Shader("shaders/text.vs", "shaders/text.fs");
 	lineShader = new Shader("shaders/line.vs", "shaders/line.fs");
+	screenShader = new Shader("shaders/screen.vs", "shaders/screen.fs");
 
 	//Use default shader program, and set uniforms
 	glUseProgram(defaultShader->GetShaderProgram());
@@ -187,6 +191,9 @@ Renderer::Renderer(Vec2 resolution, const char* title) {
 	//Text shader set uniforms
 	glUseProgram(lineShader->GetShaderProgram());
 	lineShader->SetMat4("projection", projection);
+
+	glUseProgram(screenShader->GetShaderProgram());
+	screenShader->SetInt("screenTexture", 0);
 
 
 	// Generate buffers for sprite rendering quad
@@ -222,6 +229,64 @@ Renderer::Renderer(Vec2 resolution, const char* title) {
 
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
+	// screen quad VAO
+	float quadVertices[] = { // vertex attributes for a quad that fills the entire screen in Normalized Device Coordinates.
+	// positions   // texCoords
+	-1.0f,  1.0f,  0.0f, 1.0f,
+	-1.0f, -1.0f,  0.0f, 0.0f,
+	 1.0f, -1.0f,  1.0f, 0.0f,
+
+	-1.0f,  1.0f,  0.0f, 1.0f,
+	 1.0f, -1.0f,  1.0f, 0.0f,
+	 1.0f,  1.0f,  1.0f, 1.0f
+	};
+
+	glGenVertexArrays(1, &screenVao);
+	glGenBuffers(1, &screenVbo);
+	glBindVertexArray(screenVao);
+	glBindBuffer(GL_ARRAY_BUFFER, screenVbo);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(quadVertices), &quadVertices, GL_STATIC_DRAW);
+	glEnableVertexAttribArray(0);
+	glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 4 * sizeof(float), (void*)0);
+	glEnableVertexAttribArray(1);
+	glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 4 * sizeof(float), (void*)(2 * sizeof(float)));
+
+	glEnable(GL_BLEND);
+	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
+
+	//Setup framebuffers
+	glGenFramebuffers(1, &fbo);
+	glBindFramebuffer(GL_FRAMEBUFFER, fbo);
+
+	if (glCheckFramebufferStatus(GL_FRAMEBUFFER) == GL_FRAMEBUFFER_COMPLETE) {
+		Debug::Log("Succesfully created framebuffer");
+	}
+	glBindFramebuffer(GL_FRAMEBUFFER, 0);
+
+	//Create framebuffer texture
+	glGenTextures(1, &fboTexture);
+	glBindTexture(GL_TEXTURE_2D, fboTexture);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, resolution.x, resolution.y, 0, GL_RGB, GL_UNSIGNED_BYTE, NULL);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+
+	//attach the framebuffer
+	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, fboTexture, 0);
+
+	//Create render buffer
+	glGenRenderbuffers(1, &rbo);
+	glBindRenderbuffer(GL_RENDERBUFFER, rbo);
+	glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH24_STENCIL8, resolution.x, resolution.y);
+	glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT, GL_RENDERBUFFER, rbo);
+
+	if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE) {
+		Debug::Log("Framebuffer is not complete!");
+	}
+	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
 	// Setup Dear ImGui context
 	ImGui::CreateContext();
@@ -291,10 +356,27 @@ Renderer::Renderer(Vec2 resolution, const char* title) {
 }
 
 void Renderer::RenderScene(Scene* scene, Camera* camera) {
+	//TODO / FIX: MAKE FRAMEBUFFER TEXTURE NOT RENDER BLACK
+	// first pass
+	//glBindFramebuffer(GL_FRAMEBUFFER, fbo);
+	//glClearColor(1, 1, 1, 1);
+	//glClear(GL_COLOR_BUFFER_BIT);
+
 	//Render all scene children as entity
 	for (unsigned i = 0; i < scene->GetChildren().size(); i++) {
 		RenderEntity(scene->GetChild(i), camera);
 	}
+
+	// second pass
+	//glBindFramebuffer(GL_FRAMEBUFFER, 0); // back to default
+	//glClearColor(1, 1, 1, 1);
+	//glClear(GL_COLOR_BUFFER_BIT);
+
+	//glUseProgram(screenShader->GetShaderProgram());
+	//glBindVertexArray(screenVao);
+
+	//glBindTexture(GL_TEXTURE_2D, fboTexture);
+	//glDrawArrays(GL_TRIANGLES, 0, 6);
 }
 
 void Renderer::RenderImGui() {
@@ -355,6 +437,9 @@ Vec2 Renderer::GetResolution() {
 }
 
 Renderer::~Renderer() {
+	//delete framebuffer
+	glDeleteFramebuffers(1, &fbo);
+
 	ImGui_ImplOpenGL3_Shutdown();
 	ImGui_ImplGlfw_Shutdown();
 	ImGui::DestroyContext();

@@ -13,6 +13,7 @@
 
 Camera::Camera() {
 	this->target = nullptr;
+	this->zoomScale = 1;
 }
 
 void Camera::Update() {

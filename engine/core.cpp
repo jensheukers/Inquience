@@ -19,7 +19,7 @@
 
 Core* Core::instance; // The singleton instance
 
-void Core::Initialize(int argc, char* argv[], Vec2 resolution, std::string title) {
+void Core::Initialize(int argc, char* argv[], Vec2 resolution, std::string title, bool fullscreen) {
 	Debug::Log("Initializing Engine");
 
 	//Create singleton instance, if not already set
@@ -73,7 +73,7 @@ void Core::Initialize(int argc, char* argv[], Vec2 resolution, std::string title
 		std::string functionName = lua_tostring(state, top + 1);
 
 		std::vector<std::string> params;
-		for (size_t i = top + 2; i < 0; i++) {
+		for (int i = top + 2; i < 0; i++) {
 			params.push_back(lua_tostring(state, i));
 		}
 
@@ -168,6 +168,17 @@ void Core::Update() {
 			instance->LateFrameFunctionList[i]();
 			instance->LateFrameFunctionList.erase(instance->LateFrameFunctionList.begin() + i);
 		}
+
+		//Remove late frame components
+		for (size_t i = 0; i < instance->lateFrameRemoveComponentList.size(); i++) {
+			Component* component = instance->lateFrameRemoveComponentList[i];
+			Entity* ownerEntity = component->GetOwner();
+
+			ownerEntity->RemoveComponent(component);
+
+			instance->lateFrameRemoveComponentList.erase(instance->lateFrameRemoveComponentList.begin() + i);
+		}
+
 	}
 	else {
 		Core::Destroy();
@@ -230,8 +241,12 @@ void Core::ContinueGame() {
 	instance->gamePaused = false;
 }
 
-void Core::ExecuteLateFrame(std::function<void()> func) {
+void Core::LateFrameExecute(std::function<void()> func) {
 	instance->LateFrameFunctionList.push_back(func);
+}
+
+void Core::LateFrameRemoveComponent(Component* component) {
+	instance->lateFrameRemoveComponentList.push_back(component);
 }
 
 float Core::CalculateDeltaTime() {

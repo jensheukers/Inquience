@@ -8,6 +8,7 @@
 
 Scene::Scene() {
 	this->activeCamera = nullptr; // Set active camera to nullptr
+	this->tag = "Scene";
 }
 
 void Scene::UpdateScene(bool gamePaused) {

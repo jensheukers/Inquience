@@ -32,6 +32,7 @@ private:
 	Shader* defaultShader; /***< The default shader used to draw sprites*/
 	Shader* textShader; /***< The shader used to draw texts*/
 	Shader* lineShader; /***< The shader used to draw lines*/
+	Shader* screenShader; /**Shader used for drawing framebuffer to screen*/
 
 	//Local variables
 	Vec2 resolution; /***< The resolution of the window*/
@@ -43,6 +44,15 @@ private:
 
 	unsigned int textVbo; /***< The vertex buffer object used to draw text*/
 	unsigned int textVao; /***< The text vertex array object*/
+
+	//Framebuffer rendering
+	unsigned int screenVbo; /**The screen quad vertex buffer object*/
+	unsigned int screenVao;
+
+	unsigned int fbo; /** The framebuffer object*/
+	unsigned int fboTexture; /**the texture for the framebuffer to write to*/
+
+	unsigned int rbo; /** Renderbuffer object*/
 
 	/**
 	* Renders a entity to the screen
@@ -65,7 +75,7 @@ public:
 	* @param Vec2 scale of the window
 	* @param const char* titleName
 	*/
-	Renderer(Vec2 resolution, const char* title);
+	Renderer(Vec2 resolution, const char* title, bool fullscreen = false);
 
 	/**
 	* Renders the scene
@@ -108,6 +118,12 @@ public:
 	* @return Vec2
 	*/
 	Vec2 GetResolution();
+
+	/*
+	* @brief returns the framebuffer texture
+	* @return unsigned int - framebuffer texture data object
+	*/
+	unsigned int GetFrameBufferTexture() { return fboTexture; }
 
 	/**
 	* Destructor
